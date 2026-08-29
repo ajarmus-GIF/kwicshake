@@ -1,0 +1,17 @@
+# Netlify build configuration.
+#
+# This is a Next.js 15 App Router app, NOT a static-site generator, so `publish` is ".next"
+# and never "dist" or "out" — Next writes neither. The Netlify Next.js runtime reads the
+# .next build output and wires up routing itself; pointing publish at a plain folder would
+# deploy an empty site.
+#
+# Declaring the config here rather than answering `netlify init`'s prompts means the build
+# settings live in the repo and survive re-linking, a new site, or a different machine.
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+# Netlify installs this automatically from the manifest — it does not need to be in
+# package.json. It is what turns Next's server output into Netlify functions.
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
