@@ -1,26 +1,266 @@
 @import "tailwindcss";
 
+/* Wordmark placeholder face — see the TODO on .brand-wordmark below. */
+@import "@fontsource/michroma";
+
+/*
+ * Design tokens — "Nova" palette. Raw colors live in :root ONLY; every rule in this file and
+ * every component references the tokens below, never a raw hex, so swapping the palette stays
+ * a one-file change. Fixed dark palette — no light-mode variant, since the role table assigns
+ * one exact value per role with nothing to branch on.
+ *
+ * Token names below are historical (from the previous "Cherry cool" palette) but every value
+ * now comes from Nova: paper = Nova background, ink = Nova heading text, ash = Nova muted text,
+ * cherry = Nova eyebrow/highlight text, cherry-dark = Nova primary accent (background use only —
+ * see contrast note below), white = Nova logo/high-contrast text.
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* raw palette (Nova) */
+  --color-paper: #100a1f; /* Nova background */
+  --color-ink: #f8f2ff; /* Nova heading / primary text */
+  --color-ash: #8a7ab0; /* Nova muted / secondary text */
+  --color-cherry: #a85fd1; /* Nova eyebrow / highlight text — the only accent proven to hit
+    4.5:1+ against the background for text use; keep cherry-dark out of text roles */
+  --color-cherry-dark: #6b2fa8; /* Nova primary accent — background/button use only; ~2.4:1
+    against --color-paper as text, so never assign it to a text/foreground role */
+  --color-nova-secondary: #3e2fa8; /* Nova secondary accent — gradient end + button hover */
+  --color-white: #f6eeff; /* Nova logo / high-contrast text — sanctioned for cards, form
+    interiors, and text on the accent gradient/cherry-dark backgrounds */
+  --color-glow: rgba(107, 47, 168, 0.45); /* Nova optional glow, spec value */
+
+  /* derived ash alpha values */
+  --color-ash-22: color-mix(in srgb, var(--color-ash) 22%, transparent); /* hairlines, card border, nav bottom border */
+  --color-ash-40: color-mix(in srgb, var(--color-ash) 40%, transparent); /* form field border */
+
+  /* semantic roles */
+  --color-bg: var(--color-paper);
+  --color-fg: var(--color-ink);
+  --color-muted: var(--color-ash);
+  --color-border: var(--color-ash-22);
+  /* very slightly lighter near-black than --color-bg (3% toward --color-ink) — kept this
+     subtle so --color-cherry text staying legible (4.5:1+) on top of it doesn't regress */
+  --color-surface: color-mix(in srgb, var(--color-paper) 98%, var(--color-ink) 2%);
+
+  /* dark panels: footer, full-bleed dark bands — a touch lighter than --color-surface for
+     visual separation, same contrast constraint applies */
+  --color-raised: color-mix(in srgb, var(--color-paper) 97%, var(--color-ink) 3%);
+  --color-on-dark: var(--color-ink);
+
+  /* buttons */
+  --color-button-primary-bg: linear-gradient(90deg, var(--color-cherry-dark), var(--color-nova-secondary));
+  --color-button-primary-text: var(--color-white);
+  --color-button-primary-hover: var(--color-cherry-dark);
+
+  /* forms */
+  --color-form-bg: var(--color-surface);
+  --color-form-border: var(--color-ash-40);
+  --color-form-border-focus: var(--color-cherry);
+
+  /* focus + selection */
+  --color-focus-ring: var(--color-cherry);
+  --color-selection-bg: color-mix(in srgb, var(--color-cherry) 35%, transparent);
+
+  /* defined for future use — nothing in this app currently has an error/success UI to wire it to */
+  --color-error: var(--color-nova-secondary);
+
+  /* "SHAKE" half of the wordmark — sampled from the client's own 03_kwic_shake_brand.png
+     (lightest/base/darkest purple pixels found in that graphic's lettering), reused wherever
+     the wordmark appears (hero, nav, footer) so it's a one-line change everywhere at once. */
+  --gradient-shake: linear-gradient(180deg, #9a75d4 0%, #7c54b6 50%, #4a2f80 100%);
+
+  --font-sans: "Karla", sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-background: var(--color-bg);
+  --color-foreground: var(--color-fg);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+  --font-quote: var(--font-quote);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: var(--font-sans);
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* old Edge/IE */
+}
+
+/* The display face. Archivo Black ships a single weight (400) — see the Google Fonts link in
+   layout.tsx — so a `font-medium`/`font-bold` class on anything wearing this face is inert;
+   its heft comes from the face itself, not from font-weight. The -0.025em is the same value
+   Tailwind's `tracking-tight` emits, so headings already have it without the class.
+
+   `.display-face` exists so a non-heading can take this face without being promoted to a
+   heading it shouldn't own in the document outline (the About intro's "Aidan markets it."
+   statement is the case that needed it). One rule, so the two can't drift. */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.display-face {
+  font-family: "Archivo Black", sans-serif;
+  letter-spacing: -0.025em;
+}
+
+html::-webkit-scrollbar {
+  display: none; /* Chrome/Safari/new Edge */
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-bg);
+  color: var(--color-fg);
+}
+
+::selection {
+  background: var(--color-selection-bg);
+  color: var(--color-ink);
+}
+
+/* Universal 2px cherry focus ring, 2px offset — covers every link, button, and form field in
+   one rule instead of per-component focus overrides. */
+:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+/* Masking wrapper SplitText generates per line (see TextReveal.tsx) — required for the
+   "lines rising into place" reveal to actually clip instead of visibly sliding in. */
+.reveal-line {
+  overflow: hidden;
+}
+
+/* Legibility for light text sitting on a busy photo (HomeHero), without a background panel.
+   `text-shadow` beats `filter: drop-shadow` here — drop-shadow blurs the whole rendered glyph
+   silhouette as one shape, so busy detail behind it still shows through the blur. Layered
+   text-shadow instead stacks a crisp near-black edge (contrast boundary that reads regardless
+   of what's behind it) under a soft wide glow (evens out the background behind the letterforms). */
+.hero-text-shadow {
+  text-shadow:
+    0 1px 2px rgba(16, 10, 31, 0.9),
+    0 2px 5px rgba(16, 10, 31, 0.7),
+    0 0 12px rgba(16, 10, 31, 0.5);
+}
+
+/* The gradient half of the hero wordmark can't ride `.hero-text-shadow`: under
+   `background-clip: text` the glyphs themselves are transparent, so a text-shadow paints over
+   the clipped gradient rather than behind it and "SHAKE" reads near-black — nothing like the
+   same wordmark in the nav and footer. `filter: drop-shadow` is generated from the element's
+   already-painted output, so it sits behind the gradient and leaves the color alone. */
+.hero-gradient-shadow {
+  text-shadow: none;
+  filter:
+    drop-shadow(0 1px 2px rgba(16, 10, 31, 0.85))
+    drop-shadow(0 2px 6px rgba(16, 10, 31, 0.55));
+}
+
+/* The "Kwic Shake" wordmark, shared by the hero lockup, the nav bar, and the footer — one
+   class so all three stay in sync. TODO: swap for ITC Handel Gothic Arabic Bold if/when a
+   licensed font file is available (not on Google Fonts/Fontsource, and not something to lift
+   from an unrelated bundled product). Michroma is a free look-alike stand-in for now — same
+   squared, geometric-caps feel, single weight (400) so no font-weight override is needed. */
+.brand-wordmark {
+  font-family: "Michroma", "Archivo Black", sans-serif;
+}
+
+/* Surname in the /about founder panels. Outlined rather than filled, so the two lines of a name
+   read as one lockup with a hierarchy rather than two equal shouts. The filled `color` is the
+   fallback and stays outside the @supports block on purpose: go transparent unconditionally and
+   any engine without -webkit-text-stroke renders an invisible surname. */
+.name-outline {
+  color: var(--color-muted);
+}
+
+@supports (-webkit-text-stroke: 1px currentColor) {
+  .name-outline {
+    color: transparent;
+    -webkit-text-stroke: 1px var(--color-cherry);
+  }
+}
+
+/* Left-edge scrim for the Purpose section's dissolve graphic. Two independent axes, which is
+   why the horizontal falloff is a MASK rather than more color stops — a single linear-gradient
+   can only run one direction, so colour and fade have to be separated to vary in 2D:
+
+     vertical (background)  — starts at --color-surface, the exact background of the section
+       above, and settles into --color-bg by 45%. The top edge reads as a continuation of that
+       section rather than a new panel butted against it. Pair this with removing the bottom
+       border on the section above, or the seam is still drawn as a hard line.
+     horizontal (mask)      — opaque through the text column, gone by 50%. The handshake's
+       solid mass starts at 50.5% of the graphic's width, so the hands are never behind a veil.
+       Stops are eased, not linear: a straight ramp would be down to ~14% opacity right where
+       the last line of text sits. */
+.purpose-scrim {
+  background: linear-gradient(
+    180deg,
+    var(--color-surface) 0%,
+    color-mix(in srgb, var(--color-surface) 45%, var(--color-bg)) 20%,
+    var(--color-bg) 45%
+  );
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 1) 5%,
+    rgba(0, 0, 0, 0.96) 20%,
+    rgba(0, 0, 0, 0.84) 31%,
+    rgba(0, 0, 0, 0.58) 39%,
+    rgba(0, 0, 0, 0.26) 45%,
+    rgba(0, 0, 0, 0) 50%
+  );
+  mask-image: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 1) 5%,
+    rgba(0, 0, 0, 0.96) 20%,
+    rgba(0, 0, 0, 0.84) 31%,
+    rgba(0, 0, 0, 0.58) 39%,
+    rgba(0, 0, 0, 0.26) 45%,
+    rgba(0, 0, 0, 0) 50%
+  );
+}
+
+/* Primary CTA: the Nova accent gradient. Needs a real class (not a Tailwind bg-[var(...)]
+   utility) because --color-button-primary-bg is a background-image, and Tailwind's arbitrary
+   bg-[...] syntax emits background-color for a bare var() — which silently drops a gradient. */
+.btn-primary {
+  background-image: var(--color-button-primary-bg);
+}
+
+.btn-primary:hover {
+  background-image: none;
+  background-color: var(--color-button-primary-hover);
+  box-shadow: 0 0 24px var(--color-glow);
+}
+
+/* HomeHero's CTA: the same interaction as `.btn-primary` below (solid fill at rest, swaps to a
+   different solid fill + glow on hover) — just white instead of the gradient, so it pops against
+   the busy photo instead of blending into it. A separate class rather than reusing `.btn-primary`
+   itself since that button's rest-state gradient shouldn't change. */
+.btn-hero-white {
+  background-color: var(--color-white);
+  color: var(--color-raised);
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.btn-hero-white:hover,
+.btn-hero-white:focus-visible,
+.btn-hero-white:active {
+  background-color: var(--color-button-primary-hover);
+  color: var(--color-button-primary-text);
+  box-shadow: 0 0 24px var(--color-glow);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    scroll-behavior: auto !important;
+  }
 }

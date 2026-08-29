@@ -20,6 +20,11 @@
 # production
 /build
 
+# generic build output (Next.js writes /.next and /out above; these are here so a future
+# static export or tooling change can't accidentally commit its artifacts)
+dist/
+.astro/
+
 # misc
 .DS_Store
 *.pem
