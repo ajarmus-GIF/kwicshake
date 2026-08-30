@@ -1,6 +1,7 @@
 import { ServiceIcon } from "@/components/services/ServiceIcon";
 import { MagneticButton } from "@/components/interactive/MagneticButton";
 import { TransitionLink } from "@/components/transition/TransitionProvider";
+import { CONTACT_EMAIL } from "@/lib/site";
 
 /**
  * Compact two-row footer:
@@ -126,10 +127,10 @@ export function SiteFooter() {
               in a band of its own. `flex-1` hands it whatever space the two fixed blocks leave,
               so it centers in the gap instead of being pushed against either one. */}
           <a
-            href="mailto:info@kwicshake.com"
+            href={`mailto:${CONTACT_EMAIL}`}
             className="text-sm tracking-[0.08em] text-[var(--color-cherry)] underline decoration-[var(--color-cherry)]/35 decoration-1 underline-offset-4 transition-[text-decoration-color] duration-300 hover:decoration-[var(--color-cherry)] md:flex-1 md:text-center"
           >
-            info@kwicshake.com
+            {CONTACT_EMAIL}
           </a>
 
           <div className="md:shrink-0 md:text-right">

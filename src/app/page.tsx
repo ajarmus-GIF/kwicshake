@@ -13,6 +13,7 @@ import { MagneticButton } from "@/components/interactive/MagneticButton";
 import { TransitionLink } from "@/components/transition/TransitionProvider";
 import { projects } from "@/lib/projects";
 import { team } from "@/lib/team";
+import { CONTACT_EMAIL } from "@/lib/site";
 
 const marqueeWords = [
   "Web Design",
@@ -179,10 +180,10 @@ export default function HomePage() {
             <span className="mx-2 text-[var(--color-cherry)]">&bull;</span>
             We&apos;re still filling this page out. While we do, email{" "}
             <a
-              href="mailto:info@kwicshake.com"
+              href={`mailto:${CONTACT_EMAIL}`}
               className="text-[var(--color-cherry)] underline decoration-[var(--color-cherry)]/35 decoration-1 underline-offset-4 transition-[text-decoration-color] duration-300 hover:decoration-[var(--color-cherry)]"
             >
-              info@kwicshake.com
+              {CONTACT_EMAIL}
             </a>{" "}
             for a chance to work with us at a rate we won&apos;t be offering for long. Back us
             early and we&apos;ll make sure it pays off.

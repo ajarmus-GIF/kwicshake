@@ -1,5 +1,6 @@
 import { TextReveal } from "@/components/text/TextReveal";
 import { ContactForm } from "@/components/contact/ContactForm";
+import { CONTACT_EMAIL } from "@/lib/site";
 import { SiteHeader } from "@/components/SiteHeader";
 
 export const metadata = { title: "Contact — Kwic Shake" };
@@ -35,10 +36,10 @@ export default function ContactPage() {
           <p className="mt-16 text-sm text-[var(--color-muted)]">
             Prefer email? Reach us directly at{" "}
             <a
-              href="mailto:TODO@example.com"
+              href={`mailto:${CONTACT_EMAIL}`}
               className="text-[var(--color-fg)] underline decoration-[var(--color-cherry)] underline-offset-4 hover:text-[var(--color-cherry)]"
             >
-              TODO@example.com
+              {CONTACT_EMAIL}
             </a>
             .
           </p>
