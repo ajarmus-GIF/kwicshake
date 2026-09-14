@@ -157,8 +157,24 @@ export function TeamMemberFlow({
           </div>
         </div>
 
-        {/* The beats */}
-        <ol ref={listRef} className={panelIsRight ? "md:order-1" : ""}>
+        {/* The beats, with the client-facing framing wrapped around them.
+
+            `intro` goes ABOVE: someone landing here is deciding whether to hire this person,
+            and the sixteen personal beats below only become charming once you already know
+            what the man does. Read in the other order they're trivia about a stranger.
+
+            `inOtherWords` goes BELOW, as the last thing in the column — the compressed version
+            that survives after the details fade. It is set large and in the accent because it
+            is the only line here anyone will quote back.
+
+            Both sit outside the <ol> rather than inside it: the list may only contain <li>
+            children, and the beat-tracking GSAP code queries [data-beat] within listRef. */}
+        <div className={panelIsRight ? "md:order-1" : ""}>
+          <p className="mb-10 max-w-2xl text-base leading-relaxed text-[var(--color-muted)] sm:text-lg">
+            {member.intro}
+          </p>
+
+          <ol ref={listRef}>
           {member.beats.map((beat, index) => (
             <li
               key={beat.headline}
@@ -183,7 +199,17 @@ export function TeamMemberFlow({
               </p>
             </li>
           ))}
-        </ol>
+          </ol>
+
+          <div className="mt-12 border-t border-[var(--color-border)] pt-8">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-muted)]">
+              In other words
+            </p>
+            <p className="display-face text-[clamp(1.5rem,3.5vw,2.25rem)] leading-tight tracking-tight text-[var(--color-cherry)]">
+              {member.inOtherWords}
+            </p>
+          </div>
+        </div>
       </div>
     </section>
   );

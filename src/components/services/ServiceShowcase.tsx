@@ -243,15 +243,44 @@ export function ServiceShowcase({
           >
             {service.title}
           </TextReveal>
+          {/* Three tiers of copy under the title, and the order is the site's whole
+              ordering principle in miniature: provocation, then explanation, then the line
+              you remember.
+
+              `hook` is set larger and in the foreground colour because it has to be read —
+              it argues with something the visitor already believes ("you don't need to post
+              more"), and that argument is what makes the paragraph beneath it worth reading.
+              Demote it to body size and the band reverts to a service listing.
+
+              `description` sits muted underneath. It is the only part that describes what we
+              actually do, and it is deliberately the least prominent of the three.
+
+              `closer` is optional and rare — two of six services have one. It only exists
+              where a line genuinely lands ("You shouldn't have to be famous to be found."),
+              and giving every service one would make all six feel written to a formula. */}
           <TextReveal
             as="p"
-            className={`mb-8 text-base leading-relaxed ${
+            className="mb-5 text-[clamp(1.15rem,2.2vw,1.5rem)] font-medium leading-snug tracking-tight"
+          >
+            {service.hook}
+          </TextReveal>
+          <TextReveal
+            as="p"
+            className={`mb-6 text-base leading-relaxed ${
               raised ? "text-[var(--color-on-dark)]/60" : "text-[var(--color-muted)]"
             }`}
           >
             {service.description}
           </TextReveal>
-          <ul ref={bulletsRef} className="flex flex-wrap gap-3">
+          {service.closer && (
+            <TextReveal
+              as="p"
+              className="mb-8 text-[clamp(1rem,1.8vw,1.2rem)] leading-snug text-[var(--color-cherry)]"
+            >
+              {service.closer}
+            </TextReveal>
+          )}
+          <ul ref={bulletsRef} className="mt-2 flex flex-wrap gap-3">
             {service.bullets.map((bullet) => (
               <li
                 key={bullet}

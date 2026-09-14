@@ -3,8 +3,8 @@ import { Geist, Geist_Mono, Caveat } from "next/font/google";
 import "./globals.css";
 import { SmoothScroll } from "@/components/scroll/SmoothScroll";
 import { TransitionProvider } from "@/components/transition/TransitionProvider";
-import { Preloader } from "@/components/preloader/Preloader";
 import { SiteFooter } from "@/components/SiteFooter";
+import { TAGLINE } from "@/lib/site";
 
 // TODO: swap for real typefaces via next/font/local or next/font/google.
 const geistSans = Geist({
@@ -31,12 +31,25 @@ const caveat = Caveat({
 // whatever host served the page — the deploy preview URL rather than the real domain.
 export const metadata: Metadata = {
   metadataBase: new URL("https://kwicshake.com"),
-  title: "Kwic Shake",
-  description: "TODO — portfolio site description.",
+  title: {
+    default: `Kwic Shake — ${TAGLINE}`,
+    // Pages set a bare title (e.g. "About — Kwic Shake"); this template leaves those alone.
+    template: "%s",
+  },
+  description:
+    "You built a great business. Does your marketing show it? Kwic Shake builds websites, brands, social, and search presence that make people stop, feel something, and take the next step.",
+  openGraph: {
+    title: `Kwic Shake — ${TAGLINE}`,
+    description:
+      "A digital marketing agency for businesses that are better than they look online. Web design, brand, social, advertising, real-world marketing, and SEO — built as one connected system.",
+    url: "/",
+    siteName: "Kwic Shake",
+    type: "website",
+  },
 };
 
 // Layout mounts once for the whole app session — everything here (Lenis, the transition
-// overlay, the preloader) must be a singleton that survives client-side navigation.
+// overlay) must be a singleton that survives client-side navigation.
 // Per-route mount/unmount behavior belongs in template.tsx instead.
 //
 // SiteHeader is deliberately NOT rendered here: it needs to sit below the home page's hero
@@ -58,10 +71,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="flex min-h-full flex-col bg-[var(--color-bg)] text-[var(--color-fg)] antialiased">
         <TransitionProvider>
           <SmoothScroll>
-            <Preloader>
-              <main className="flex-1">{children}</main>
-              <SiteFooter />
-            </Preloader>
+            <main className="flex-1">{children}</main>
+            <SiteFooter />
           </SmoothScroll>
         </TransitionProvider>
       </body>

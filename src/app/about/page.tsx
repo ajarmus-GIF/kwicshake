@@ -4,10 +4,45 @@ import { TransitionLink } from "@/components/transition/TransitionProvider";
 import { ParallaxMedia } from "@/components/media/ParallaxMedia";
 import { PlaceholderMedia } from "@/components/media/PlaceholderMedia";
 import { TeamMemberFlow } from "@/components/about/TeamMemberFlow";
+import { MonologuePull } from "@/components/marketing/MonologuePull";
+import { Tagline } from "@/components/marketing/Tagline";
 import { team } from "@/lib/team";
 import { SiteHeader } from "@/components/SiteHeader";
 
-export const metadata = { title: "About — Kwic Shake" };
+export const metadata = {
+  title: "About — Kwic Shake",
+  description:
+    "Two brothers who build the marketing for businesses that are better than they look online. You talk to the people doing the work.",
+};
+
+/**
+ * ── This page is about the client, not about us ─────────────────────────────────────────────
+ *
+ * It is a page about two people, which makes it the easiest page on the site to turn into a
+ * pair of biographies nobody asked for. The discipline that prevents that: every section here
+ * answers "what does this mean for you", not "here is what we have done".
+ *
+ * The hero states an obsession rather than a history. The origin story is one frustration, and
+ * the frustration is about businesses like the reader's rather than about us. The small-agency
+ * section is the most important on the page and is phrased entirely as things that will not
+ * happen TO the reader — no handoffs, no ticket number, no meeting to schedule a meeting —
+ * because that is a real, checkable advantage where "we care about our clients" is not.
+ *
+ * The founders' personal beats (see lib/team.ts) still run in full, because the flat declarative
+ * voice in them is genuinely disarming and does more for trust than any credential list would.
+ * They are framed by each founder's `intro` above and `inOtherWords` below so they read as
+ * character rather than as trivia.
+ *
+ * ── The honesty constraint ──────────────────────────────────────────────────────────────────
+ * Nothing here is inflated. Every claim traces to a beat in lib/team.ts. No awards, no client
+ * counts, no years-in-business figure, no invented accolades.
+ */
+const wontHappen = [
+  "You won't be handed off to a salesperson.",
+  "You won't become ticket #1847.",
+  "You won't need a meeting to schedule a meeting.",
+  "You'll talk to the people actually doing the work.",
+];
 
 export default function AboutPage() {
   return (
@@ -22,37 +57,39 @@ export default function AboutPage() {
           style={{ background: "radial-gradient(circle, var(--color-glow), transparent 70%)" }}
           aria-hidden="true"
         />
-        <div className="relative">
+        <div className="relative mx-auto w-full max-w-5xl">
           <p className="mb-6 text-xs font-semibold uppercase tracking-widest text-[var(--color-cherry)]">
             + The Studio
           </p>
-          <TextReveal as="h1" className="max-w-4xl text-[clamp(2.5rem,7vw,5.5rem)] font-medium leading-[1.05] tracking-tight">
-            Two brothers.{" "}
+          <TextReveal
+            as="h1"
+            className="max-w-4xl text-[clamp(2.25rem,6vw,4.75rem)] font-medium leading-[1.04] tracking-tight"
+          >
+            <span className="block">Two brothers.</span>
+            <span className="block">One obsession:</span>
             <span
-              className="bg-clip-text text-transparent"
-              style={{ backgroundImage: "linear-gradient(90deg, var(--color-cherry), var(--color-nova-secondary))" }}
+              className="block bg-clip-text text-transparent"
+              style={{
+                backgroundImage:
+                  "linear-gradient(90deg, var(--color-cherry), var(--color-nova-secondary))",
+              }}
             >
-              One obsession.
+              Making good businesses look impossible to ignore.
             </span>
           </TextReveal>
         </div>
       </section>
 
-      {/* Intro. Built from the decoration vocabulary the rest of the page already uses —
-          nothing invented here — so it stops reading as an unstyled slab between the hero and
-          "The Team": a cherry eyebrow, a section numeral bled off the edge, one glow blob, and
-          an offset frame on the image.
-
-          The numeral is "01" and it hangs off the LEFT. "The Team" below carries "02" off the
-          right, so this both completes a sequence that previously started at 02 with nothing
-          before it, and alternates sides with it — the same left/right mirroring TeamMemberFlow
-          does band to band. Its font is set inline rather than via `.display-face` because it
-          needs `font-black` on a face that has one weight: this is decoration, not type, and
-          the inline style keeps it from being mistaken for a heading treatment. */}
-      <section className="relative overflow-hidden px-6 py-24">
+      {/* Origin. One frustration, and it is about businesses like the reader's rather than
+          about us — which is what keeps an origin story from being self-indulgent. */}
+      <section className="relative overflow-hidden px-6 py-24 sm:py-28">
         <span
           className="pointer-events-none absolute left-[-4%] top-0 select-none font-black leading-none opacity-[0.06]"
-          style={{ fontFamily: "'Archivo Black', sans-serif", fontSize: "clamp(8rem,22vw,16rem)", color: "var(--color-cherry)" }}
+          style={{
+            fontFamily: "'Archivo Black', sans-serif",
+            fontSize: "clamp(8rem,22vw,16rem)",
+            color: "var(--color-cherry)",
+          }}
           aria-hidden="true"
         >
           01
@@ -63,12 +100,10 @@ export default function AboutPage() {
           aria-hidden="true"
         />
 
-        <div className="relative mx-auto grid max-w-5xl grid-cols-1 gap-10 md:grid-cols-[1fr_1.2fr] md:items-center">
-          {/* Offset cherry frame behind the photo, down-left so it reads against the numeral
-              on that side. `-z-10` rather than DOM order alone: ParallaxMedia sets its own
-              `relative overflow-hidden`, which would otherwise paint the photo's background
-              over the frame's overlap. Hairline and 40% alpha — at full strength it competes
-              with the image instead of framing it. */}
+        <div className="relative mx-auto grid max-w-5xl grid-cols-1 gap-10 md:grid-cols-[1fr_1.2fr] md:items-center md:gap-14">
+          {/* Offset cherry frame behind the photo, down-left. `-z-10` rather than DOM order
+              alone: ParallaxMedia sets its own `relative overflow-hidden`, which would otherwise
+              paint the photo's background over the frame's overlap. */}
           <div className="relative">
             <div
               aria-hidden="true"
@@ -78,77 +113,132 @@ export default function AboutPage() {
               <PlaceholderMedia label="TODO: image" aspect="aspect-auto" className="h-full" />
             </ParallaxMedia>
           </div>
-        {/* Hook then argument.
 
-            The two declaratives wear "The Team" heading's treatment — .display-face,
-            font-medium, leading-tight, tracking-tight, second half in solid --color-cherry,
-            same `plain word + cherry <span>` shape — at roughly half its size. That heading
-            gets a full-width max-w-6xl container; this sits in the 1.2fr column of a
-            two-column grid (~33rem), where the same clamp ran to four wrapped lines and read
-            as a competing page title rather than as an intro.
-
-            `.display-face` is the load-bearing class, not decoration. Every h1-h6 gets
-            "Archivo Black" from an element rule in globals.css; this is a <p>, so without the
-            class it silently falls back to Karla and reads as a different typeface at the
-            same size, weight, and tracking. That face is also where the letter heft comes
-            from — Archivo Black has one weight, so font-medium here is inert.
-
-            Solid cherry, not the hero's cherry->nova-secondary gradient, because that is what
-            "The Team" uses — and it is also the accessible half of that pair: nova-secondary
-            is ~2.4:1 as text (see the token's contrast note in globals.css).
-
-            `whitespace-nowrap` per sentence: at this size each one clears the column on its
-            own at every width in the clamp, so the only break available is BETWEEN them.
-            Without it a mid-width viewport breaks mid-sentence and the color change lands in
-            the middle of a line, which is the one way this treatment looks like a mistake.
-            (It was correctly absent at 4.75rem — there a single sentence was wider than the
-            column, and pinning it unbreakable pushed text past the column edge.)
-
-            The pitch under it stays at body size and --color-muted; same size for both would
-            be an undifferentiated wall and the eye would have nowhere to land first.
-
-            Display type on a <p>, not a heading: the page's h1 is "Two brothers. One
-            obsession." above and its h2 is "The Team" below, and this is a statement between
-            them, not a third section title.
-
-            Second paragraph is the client's own copy, verbatim — same rule as the beats in
-            team.ts. The direct address ("you want the phone to ring") is the point; tidying
-            it into third-person agency prose is exactly what it's arguing against.
-
-            Static styled spans inside TextReveal are fine — the hero above and "The Team"
-            below both do this, and SplitText carries nested inline elements across the lines
-            it builds. What must stay out is anything React owns and re-renders or attaches
-            handlers to (an <a>, a client component); that is the constraint on the home
-            page's founders' note, and it is narrower than "plain text only".
-
-            Wrapped in a flex column rather than sitting as two grid children — the parent is
-            a two-column grid, so a bare second <p> would wrap to a new row under the image
-            instead of stacking here. */}
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-8">
             <div>
               <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-[var(--color-cherry)]">
-                + Who We Are
+                + Why We Started
               </p>
+              {/* `.display-face` is load-bearing, not decoration: every h1-h6 gets Archivo Black
+                  from an element rule in globals.css, and this is a <p>, so without the class it
+                  silently falls back to Karla at the same size and reads as a different
+                  typeface. That face is also where the letter heft comes from — Archivo Black
+                  has one weight, so font-medium here is inert. */}
               <TextReveal
                 as="p"
-                className="display-face text-[clamp(1.5rem,3vw,2.25rem)] font-medium leading-tight tracking-tight"
+                className="display-face text-[clamp(1.35rem,2.8vw,2rem)] font-medium leading-snug tracking-tight"
               >
-                <span className="whitespace-nowrap">Aidan markets it.</span>{" "}
-                <span className="whitespace-nowrap text-[var(--color-cherry)]">Jonah runs it.</span>
+                Too many genuinely good businesses{" "}
+                <span className="text-[var(--color-cherry)]">
+                  don&apos;t look like genuinely good businesses online.
+                </span>
               </TextReveal>
             </div>
-            <TextReveal as="p" className="text-base leading-relaxed text-[var(--color-muted)] sm:text-lg">
-              We&apos;re Aidan and Jonah Jarmus, two brothers who started Kwic Shake on a simple
-              belief: you want way more than just a website. You want the phone to ring. You want to
-              look like the company you&apos;ve been describing to people for years. You want to
-              stop wondering whether your marketing is working and start seeing it. So yes, we
-              build websites, but what we&apos;re really building is the version of your business
-              you&apos;ve been carrying around in your head. We handle the SEO that puts you in
-              front of the people already looking for you, the social media direction that sounds
-              like you instead of an algorithm, and a working relationship where you text us and
-              we answer. No agency runaround, no jargon, no waiting three weeks for a headline
-              change. Just the two of us, taking your business as seriously as you do, and handing
-              you back something that finally looks the part.
+
+            <TextReveal
+              as="p"
+              className="text-base leading-relaxed text-[var(--color-muted)] sm:text-lg"
+            >
+              The company might be great. The work might be great. The people might be great. But
+              none of that matters if the first impression doesn&apos;t communicate it.
+            </TextReveal>
+
+            <TextReveal as="p" className="text-lg font-medium leading-snug sm:text-xl">
+              So we built Kwic Shake to fix that.
+            </TextReveal>
+          </div>
+        </div>
+      </section>
+
+      {/* The goal, in our own words — the only place on the site where we say what we want. It
+          is phrased as three things we want FOR the reader's business, not three things we do. */}
+      <section className="relative overflow-hidden bg-[var(--color-surface)] px-6 py-28 sm:py-32">
+        <div
+          className="pointer-events-none absolute -top-1/4 left-[-12%] h-[55vw] max-h-[650px] w-[55vw] max-w-[650px] rounded-full opacity-[0.18] blur-3xl"
+          style={{ background: "radial-gradient(circle, var(--color-glow), transparent 70%)" }}
+          aria-hidden="true"
+        />
+        <div className="relative mx-auto max-w-3xl">
+          <TextReveal as="p" className="text-base leading-relaxed text-[var(--color-muted)] sm:text-lg">
+            We&apos;re not interested in creating marketing that simply checks a box. We want
+            someone to land on your site and immediately understand:
+          </TextReveal>
+
+          <TextReveal
+            as="p"
+            className="display-face mt-8 text-balance text-[clamp(1.5rem,3.6vw,2.5rem)] font-medium leading-snug tracking-tight text-[var(--color-cherry)]"
+          >
+            &ldquo;These people know what they&apos;re doing.&rdquo;
+          </TextReveal>
+
+          <div className="mt-14 space-y-4">
+            <TextReveal as="p" className="text-lg leading-snug sm:text-xl">
+              We want your customers to trust you faster.
+            </TextReveal>
+            <TextReveal as="p" className="text-lg leading-snug sm:text-xl">
+              We want your business to feel bigger.
+            </TextReveal>
+            <TextReveal as="p" className="text-lg leading-snug sm:text-xl">
+              We want your digital presence to finally match the vision you have for the company.
+            </TextReveal>
+          </div>
+
+          <TextReveal
+            as="p"
+            className="mt-12 text-[clamp(1.5rem,3.5vw,2.25rem)] font-medium leading-none"
+          >
+            That&apos;s the goal.
+          </TextReveal>
+
+          <div className="mt-20">
+            <Tagline size="sm" />
+          </div>
+        </div>
+      </section>
+
+      {/* The reader's scepticism, said out loud before we answer it. */}
+      <MonologuePull where="about" tone="raised" />
+
+      {/* ── The small-agency advantage ──────────────────────────────────────────────────────
+          The most persuasive section on this page, and the reason it is phrased as four things
+          that will NOT happen: every agency claims to care, and none of those claims are
+          checkable. "You'll talk to the people actually doing the work" is checkable on the
+          first call, which is what makes it worth saying. */}
+      <section className="relative overflow-hidden px-6 py-28 sm:py-32">
+        <div
+          className="pointer-events-none absolute -bottom-1/4 right-[-12%] h-[55vw] max-h-[650px] w-[55vw] max-w-[650px] rounded-full opacity-[0.18] blur-3xl"
+          style={{ background: "radial-gradient(circle, var(--color-glow), transparent 70%)" }}
+          aria-hidden="true"
+        />
+        <div className="relative mx-auto max-w-4xl">
+          <p className="mb-5 text-xs font-semibold uppercase tracking-widest text-[var(--color-cherry)]">
+            + What You&apos;re Actually Getting
+          </p>
+          <TextReveal
+            as="h2"
+            className="display-face text-[clamp(2rem,5.5vw,4rem)] font-medium leading-[1.06] tracking-tight"
+          >
+            You won&apos;t get lost here.
+          </TextReveal>
+
+          <ul className="mt-14 border-t border-[var(--color-border)]">
+            {wontHappen.map((line) => (
+              <li
+                key={line}
+                className="border-b border-[var(--color-border)] py-6 text-[clamp(1.15rem,2.6vw,1.6rem)] leading-snug sm:py-7"
+              >
+                {line}
+              </li>
+            ))}
+          </ul>
+
+          <div className="mt-16">
+            <TextReveal
+              as="p"
+              className="display-face text-[clamp(1.75rem,4.5vw,3rem)] font-medium leading-[1.1] tracking-tight"
+            >
+              <span className="block">Less agency.</span>
+              <span className="block text-[var(--color-cherry)]">More partnership.</span>
             </TextReveal>
           </div>
         </div>
@@ -157,7 +247,11 @@ export default function AboutPage() {
       <section className="relative overflow-hidden px-6 pb-10 pt-24">
         <span
           className="pointer-events-none absolute right-[-4%] top-0 select-none font-black leading-none opacity-[0.06]"
-          style={{ fontFamily: "'Archivo Black', sans-serif", fontSize: "clamp(8rem,22vw,16rem)", color: "var(--color-cherry)" }}
+          style={{
+            fontFamily: "'Archivo Black', sans-serif",
+            fontSize: "clamp(8rem,22vw,16rem)",
+            color: "var(--color-cherry)",
+          }}
           aria-hidden="true"
         >
           02
@@ -166,9 +260,6 @@ export default function AboutPage() {
           <p className="mb-4 text-sm font-semibold uppercase tracking-widest text-[var(--color-cherry)]">
             + Who&apos;s Behind It
           </p>
-          {/* "Team" in --color-cherry, the same accent the home page puts on "Beyond A Website"
-              and "impossible to scroll past." — the one purple in this palette that clears 4.5:1
-              as text (see the token's contrast note in globals.css). */}
           <TextReveal
             as="h2"
             className="text-[clamp(2.75rem,6.5vw,4.75rem)] font-medium leading-tight tracking-tight"
@@ -179,8 +270,7 @@ export default function AboutPage() {
       </section>
 
       {/* Each founder gets his own band, mirrored against the other: sticky name panel on one
-          side, beats streaming past on the other. See TeamMemberFlow for why this is sticky
-          rather than pinned, and why the beat counter runs even under reduced motion. */}
+          side, intro + beats + "in other words" streaming past on the other. */}
       {team.map((member, index) => (
         <TeamMemberFlow
           key={member.number}
@@ -189,7 +279,52 @@ export default function AboutPage() {
         />
       ))}
 
-      {/* Close — mirrors /services' closing CTA so the two pages bookend the same way. */}
+      {/* ── The two of us ───────────────────────────────────────────────────────────────────
+          The argument that two people is a feature. It only works after both founders have been
+          introduced, which is why it sits here rather than in the hero. */}
+      <section className="relative overflow-hidden bg-[var(--color-surface)] px-6 py-28 sm:py-32">
+        <div
+          className="pointer-events-none absolute left-1/2 top-1/3 h-[60vw] max-h-[700px] w-[60vw] max-w-[700px] -translate-x-1/2 rounded-full opacity-[0.18] blur-3xl"
+          style={{ background: "radial-gradient(circle, var(--color-glow), transparent 70%)" }}
+          aria-hidden="true"
+        />
+        <div className="relative mx-auto max-w-3xl">
+          <TextReveal
+            as="h2"
+            className="display-face text-[clamp(1.75rem,4.5vw,3rem)] font-medium leading-[1.1] tracking-tight"
+          >
+            <span className="block">Different strengths.</span>
+            <span className="block text-[var(--color-cherry)]">Same standard.</span>
+          </TextReveal>
+
+          <div className="mt-12 space-y-4">
+            <TextReveal as="p" className="text-lg leading-snug sm:text-xl">
+              One thinks about the operation.
+            </TextReveal>
+            <TextReveal as="p" className="text-lg leading-snug sm:text-xl">
+              One thinks about the experience.
+            </TextReveal>
+            <TextReveal as="p" className="text-lg leading-snug sm:text-xl">
+              Both think about the customer.
+            </TextReveal>
+          </div>
+
+          <TextReveal
+            as="p"
+            className="mt-12 text-base leading-relaxed text-[var(--color-muted)] sm:text-lg"
+          >
+            And because we&apos;re the ones building Kwic Shake, we&apos;re invested in getting it
+            right. No giant agency hierarchy. No disappearing account manager. No three-week wait
+            for a simple change. Just two brothers who care deeply about the businesses we get to
+            work with.
+          </TextReveal>
+
+          <div className="mt-20">
+            <Tagline size="lg" />
+          </div>
+        </div>
+      </section>
+
       <section className="relative overflow-hidden bg-[var(--color-raised)] px-6 py-28 text-center text-[var(--color-on-dark)] sm:py-36">
         <div
           className="pointer-events-none absolute -bottom-1/3 left-1/2 h-[60vw] max-h-[700px] w-[60vw] max-w-[700px] -translate-x-1/2 rounded-full opacity-25 blur-3xl"
@@ -199,7 +334,7 @@ export default function AboutPage() {
         <div className="relative mx-auto max-w-3xl">
           <TextReveal
             as="h2"
-            className="mb-10 text-[clamp(2.25rem,6vw,4.5rem)] font-medium leading-[1.05] tracking-tight"
+            className="mb-10 text-balance text-[clamp(2rem,5.5vw,4rem)] font-medium leading-[1.06] tracking-tight"
           >
             Curious what we&apos;d build for you?
           </TextReveal>
@@ -209,7 +344,7 @@ export default function AboutPage() {
             radius={100}
             className="btn-primary inline-flex items-center gap-2 px-8 py-4 text-sm uppercase tracking-widest text-[var(--color-button-primary-text)]"
           >
-            Start a Project
+            Start a Conversation
           </MagneticButton>
         </div>
       </section>

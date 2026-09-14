@@ -1,7 +1,7 @@
 import { ServiceIcon } from "@/components/services/ServiceIcon";
 import { MagneticButton } from "@/components/interactive/MagneticButton";
 import { TransitionLink } from "@/components/transition/TransitionProvider";
-import { CONTACT_EMAIL } from "@/lib/site";
+import { CONTACT_EMAIL, TAGLINE, DESCRIPTOR } from "@/lib/site";
 
 /**
  * Compact two-row footer:
@@ -22,11 +22,17 @@ import { CONTACT_EMAIL } from "@/lib/site";
  * "something great." is solid --color-cherry, not --gradient-shake: that gradient bottoms out
  * at #4a2f80, near-invisible on this background at heading sizes. The gradient stays on the
  * wordmark — the same .brand-wordmark treatment used in the nav bar and hero lockup.
+ *
+ * The stack under the wordmark is ordered deliberately: TAGLINE first, in the accent, at
+ * readable size — it is the brand idea and the last thing anyone reads on any page. DESCRIPTOR
+ * ("A Digital Marketing Agency") sits below it as the smallest type in the footer. That is the
+ * whole positioning decision expressed as type size: what we stand for leads, what category we
+ * file under follows. Both come from lib/site.ts rather than being typed here.
  */
 const pillars = [
   {
     label: "Strategy",
-    sub: "That Works",
+    sub: "Before The Design",
     icon: (
       <>
         <path key="arm-l" d="M12 55 L38 42" />
@@ -37,7 +43,7 @@ const pillars = [
   },
   {
     label: "Creativity",
-    sub: "That Stands Out",
+    sub: "Worth Remembering",
     icon: (
       <>
         <path key="body" d="M50 10 C64 24 67 48 59 68 L41 68 C33 48 36 24 50 10 Z" />
@@ -50,7 +56,7 @@ const pillars = [
   },
   {
     label: "Development",
-    sub: "That Performs",
+    sub: "Built To Last",
     icon: (
       <>
         <path key="bracket-l" d="M35 28 L14 50 L35 72" />
@@ -61,7 +67,7 @@ const pillars = [
   },
   {
     label: "Results",
-    sub: "That Matter",
+    sub: "Watched And Adjusted",
     icon: (
       <>
         <line key="bar-1" x1="18" y1="82" x2="18" y2="62" />
@@ -118,8 +124,11 @@ export function SiteFooter() {
                 Shake
               </span>
             </p>
+            <p className="mt-4 text-[clamp(0.95rem,1.6vw,1.15rem)] font-medium leading-none text-[var(--color-cherry)]">
+              {TAGLINE}
+            </p>
             <p className="mt-3 text-[0.65rem] uppercase tracking-[0.3em] text-[var(--color-on-dark)]/40">
-              A Digital Marketing Agency
+              {DESCRIPTOR}
             </p>
           </div>
 
@@ -143,7 +152,7 @@ export function SiteFooter() {
               href="/contact"
               className="btn-primary mt-4 inline-flex items-center rounded-full px-6 py-3 text-xs font-semibold uppercase tracking-widest text-[var(--color-button-primary-text)] transition-shadow"
             >
-              Get Your Free Consultation
+              Start a Conversation
             </MagneticButton>
           </div>
         </div>

@@ -6,13 +6,35 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { serviceIcons } from "@/components/services/serviceIcons";
 import { ServiceShowcase } from "@/components/services/ServiceShowcase";
 import { ServiceIndex } from "@/components/services/ServiceIndex";
+import { ConnectedSystem } from "@/components/services/ConnectedSystem";
+import { MonologuePull } from "@/components/marketing/MonologuePull";
+import { Tagline } from "@/components/marketing/Tagline";
 import { ScrollDrift } from "@/components/scroll/ScrollDrift";
 import { services } from "@/lib/services";
-import { GrowthFunnel } from "@/components/services/GrowthFunnel";
 
-export const metadata = { title: "Services — Kwic Shake" };
+export const metadata = {
+  title: "Services — Kwic Shake",
+  description:
+    "Web design, brand consulting, social strategy, digital advertising, real-world marketing, and SEO — built as one connected system rather than six separate line items.",
+};
 
-const beatWords = ["Strategy", "Story", "Design", "Growth", "Connection", "Craft"];
+/**
+ * ── This page explains. It does not sell. ───────────────────────────────────────────────────
+ *
+ * The home page does the emotional work; someone arriving here has already decided they want
+ * something and is now working out what they'd actually be buying. So this page is allowed to be
+ * the most concrete on the site — real deliverables, real disciplines, plainly named.
+ *
+ * What it still refuses to be is a menu. Every one of the six bands opens with an argument
+ * before it opens with a capability (see the `hook` field in lib/services.ts), and the page
+ * closes on ConnectedSystem, whose entire job is to say that buying one of these in isolation is
+ * the least valuable way to buy any of them.
+ *
+ * The pull quote sits between the six services and that closing argument on purpose: it's the
+ * moment the page stops describing itself and lets the reader hear their own reason for being
+ * here, right before it asks them to think bigger than one line item.
+ */
+const beatWords = ["Presence", "Conversation", "Identity", "Reach", "Connection", "Discovery"];
 
 export default function ServicesPage() {
   return (
@@ -37,26 +59,28 @@ export default function ServicesPage() {
         </ScrollDrift>
         <ScrollDrift from={5} to={-5} className="relative mx-auto max-w-5xl">
           <p className="mb-6 text-xs font-semibold uppercase tracking-widest text-[var(--color-cherry)]">
-            + Internet Marketing
+            + Services
           </p>
           <TextReveal
             as="h1"
-            className="max-w-4xl text-[clamp(2.75rem,7.5vw,6rem)] font-medium leading-[1.02] tracking-tight"
+            className="max-w-4xl text-[clamp(2.5rem,7vw,5.5rem)] font-medium leading-[1.02] tracking-tight"
           >
-            We don&apos;t market brands.{" "}
+            What we{" "}
             <span
               className="bg-clip-text text-transparent"
-              style={{ backgroundImage: "linear-gradient(90deg, var(--color-cherry), var(--color-nova-secondary))" }}
+              style={{
+                backgroundImage:
+                  "linear-gradient(90deg, var(--color-cherry), var(--color-nova-secondary))",
+              }}
             >
-              We make them unforgettable.
+              actually do.
             </span>
           </TextReveal>
 
           <div className="mt-10 flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
             <TextReveal as="p" className="max-w-md text-[var(--color-on-dark)]/60">
-              Web design, social, brand, paid ads, real-world touchpoints, and search —
-              built as one connected discipline, not six separate line items. Every pixel,
-              post, and positioning decision pulling in the same direction.
+              We build the pieces of your marketing so they work together. Six disciplines, one
+              system — not six invoices that never speak to each other.
             </TextReveal>
             <div className="flex flex-wrap gap-4">
               <MagneticButton
@@ -64,21 +88,23 @@ export default function ServicesPage() {
                 href="/work"
                 className="inline-flex items-center gap-2 border border-[var(--color-on-dark)] px-6 py-3 text-sm"
               >
-                View Work
+                Explore the Work
               </MagneticButton>
               <MagneticButton
                 as={TransitionLink}
                 href="/contact"
                 className="btn-primary inline-flex items-center gap-2 px-6 py-3 text-sm text-[var(--color-button-primary-text)]"
               >
-                Start a Project
+                Start a Conversation
               </MagneticButton>
             </div>
           </div>
         </ScrollDrift>
       </section>
 
-      {/* Beat — a marquee of the words that actually describe the work, not fake logos. */}
+      {/* Beat — a marquee of what each discipline is FOR, not what it's called. The six words
+          are the `kicker` values from lib/services.ts, which is what keeps this strip from
+          drifting out of sync with the six bands below it. */}
       <section className="bg-[var(--color-cherry-dark)] py-6">
         <Marquee baseDuration={20}>
           {beatWords.map((word, index) => (
@@ -92,16 +118,9 @@ export default function ServicesPage() {
         </Marquee>
       </section>
 
-      {/* Intro — replaces a white band that held one centred aphorism and nothing else. That
-          band said something true and then made you scroll past six long sections to find out
-          what any of it meant; this does the setup AND gives you a way in.
-
-          The aphorism survives as the second half of the standing copy, where it now argues for
-          something instead of floating alone.
-
-          Left column is sticky through the list on desktop: the statement stays put while the
-          six titles scroll past it, so the claim and the evidence are on screen together rather
-          than one after the other. */}
+      {/* Intro + index. Left column is sticky through the list on desktop: the claim stays put
+          while the six titles scroll past it, so the argument and the evidence are on screen
+          together rather than one after the other. */}
       <section className="relative overflow-hidden px-6 py-24 sm:py-28">
         <ScrollDrift
           from={-10}
@@ -131,9 +150,9 @@ export default function ServicesPage() {
               as="p"
               className="mt-6 max-w-sm text-base leading-relaxed text-[var(--color-muted)]"
             >
-              The internet doesn&apos;t need more content. It needs a reason to stop scrolling.
-              Everything below is built for that one job — take the piece you came for, or read
-              straight down and watch them connect.
+              Take the piece you came for, or read straight down and watch them connect. Either
+              way, none of these are things you have to learn — they&apos;re things that get
+              handled.
             </TextReveal>
           </div>
 
@@ -152,42 +171,35 @@ export default function ServicesPage() {
         />
       ))}
 
-      {/* Growth — the argument the six sections above have been building toward, and the last
-          thing before the close. Someone who has scrolled this far knows what the studio sells;
-          the open question is why they'd buy more than one line of it. So this doesn't restate
-          the services, it shows them as one machine: attention at the top, customers at the
-          bottom, each band naming which services do its work.
+      {/* The reader's own reason for being on this page, placed right before the argument that
+          they should be thinking about more than one line item. */}
+      <MonologuePull where="services" />
 
-          It replaced a flat 2x4 grid of the four value words — "Full-Funnel Thinking" and the
-          rest — which stated the pillars without ever arguing for them. The same four values
-          survive inside the bands (see growthStages in lib/services.ts); the funnel is what
-          gives each one a job. */}
+      {/* The system. Deliberately last: it only lands once all six disciplines have been met
+          individually, because its argument is that those six are one machine. */}
       <section className="relative overflow-hidden px-6 py-28 sm:py-32">
         <div
           className="pointer-events-none absolute left-1/2 top-1/3 h-[60vw] max-h-[720px] w-[60vw] max-w-[720px] -translate-x-1/2 rounded-full opacity-[0.22] blur-3xl"
           style={{ background: "radial-gradient(circle, var(--color-glow), transparent 70%)" }}
           aria-hidden="true"
         />
-        <div className="relative mx-auto mb-14 max-w-3xl text-center">
+        <div className="relative mx-auto mb-16 max-w-3xl text-center">
           <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-[var(--color-cherry)]">
             + Why It Works Together
           </p>
           <TextReveal
             as="h2"
-            className="display-face text-[clamp(1.75rem,4.5vw,3rem)] font-medium leading-tight tracking-tight"
+            className="display-face text-balance text-[clamp(1.75rem,4.5vw,3rem)] font-medium leading-tight tracking-tight"
           >
-            Six services. One job:{" "}
-            <span className="text-[var(--color-cherry)]">grow the business.</span>
-          </TextReveal>
-          <TextReveal
-            as="p"
-            className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-[var(--color-muted)] sm:text-lg"
-          >
-            Hire any one of them and you get a deliverable. Hire the studio and you get a
-            funnel that keeps working after the invoice clears.
+            Every piece of marketing should{" "}
+            <span className="text-[var(--color-cherry)]">
+              make the next piece stronger.
+            </span>
           </TextReveal>
         </div>
-        <GrowthFunnel />
+        <div className="relative px-0 sm:px-6">
+          <ConnectedSystem />
+        </div>
       </section>
 
       {/* Close — full-bleed dark band, mirrors the hero's gradient treatment for a bookend. */}
@@ -204,19 +216,14 @@ export default function ServicesPage() {
           />
         </ScrollDrift>
         <div className="relative mx-auto max-w-3xl">
-          <TextReveal
-            as="h2"
-            className="mb-10 text-[clamp(2.25rem,6vw,4.5rem)] font-medium leading-[1.05] tracking-tight"
-          >
-            Let&apos;s build something worth remembering.
-          </TextReveal>
+          <Tagline size="lg" className="mb-10" />
           <MagneticButton
             as={TransitionLink}
             href="/contact"
             radius={100}
             className="btn-primary inline-flex items-center gap-2 px-8 py-4 text-sm uppercase tracking-widest text-[var(--color-button-primary-text)]"
           >
-            Start a Project
+            Let&apos;s Figure It Out
           </MagneticButton>
         </div>
       </section>

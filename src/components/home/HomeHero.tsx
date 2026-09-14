@@ -4,21 +4,17 @@ import { useRef } from "react";
 import Image from "next/image";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap";
-import { usePreloader } from "@/components/preloader/Preloader";
 import { useReducedMotion } from "@/hooks/useMediaQuery";
 import { MagneticButton } from "@/components/interactive/MagneticButton";
 import { TransitionLink } from "@/components/transition/TransitionProvider";
 import { HeroHeader } from "@/components/home/HeroHeader";
+import { DESCRIPTOR } from "@/lib/site";
 
 /**
- * The preloader "hands off to the hero animation" concretely: this component reads
- * `usePreloader()` and only fires its entrance timeline once `ready` flips true — either
- * because the counter finished, or immediately if this session already saw the preloader (see
- * Preloader.tsx's sessionStorage check) or if it's not the very first client-rendered route.
- * Heading text itself is always in the DOM (server-rendered, real text) — only its opacity/y
- * are animated, and only once JS confirms it's running. The "Kwic Shake" wordmark rides the same
- * gate but runs its own timeline (letters falling in, then a damped wobble) instead of the shared
- * line stagger.
+ * The hero entrance timeline fires on mount. Heading text is always in the DOM (server-rendered,
+ * real text) — only its opacity/y are animated, and only once JS confirms it's running, so the
+ * copy is still readable with JS off. The "Kwic Shake" wordmark runs its own timeline (letters
+ * falling in, then a damped wobble) instead of the shared line stagger.
  *
  * The hero image itself isn't a standard vertical-drift parallax — it's a scrubbed 3D tilt:
  * as the section scrolls past, the image wrapper rotates back on its top edge (`rotateX`, with
@@ -32,7 +28,6 @@ import { HeroHeader } from "@/components/home/HeroHeader";
 const BRAND = "Kwic Shake";
 
 export function HomeHero() {
-  const ready = usePreloader();
   const scope = useRef<HTMLDivElement>(null);
   const imageWrapRef = useRef<HTMLDivElement>(null);
   const wordmarkRef = useRef<HTMLSpanElement>(null);
@@ -40,7 +35,7 @@ export function HomeHero() {
 
   useGSAP(
     () => {
-      if (ready && !prefersReducedMotion) {
+      if (!prefersReducedMotion) {
         gsap.fromTo(
           "[data-hero-line]",
           { autoAlpha: 0, y: 24 },
@@ -98,13 +93,13 @@ export function HomeHero() {
         tween.kill();
       };
     },
-    { scope, dependencies: [ready, prefersReducedMotion] }
+    { scope, dependencies: [prefersReducedMotion] }
   );
 
   return (
     <section
       ref={scope}
-      className="relative flex min-h-screen flex-col justify-center overflow-hidden px-6 py-24 text-[var(--color-on-dark)]"
+      className="relative flex min-h-screen flex-col justify-center overflow-hidden px-6 pb-24 pt-44 text-[var(--color-on-dark)] sm:pt-28"
       style={{ perspective: "1200px" }}
     >
       <div ref={imageWrapRef} className="absolute inset-0">
@@ -117,10 +112,22 @@ export function HomeHero() {
           className="object-cover"
         />
       </div>
-      {/* Light scrim, just enough to keep text legible without hiding the photo — the rest of
-          the legibility work rides on the layered text-shadow classes below (see globals.css),
-          not a background panel. */}
-      <div aria-hidden="true" className="absolute inset-0 bg-[var(--color-raised)]/20" />
+      {/* Legibility scrim, weighted toward the text column rather than flat across the frame.
+          A flat 20% wash was enough for the old three-word slogan, which sat on a quiet corner
+          of the photo; the headline is now a full question crossing the brightest part of the
+          image, and the text-shadow classes alone were not carrying it — least of all on mobile,
+          where the copy spans nearly the whole frame.
+
+          Angled at 100deg and released to fully transparent by the right edge, so the photograph
+          still reads as a photograph rather than as a tinted panel with type on it. */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0"
+        style={{
+          background:
+            "linear-gradient(100deg, color-mix(in srgb, var(--color-paper) 88%, transparent) 0%, color-mix(in srgb, var(--color-paper) 66%, transparent) 42%, color-mix(in srgb, var(--color-paper) 22%, transparent) 74%, transparent 100%)",
+        }}
+      />
 
       {/* Nav bar. Lives inside the hero rather than in page.tsx because it has to sit on top
           of the photo, and as `imageWrapRef`'s sibling rather than its child so the scroll
@@ -128,7 +135,7 @@ export function HomeHero() {
           stagger — and so tabbing into the page reaches the links before the hero CTAs. */}
       <HeroHeader />
 
-      <div className="relative max-w-xl">
+      <div className="relative max-w-3xl">
         {/* Brand lockup, not an eyebrow — deliberately NOT tagged `data-hero-line`, since it
             gets its own drop-and-wobble timeline above rather than the shared line stagger.
             Letters are split in JSX (no SplitText) because the split is fixed, known text; the
@@ -170,31 +177,41 @@ export function HomeHero() {
           data-hero-line
           className="hero-text-shadow mb-4 text-xs font-semibold uppercase tracking-widest text-[var(--color-cherry)]"
         >
-          + A Digital Marketing Agency
+          + {DESCRIPTOR}
         </p>
-        <h1 className="hero-text-shadow max-w-3xl text-[clamp(2.75rem,7.5vw,6rem)] font-medium leading-[1.02] tracking-tight">
+        {/* The hook. A question, not a claim: it hands the reader the judgement instead of
+            making it for them, and the honest answer for most visitors is "no" — which is the
+            entire reason they keep scrolling.
+
+            Sized down from the old three-word slogan's clamp (max 6rem) because this is a full
+            sentence; at that size the second line wrapped on a laptop and the colour change
+            landed mid-phrase. The two lines are the two halves of the question, so the break
+            between them is meaningful and `block` keeps it fixed. */}
+        <h1 className="hero-text-shadow max-w-4xl text-[clamp(2.25rem,5.6vw,4.5rem)] font-medium leading-[1.05] tracking-tight">
           <span data-hero-line className="block text-[var(--color-white)]">
-            Let&apos;s Go
+            You built a great business.
           </span>
           {/* Solid --color-cherry, not a gradient into --color-nova-secondary — see the
               contrast note on that token in globals.css: it's a background/button color only,
               ~2.4:1 as text, so fading into it here was the illegible part. --color-cherry is
               the one purple in this palette proven at 4.5:1+ for text. */}
           <span data-hero-line className="block text-[var(--color-cherry)]">
-            Beyond A Website
+            Does your marketing show it?
           </span>
         </h1>
         <p
           data-hero-line
           className="hero-text-shadow mt-6 max-w-md text-base text-[var(--color-on-dark)]/85 sm:text-lg"
         >
-          Web design, social strategy, and brand consulting — built to turn attention into
-          actual customers.
+          A great business can still look forgettable online. We fix the part people see
+          first.
         </p>
 
-        {/* CTA lives in the text column now, not floated off to the frame's opposite edge —
-            a primary button paired with a lighter secondary link, same pairing pattern the
-            hero on /services uses. */}
+        {/* Two CTAs, both deliberately low-pressure. The primary asks for a conversation
+            rather than a project or a quote, because the visitor this page is written for has
+            been sold to before and is scanning for the trap. The secondary sends people to the
+            proof instead — someone who isn't ready to talk should have somewhere to go that
+            isn't a form. */}
         <div data-hero-line className="mt-9 flex flex-wrap items-center gap-x-8 gap-y-4">
           <MagneticButton
             as={TransitionLink}
@@ -202,13 +219,13 @@ export function HomeHero() {
             radius={100}
             className="btn-hero-white inline-flex items-center gap-2 px-8 py-4 text-sm uppercase tracking-widest"
           >
-            Let&apos;s Chat
+            Start a Conversation
           </MagneticButton>
           <TransitionLink
             href="/work"
             className="hero-text-shadow text-sm font-semibold uppercase tracking-widest text-[var(--color-on-dark)] underline decoration-[var(--color-cherry)] underline-offset-4 transition-colors hover:text-[var(--color-cherry)]"
           >
-            View Our Work →
+            See What We&apos;ve Built →
           </TransitionLink>
         </div>
       </div>

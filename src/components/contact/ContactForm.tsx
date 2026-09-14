@@ -21,6 +21,12 @@ import { CONTACT_EMAIL, WEB3FORMS_ACCESS_KEY } from "@/lib/site";
  * `replyto` is set from the visitor's own email so hitting Reply in the inbox goes to them
  * rather than to Web3Forms. `botcheck` is Web3Forms' honeypot convention: it is hidden from
  * people, and a submission arriving with it filled is dropped as a bot.
+ *
+ * The "I'm not sure yet" option in the service select is not filler. This page's headline
+ * promises the visitor doesn't need to have everything figured out, and a required dropdown of
+ * six confident service names silently withdraws that promise at the last step — the one moment
+ * someone is most likely to close the tab. Keeping it as the first real option makes not knowing
+ * a legitimate answer rather than a gap the visitor has to bluff their way past.
  */
 export function ContactForm() {
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
@@ -63,7 +69,8 @@ export function ContactForm() {
   if (status === "sent") {
     return (
       <p className="max-w-md text-lg text-[var(--color-muted)]">
-        Got it. We&apos;re reading it right now — expect to hear from us soon.
+        Got it — that&apos;s with us now. One of us will read it properly and write back like
+        a person, not a template.
       </p>
     );
   }
@@ -95,7 +102,7 @@ export function ContactForm() {
         />
         <div className="sm:col-span-2">
           <label htmlFor="serviceInterest" className="mb-2 block text-sm text-[var(--color-muted)]">
-            What are you interested in?
+            What can we help with?
           </label>
           <select
             id="serviceInterest"
@@ -105,8 +112,9 @@ export function ContactForm() {
             className="w-full border border-[var(--color-form-border)] bg-[var(--color-form-bg)] px-4 py-3 text-base text-[var(--color-fg)] outline-none focus:border-[var(--color-form-border-focus)]"
           >
             <option value="" disabled>
-              Select a service
+              Pick whatever is closest
             </option>
+            <option value="Not sure yet">I&apos;m not sure yet — help me figure it out</option>
             {services.map((service) => (
               <option key={service.number} value={service.title}>
                 {service.title}
@@ -116,7 +124,7 @@ export function ContactForm() {
         </div>
         <div className="sm:col-span-2">
           <label htmlFor="keyFeature" className="mb-2 block text-sm text-[var(--color-muted)]">
-            What&apos;s one goal you&apos;d like our services to help you accomplish?
+            What&apos;s one thing you wish your business did better online?
           </label>
           <textarea
             id="keyFeature"
@@ -151,7 +159,7 @@ export function ContactForm() {
         radius={90}
         className="btn-primary mt-8 inline-flex items-center gap-2 px-6 py-3 text-sm text-[var(--color-button-primary-text)]"
       >
-        {status === "sending" ? "Sending…" : "Send"}
+        {status === "sending" ? "Sending…" : "Start the Conversation"}
       </MagneticButton>
     </form>
   );

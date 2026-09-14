@@ -8,6 +8,14 @@ export interface TeamMember {
   firstName: string;
   lastName: string;
   role: string;
+  /**
+   * What this person does for a client, in a paragraph. Written for someone deciding whether
+   * to hire us — the client experience — not as a biography. Every claim here is backed by a
+   * beat below; nothing is inflated into a credential we don't have.
+   */
+  intro: string;
+  /** The same paragraph compressed to one line. The part people actually remember. */
+  inOtherWords: string;
   beats: TeamBeat[];
 }
 
@@ -26,6 +34,9 @@ export const team: TeamMember[] = [
     firstName: "Jonah",
     lastName: "Jarmus",
     role: "Creative Director",
+    intro:
+      "Jonah brings the operational side of the business to the creative side. His background is in project management, business operations, leadership, and getting complicated things moving in the same direction. He's the person making sure the big idea actually becomes something real.",
+    inOtherWords: "He makes the machine work.",
     beats: [
       {
         headline: "Operations is the home base.",
@@ -69,6 +80,9 @@ export const team: TeamMember[] = [
     firstName: "Aidan",
     lastName: "Jarmus",
     role: "Lead Digital Marketer",
+    intro:
+      "Aidan has spent roughly a decade building websites and working on digital experiences. His focus sits where strategy and creativity overlap — figuring out what a business needs to say, how it should look, and how to turn attention into action. He also has a background in entrepreneurship and a passion for creative work outside of client projects.",
+    inOtherWords: "He makes people care.",
     beats: [
       {
         headline: "Ten years of website design work.",

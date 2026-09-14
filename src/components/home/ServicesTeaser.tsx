@@ -26,17 +26,18 @@ export function ServicesTeaser() {
         <div className="mb-16 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-[var(--color-cherry)]">
-              + What We Do
+              + What We Actually Do
             </p>
-            <TextReveal as="h2" className="max-w-xl text-[clamp(2rem,5vw,3.5rem)] font-medium leading-tight">
-              Six disciplines. One connected pitch.
+            <TextReveal as="h2" className="max-w-2xl text-[clamp(1.75rem,4.5vw,3rem)] font-medium leading-tight">
+              We build the pieces of your marketing{" "}
+              <span className="text-[var(--color-cherry)]">so they work together.</span>
             </TextReveal>
           </div>
           <TransitionLink
             href="/services"
             className="shrink-0 whitespace-nowrap text-sm text-[var(--color-fg)] underline decoration-[var(--color-cherry)] underline-offset-4 hover:text-[var(--color-cherry)]"
           >
-            → All Services
+            → See how they connect
           </TransitionLink>
         </div>
 
@@ -60,7 +61,11 @@ export function ServicesTeaser() {
               <h3 className="mb-3 text-xl font-medium leading-snug transition-opacity group-hover:opacity-70">
                 {service.title}
               </h3>
-              <p className="text-sm leading-relaxed text-[var(--color-muted)]">{service.description}</p>
+              {/* `hook`, not `description`. This is a teaser: the job is to make six
+                  disciplines feel like six ideas worth reading about, and a hook does that in
+                  one line where the full explanation takes five. The explanation is one click
+                  away on /services, which is where someone who wants it is already headed. */}
+              <p className="text-sm leading-relaxed text-[var(--color-muted)]">{service.hook}</p>
             </TransitionLink>
           ))}
         </div>
