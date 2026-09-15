@@ -1,21 +1,29 @@
-import { NavLinks } from "@/components/SiteHeader";
+import { MobileNav } from "@/components/MobileNav";
+import { NavLinks, navLinks } from "@/components/SiteHeader";
 import { TransitionLink } from "@/components/transition/TransitionProvider";
 
 /**
  * The home page's transparent nav, laid over the hero photo.
  *
  * Home is the one route where the real SiteHeader sits below the fold (it comes after the
- * full-height hero), so this stands in above it. It shares `NavLinks` with that header, which is
- * what stops the two bars from disagreeing when a destination is added or renamed.
+ * full-height hero), so this stands in above it. It shares `NavLinks` and `navLinks` with that
+ * header, which is what stops the two bars from disagreeing when a destination is added or
+ * renamed.
  *
- * Same two-row behaviour as SiteHeader on small screens, and for the same reason — five links
- * plus a pill plus the wordmark does not fit on a phone in one row. Here it matters slightly
- * more: this bar is absolutely positioned over the hero, so an overflowing row would push its
- * contents off the photo entirely rather than just wrapping awkwardly.
+ * Same hamburger behaviour as SiteHeader below `sm`, and for the same reason — five links plus a
+ * pill plus the wordmark does not fit on a phone in one row. Here it matters slightly more: this
+ * bar is absolutely positioned over the hero, so an overflowing row would push its contents off
+ * the photo entirely rather than just wrapping awkwardly.
  *
- * The two <nav> elements here are deliberately unlabelled: the home page renders this bar AND
- * SiteHeader, and naming both "Main" would put two identically-named navigation landmarks on one
- * page. SiteHeader owns that name; this one is found by role.
+ * The <nav> here is deliberately unlabelled: the home page renders this bar AND SiteHeader, and
+ * naming both "Main" would put two identically-named navigation landmarks on one page. SiteHeader
+ * owns that name; this one is found by role. The two MobileNav panels this page also ends up with
+ * do not repeat that problem — a closed panel is `inert`, which takes it out of the accessibility
+ * tree entirely, and only one panel can be open at a time since an open one covers the viewport.
+ *
+ * The hamburger takes a drop-shadow rather than `.hero-text-shadow`: its bars are background
+ * colour on empty spans, and a text-shadow has no glyph to attach to. `drop-shadow` filters the
+ * rendered shape, which is what actually puts an edge under the bars on a bright photo.
  *
  * `data-hero-line` puts the whole bar into the hero's entrance stagger, and its position first
  * in DOM order means it leads that stagger — and that tabbing into the page reaches the nav
@@ -36,7 +44,7 @@ export function HeroHeader() {
           <span className="brand-shake hero-gradient-shadow">Shake</span>
         </TransitionLink>
 
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-4 sm:gap-6">
           <nav className="hidden items-center gap-6 sm:flex">
             <NavLinks linkClassName="hero-text-shadow" />
           </nav>
@@ -46,12 +54,12 @@ export function HeroHeader() {
           >
             Let&apos;s Talk
           </TransitionLink>
+          <MobileNav
+            links={navLinks}
+            triggerClassName="drop-shadow-[0_2px_6px_rgba(0,0,0,0.55)]"
+          />
         </div>
       </div>
-
-      <nav className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs uppercase tracking-wide sm:hidden">
-        <NavLinks linkClassName="hero-text-shadow" />
-      </nav>
     </div>
   );
 }

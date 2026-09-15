@@ -1,31 +1,35 @@
+import { MobileNav } from "@/components/MobileNav";
 import { TransitionLink } from "@/components/transition/TransitionProvider";
 
 /**
- * Plain server-rendered nav — no client state, no animation of its own. It's the thing every
- * other pattern in this app must not break: it has to stay fully clickable/keyboard-reachable
- * through page transitions, so it deliberately does nothing clever.
+ * Server-rendered nav. It's the thing every other pattern in this app must not break: it has to
+ * stay fully clickable/keyboard-reachable through page transitions, so it deliberately does
+ * nothing clever.
  *
  * Contact is deliberately NOT in `navLinks`: it's the nav's one conversion target, so it renders
  * as a `.btn-primary` pill instead of a text link. Kept as a plain styled TransitionLink rather
  * than a MagneticButton — the magnet is a client component, and this header's whole job is to
  * stay boringly reliable through page transitions.
  *
- * ── Why the links move to a second row on mobile ────────────────────────────────────────────
+ * ── Small screens ──────────────────────────────────────────────────────────────────────────
  * A single row of five links plus a pill plus the wordmark measures roughly 440px at `text-sm`,
- * against about 352px of usable width on a 400px screen — so it overflowed, and adding /process
- * made it worse. The fix is a second row below the wordmark on small screens rather than a
- * hamburger: a disclosure would need client state (or a `<details>` element) in the one component
- * that is deliberately stateless, and it would hide the site's structure on the devices where
- * discovering it matters most. Two rows keeps every destination visible, needs no JavaScript, and
- * cannot desynchronise from page transitions.
+ * against about 352px of usable width on a 400px screen — so below `sm` the links collapse into
+ * a hamburger (see MobileNav) and only the wordmark, the pill, and the trigger stay in the bar.
  *
- * The links are rendered twice — once inline for `sm:` and up, once in the wrapped mobile row —
- * from the same `NavLinks` component, so the two can't drift.
+ * This header stays a server component regardless: MobileNav is a self-contained client island,
+ * so the only JS that ships is the disclosure itself. The `sm:`-and-up nav below is still plain
+ * server-rendered HTML with no state that could desynchronise from a page transition.
+ *
+ * The trade-off a hamburger carries is that it hides the site's structure behind a tap on exactly
+ * the devices where discovering it matters most — the earlier design wrapped the links onto a
+ * visible second row to avoid that. The hamburger is the chosen direction; if the second row is
+ * ever wanted back, it was a `sm:hidden` <nav> holding a second <NavLinks /> under this bar.
  *
  * `navLinks` is exported because the home page renders a second, transparent copy of this bar
  * over its hero (see home/HeroHeader.tsx) — home is the one route where this header sits below
  * the fold. Sharing the array is what keeps the two from drifting apart when a link is added
- * or renamed.
+ * or renamed. It is passed to MobileNav as a prop rather than imported there, so the client
+ * island never has to import from this server module.
  */
 export const navLinks = [
   { href: "/", label: "Home" },
@@ -63,7 +67,7 @@ export function SiteHeader() {
           <span className="brand-shake">Shake</span>
         </TransitionLink>
 
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-4 sm:gap-6">
           <nav aria-label="Main" className="hidden items-center gap-6 sm:flex">
             <NavLinks />
           </nav>
@@ -73,18 +77,9 @@ export function SiteHeader() {
           >
             Let&apos;s Talk
           </TransitionLink>
+          <MobileNav links={navLinks} />
         </div>
       </div>
-
-      {/* Mobile row. `aria-hidden` is deliberately NOT used on either copy: both are real,
-          reachable links and only one is displayed at a time, so hiding one from assistive tech
-          would mean hiding it on exactly the viewport where it is the visible one. */}
-      <nav
-        aria-label="Main"
-        className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs uppercase tracking-wide sm:hidden"
-      >
-        <NavLinks />
-      </nav>
     </header>
   );
 }
