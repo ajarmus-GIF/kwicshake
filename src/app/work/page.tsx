@@ -6,6 +6,8 @@ import { FeaturedCaseStudy } from "@/components/work/FeaturedCaseStudy";
 import { MonologuePull } from "@/components/marketing/MonologuePull";
 import { Tagline } from "@/components/marketing/Tagline";
 import { projects, caseStudyChapters } from "@/lib/projects";
+import { SparkField } from "@/components/atmosphere/SparkField";
+import { SystemLine } from "@/components/atmosphere/SystemLine";
 
 export const metadata = {
   title: "Work — Kwic Shake",
@@ -38,12 +40,15 @@ export default function WorkPage() {
       <SiteHeader />
 
       <section className="relative overflow-hidden bg-[var(--color-raised)] px-6 py-28 text-[var(--color-on-dark)] sm:py-32">
+
+        <SparkField variant="cluster" />
         <div
           className="pointer-events-none absolute -top-1/4 right-[-10%] h-[55vw] max-h-[700px] w-[55vw] max-w-[700px] rounded-full opacity-25 blur-3xl"
           style={{ background: "radial-gradient(circle, var(--color-glow), transparent 70%)" }}
           aria-hidden="true"
         />
         <div className="relative mx-auto max-w-5xl">
+          <SystemLine label="Compiling Case Studies" settled="ARCHIVE" className="mb-5" />
           <p className="mb-6 text-xs font-semibold uppercase tracking-widest text-[var(--color-cherry)]">
             + The Work
           </p>

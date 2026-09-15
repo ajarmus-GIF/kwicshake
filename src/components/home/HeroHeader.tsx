@@ -33,12 +33,7 @@ export function HeroHeader() {
           className="brand-wordmark hero-text-shadow tracking-tight hover:underline hover:underline-offset-4"
         >
           <span className="text-[var(--color-white)]">Kwic </span>
-          <span
-            className="hero-gradient-shadow bg-clip-text text-transparent"
-            style={{ backgroundImage: "var(--gradient-shake)" }}
-          >
-            Shake
-          </span>
+          <span className="brand-shake hero-gradient-shadow">Shake</span>
         </TransitionLink>
 
         <div className="flex items-center gap-6">

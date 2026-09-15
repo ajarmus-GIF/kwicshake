@@ -4,6 +4,8 @@ import { TransitionLink } from "@/components/transition/TransitionProvider";
 import { SiteHeader } from "@/components/SiteHeader";
 import { ProcessSteps } from "@/components/process/ProcessSteps";
 import { ScrollDrift } from "@/components/scroll/ScrollDrift";
+import { SparkField } from "@/components/atmosphere/SparkField";
+import { SystemLine } from "@/components/atmosphere/SystemLine";
 
 export const metadata = {
   title: "Process — Kwic Shake",
@@ -36,6 +38,8 @@ export default function ProcessPage() {
       <SiteHeader />
 
       <section className="relative flex min-h-[55vh] flex-col justify-center overflow-hidden bg-[var(--color-raised)] px-6 py-28 text-[var(--color-on-dark)]">
+
+        <SparkField variant="point" />
         <ScrollDrift
           from={-14}
           to={14}
@@ -49,6 +53,7 @@ export default function ProcessPage() {
         </ScrollDrift>
 
         <div className="relative mx-auto w-full max-w-5xl">
+          <SystemLine label="Loading Sequence" settled="SIX STAGES" className="mb-5" />
           <p className="mb-6 text-xs font-semibold uppercase tracking-widest text-[var(--color-cherry)]">
             + Process
           </p>

@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap";
 import { useReducedMotion } from "@/hooks/useMediaQuery";
-import { PlaceholderMedia } from "@/components/media/PlaceholderMedia";
+import { EditorialMedia } from "@/components/media/EditorialMedia";
 
 /**
  * Click the photo, the bio paragraph underneath expands. The paragraph is always in the DOM —
@@ -63,7 +63,12 @@ export function PersonReveal({ name, bio }: { name: string; bio: string }) {
         aria-expanded={isOpen}
         className="group relative block w-full text-center"
       >
-        <PlaceholderMedia label={`TODO: ${name} photo`} aspect="aspect-[3/4]" className="h-full" />
+        <EditorialMedia
+          label={`${name} — portrait, 3:4`}
+          aspect="aspect-[3/4]"
+          className="h-full"
+          sizes="(max-width: 768px) 100vw, 33vw"
+        />
         <span className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 translate-y-4 text-[clamp(3rem,8vw,6rem)] font-bold uppercase tracking-wide text-[var(--color-bg)] mix-blend-difference">
           {name}
         </span>

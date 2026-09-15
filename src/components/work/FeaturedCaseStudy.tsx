@@ -2,7 +2,7 @@ import { TextReveal } from "@/components/text/TextReveal";
 import { MagneticButton } from "@/components/interactive/MagneticButton";
 import { TransitionLink } from "@/components/transition/TransitionProvider";
 import { ParallaxMedia } from "@/components/media/ParallaxMedia";
-import { PlaceholderMedia } from "@/components/media/PlaceholderMedia";
+import { EditorialMedia } from "@/components/media/EditorialMedia";
 import type { Project } from "@/lib/projects";
 
 /**
@@ -32,10 +32,13 @@ export function FeaturedCaseStudy({ project }: { project: Project }) {
             className="pointer-events-none absolute -bottom-4 -right-4 -z-10 h-full w-full border border-[var(--color-cherry)]/40"
           />
           <ParallaxMedia rate={0.12} className="aspect-[4/3]">
-            <PlaceholderMedia
-              label={`TODO: ${project.title} cover`}
+            <EditorialMedia
+              src={project.cover}
+              alt={project.cover ? `${project.title} — ${project.summary}` : undefined}
+              label={`${project.title} — cover, 4:3`}
               aspect="aspect-auto"
               className="h-full"
+              sizes="(max-width: 768px) 100vw, 60vw"
             />
           </ParallaxMedia>
         </div>

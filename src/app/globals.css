@@ -63,10 +63,16 @@
   /* defined for future use — nothing in this app currently has an error/success UI to wire it to */
   --color-error: var(--color-nova-secondary);
 
-  /* "SHAKE" half of the wordmark — sampled from the client's own 03_kwic_shake_brand.png
-     (lightest/base/darkest purple pixels found in that graphic's lettering), reused wherever
-     the wordmark appears (hero, nav, footer) so it's a one-line change everywhere at once. */
-  --gradient-shake: linear-gradient(180deg, #9a75d4 0%, #7c54b6 50%, #4a2f80 100%);
+  /* "SHAKE" half of the wordmark — hues sampled from the client's own 03_kwic_shake_brand.png,
+     reused wherever the wordmark appears (hero, nav, footer) so it's a one-line change
+     everywhere at once.
+
+     The range is deliberately shifted UP from the raw sampled values. The original ramp ended
+     at #4a2f80, which is 1.85:1 against --color-paper — the bottom half of every letter in
+     "SHAKE" dissolved into the background, so the lockup read as "KWIC" plus a smudge on all
+     three placements. The darkest stop here is 4.73:1, the floor for the wordmark to survive
+     as a word. Keep any future restop above that ratio: this gradient is the company name. */
+  --gradient-shake: linear-gradient(180deg, #c4a0ee 0%, #a87fd8 55%, #9568cc 100%);
 
   --font-sans: "Karla", sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
@@ -169,6 +175,33 @@ body {
   font-family: "Michroma", "Archivo Black", sans-serif;
 }
 
+/* The "Shake" half of the wordmark. Previously each of the three lockups (hero, nav, footer)
+   inlined `bg-clip-text text-transparent` plus a style={{backgroundImage}} of its own — three
+   copies of one treatment, which is how the contrast regression survived in two of them after
+   being noticed in the third. One class now, so the company name renders identically
+   everywhere and a change lands in all three at once.
+
+   background-clip:text makes the glyphs themselves transparent windows onto the gradient, so
+   any text-shadow paints OVER the gradient rather than behind it. Placements needing a shadow
+   on a photo use .hero-gradient-shadow (a filter, generated from painted output) alongside
+   this — never a text-shadow. */
+.brand-shake {
+  background-image: var(--gradient-shake);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Fallback for engines without background-clip:text — without this the glyphs are transparent
+   with nothing showing through, i.e. the company name is invisible rather than merely low
+   contrast. Mirrors the same defensive ordering as .name-outline above. */
+@supports not ((-webkit-background-clip: text) or (background-clip: text)) {
+  .brand-shake {
+    background-image: none;
+    color: #a87fd8;
+  }
+}
+
 /* Surname in the /about founder panels. Outlined rather than filled, so the two lines of a name
    read as one lockup with a hierarchy rather than two equal shouts. The filled `color` is the
    fallback and stays outside the @supports block on purpose: go transparent unconditionally and
@@ -259,8 +292,144 @@ body {
   box-shadow: 0 0 24px var(--color-glow);
 }
 
+/* ── Spark layer (see components/atmosphere/SparkField.tsx) ──────────────────────────────────
+   One spark is a 1px-wide vertical sliver with a bright head fading to nothing at its tail,
+   rotated to its travel angle and translated along its own local Y. Rotating the element and
+   then translating on Y (rather than computing an x/y vector per spark) means the tail always
+   points back along the path of travel for free, at any angle.
+
+   Animated properties are transform and opacity ONLY — both compositor-friendly, neither
+   triggers layout or paint. Adding width/height/top/left to the keyframes would put this back
+   on the main thread on every frame. */
+.spark {
+  position: absolute;
+  width: 1px;
+  /* The head is the bright end. --color-cherry rather than white so the effect belongs to the
+     brand palette instead of reading as a generic dust/snow overlay. */
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--color-white) 90%, transparent) 0%,
+    color-mix(in srgb, var(--color-cherry) 70%, transparent) 30%,
+    transparent 100%
+  );
+  border-radius: 999px;
+  opacity: 0;
+  transform: rotate(var(--spark-angle)) translateY(0);
+  animation-name: spark-fall;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.75, 1);
+  animation-iteration-count: infinite;
+  will-change: transform, opacity;
+}
+
+/* The fade is deliberately asymmetric: in over the first 12%, held only briefly, then a long
+   tail-off. An even fade in/out reads as a blinking dot; this reads as something travelling
+   past and being lost. The 55%-100% dead zone is the wait before the next pass, which is what
+   keeps the field from being a constant drizzle. */
+@keyframes spark-fall {
+  0% {
+    opacity: 0;
+    transform: rotate(var(--spark-angle)) translateY(0);
+  }
+  12% {
+    opacity: var(--spark-opacity);
+  }
+  46% {
+    opacity: 0;
+  }
+  55%,
+  100% {
+    opacity: 0;
+    transform: rotate(var(--spark-angle)) translateY(var(--spark-distance));
+  }
+}
+
+/* ── Editorial media frame (see components/media/EditorialMedia.tsx) ─────────────────────────
+   The frame opens via clip-path while its inner layer releases a small overscale, so the image
+   appears to settle into the aperture instead of sliding in. Two compositor-friendly properties,
+   one class toggle, no per-frame JS.
+
+   clip-path `inset()` is the right tool rather than a translate: a translate would move the
+   image relative to its frame and break the crop the layout was designed around, whereas inset
+   shrinks the visible window and leaves the content registered exactly where it will end up. */
+.media-frame {
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path 1.05s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.media-frame[data-from="top"] {
+  clip-path: inset(100% 0 0 0);
+}
+
+.media-frame[data-from="left"] {
+  clip-path: inset(0 100% 0 0);
+}
+
+.media-frame[data-from="right"] {
+  clip-path: inset(0 0 0 100%);
+}
+
+.media-frame.is-revealed {
+  clip-path: inset(0 0 0 0);
+}
+
+/* The counter-scale. 1.06 is deliberately small — enough that the image is still moving as the
+   aperture finishes opening, not enough to read as a zoom effect of its own. Slightly slower
+   than the wipe so the settle resolves last. */
+.media-inner {
+  transform: scale(1.06);
+  transition: transform 1.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.media-frame.is-revealed .media-inner {
+  transform: scale(1);
+}
+
+/* Indicator pulse for SystemLine. Opacity-only so it composites; scaling the dot would
+   invalidate layout for its flex row on every frame. */
+.system-pulse {
+  animation: system-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes system-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.25;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     scroll-behavior: auto !important;
+  }
+
+  /* Belt and braces: SparkField already returns null under reduced motion, but a spark that
+     somehow rendered (stale hydration, a future caller adding the class directly) must not
+     animate. */
+  .spark {
+    animation: none;
+    display: none;
+  }
+
+  /* Media frames are open and static. The image still has to be VISIBLE under reduced motion —
+     this is the one reveal on the site that cannot simply be skipped, since the element it
+     reveals is content rather than decoration. */
+  .media-frame,
+  .media-frame .media-inner {
+    transition: none;
+  }
+
+  .media-frame {
+    clip-path: none;
+  }
+
+  .media-frame .media-inner {
+    transform: none;
+  }
+
+  .system-pulse {
+    animation: none;
   }
 }

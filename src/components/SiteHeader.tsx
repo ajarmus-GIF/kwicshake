@@ -60,12 +60,7 @@ export function SiteHeader() {
           className="brand-wordmark tracking-tight hover:underline hover:underline-offset-4"
         >
           <span className="text-[var(--color-white)]">Kwic </span>
-          <span
-            className="bg-clip-text text-transparent"
-            style={{ backgroundImage: "var(--gradient-shake)" }}
-          >
-            Shake
-          </span>
+          <span className="brand-shake">Shake</span>
         </TransitionLink>
 
         <div className="flex items-center gap-6">

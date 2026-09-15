@@ -19,9 +19,12 @@ import { CONTACT_EMAIL, TAGLINE, DESCRIPTOR } from "@/lib/site";
  * Pillar icons reuse the site's own stroke-drawn `ServiceIcon` language (see
  * services/serviceIcons.tsx), so they animate in and read as native rather than imported.
  *
- * "something great." is solid --color-cherry, not --gradient-shake: that gradient bottoms out
- * at #4a2f80, near-invisible on this background at heading sizes. The gradient stays on the
- * wordmark — the same .brand-wordmark treatment used in the nav bar and hero lockup.
+ * "something great." is solid --color-cherry, not --gradient-shake. That was originally
+ * because the gradient bottomed out at #4a2f80 and went near-invisible here; the gradient has
+ * since been restopped to a 4.73:1 floor (see globals.css), so this is now a composition
+ * choice rather than a workaround — one gradient wordmark per view, and in the footer that
+ * slot belongs to the company name. The wordmark uses .brand-shake, shared with the nav bar
+ * and hero lockup.
  *
  * The stack under the wordmark is ordered deliberately: TAGLINE first, in the accent, at
  * readable size — it is the brand idea and the last thing anyone reads on any page. DESCRIPTOR
@@ -117,12 +120,7 @@ export function SiteFooter() {
           <div>
             <p className="brand-wordmark text-[clamp(1.75rem,5vw,3rem)] leading-none tracking-[-0.02em]">
               <span className="text-[var(--color-white)]">Kwic </span>
-              <span
-                className="bg-clip-text text-transparent"
-                style={{ backgroundImage: "var(--gradient-shake)" }}
-              >
-                Shake
-              </span>
+              <span className="brand-shake">Shake</span>
             </p>
             <p className="mt-4 text-[clamp(0.95rem,1.6vw,1.15rem)] font-medium leading-none text-[var(--color-cherry)]">
               {TAGLINE}

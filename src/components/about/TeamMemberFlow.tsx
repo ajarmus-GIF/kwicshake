@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { useReducedMotion } from "@/hooks/useMediaQuery";
-import { PlaceholderMedia } from "@/components/media/PlaceholderMedia";
+import { EditorialMedia } from "@/components/media/EditorialMedia";
 import type { TeamMember } from "@/lib/team";
 
 /**
@@ -132,10 +132,13 @@ export function TeamMemberFlow({
             <span className="name-outline block">{member.lastName}</span>
           </h3>
 
-          <PlaceholderMedia
-            label={`TODO: ${member.firstName} photo`}
+          {/* Narrow slot (15rem cap), so the responsive hint is small at every
+              breakpoint — this never needs a half-viewport file. */}
+          <EditorialMedia
+            label={`${member.firstName} — portrait, 4:5`}
             aspect="aspect-[4/5]"
             className="mt-8 max-w-[15rem]"
+            sizes="240px"
           />
 
           {/* Progress readout: how far through this founder the reader is. */}

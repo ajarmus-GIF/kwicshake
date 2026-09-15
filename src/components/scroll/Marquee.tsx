@@ -29,9 +29,17 @@ import { useReducedMotion } from "@/hooks/useMediaQuery";
 export function Marquee({
   children,
   baseDuration = 20,
+  reverse = false,
 }: {
   children: ReactNode;
   baseDuration?: number;
+  /**
+   * Runs the loop right-to-left instead of left-to-right. Exists so two stacked bands can move
+   * against each other — opposed motion reads as a mechanism, where two rows sliding the same
+   * way just read as one thick row. Pair it with a different `baseDuration` on each row; equal
+   * speeds in opposite directions produce a distracting mirror symmetry.
+   */
+  reverse?: boolean;
 }) {
   const trackRef = useRef<HTMLDivElement>(null);
   const lenis = useLenis();
@@ -42,11 +50,19 @@ export function Marquee({
       const track = trackRef.current;
       if (!track) return;
 
-      const tl = gsap.timeline({ repeat: -1 }).to(track, {
-        xPercent: -50,
-        duration: baseDuration,
-        ease: "none",
-      });
+      // fromTo rather than to, because the reversed row has to START already shifted by half
+      // the track. Both directions are seamless for the same reason: at xPercent -50 the second
+      // (duplicate) copy sits exactly where the first began, so either endpoint is a valid wrap
+      // point.
+      const tl = gsap.timeline({ repeat: -1 }).fromTo(
+        track,
+        { xPercent: reverse ? -50 : 0 },
+        {
+          xPercent: reverse ? 0 : -50,
+          duration: baseDuration,
+          ease: "none",
+        }
+      );
 
       if (prefersReducedMotion || !lenis) return () => tl.kill();
 
@@ -65,7 +81,7 @@ export function Marquee({
         tl.kill();
       };
     },
-    { scope: trackRef, dependencies: [baseDuration, prefersReducedMotion, lenis] }
+    { scope: trackRef, dependencies: [baseDuration, reverse, prefersReducedMotion, lenis] }
   );
 
   return (

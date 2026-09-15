@@ -8,6 +8,8 @@ import { useReducedMotion } from "@/hooks/useMediaQuery";
 import { MagneticButton } from "@/components/interactive/MagneticButton";
 import { TransitionLink } from "@/components/transition/TransitionProvider";
 import { HeroHeader } from "@/components/home/HeroHeader";
+import { SparkField } from "@/components/atmosphere/SparkField";
+import { BuildText } from "@/components/text/BuildText";
 import { DESCRIPTOR } from "@/lib/site";
 
 /**
@@ -129,6 +131,13 @@ export function HomeHero() {
         }}
       />
 
+      {/* Spark layer. Deliberately a sibling of the image wrapper rather than a child: the
+          hero image is scrubbed through a 3D rotateX as the section scrolls, and parenting the
+          sparks to it would tilt their travel paths along with the photo. Sitting above the
+          scrim means they read as light in front of the image rather than light buried under a
+          purple wash. `streak` is the home page's variant and is used nowhere else. */}
+      <SparkField variant="streak" />
+
       {/* Nav bar. Lives inside the hero rather than in page.tsx because it has to sit on top
           of the photo, and as `imageWrapRef`'s sibling rather than its child so the scroll
           tilt doesn't take it along. First in DOM order so it leads the `[data-hero-line]`
@@ -148,10 +157,10 @@ export function HomeHero() {
             aria-hidden="true"
             className="brand-wordmark inline-block text-[clamp(1.75rem,4.5vw,3rem)] uppercase leading-none tracking-[0.06em]"
           >
-            {/* "Kwic" white, "Shake" the sampled brand gradient (--gradient-shake, see
-                globals.css) — split into two colored groups but still one flat character
-                stream for the fall/wobble timeline, which targets [data-hero-char] by
-                attribute regardless of which group each letter sits in. */}
+            {/* "Kwic" white, "Shake" the brand gradient via .brand-shake (see globals.css)
+                — split into two colored groups but still one flat character stream for the
+                fall/wobble timeline, which targets [data-hero-char] by attribute regardless
+                of which group each letter sits in. */}
             <span className="text-[var(--color-white)]">
               {"Kwic ".split("").map((char, index) => (
                 <span key={`kwic-${index}`} data-hero-char className="inline-block whitespace-pre">
@@ -159,12 +168,27 @@ export function HomeHero() {
                 </span>
               ))}
             </span>
-            <span
-              className="hero-gradient-shadow bg-clip-text text-transparent"
-              style={{ backgroundImage: "var(--gradient-shake)" }}
-            >
+            {/* .brand-shake goes on EACH LETTER, not on this wrapper.
+
+                background-clip:text clips the gradient to the glyphs of the element that owns
+                the background. These letters are inline-block AND transformed by the hero's
+                drop/wobble timeline, and a transformed inline-block child establishes its own
+                paint context — so a gradient clipped on this wrapper never reaches them. They
+                inherited `color: transparent` with nothing painting behind it and rendered
+                invisible, which is why the lockup read as "KWIC" with a gap after it.
+
+                Per-letter clipping is visually identical here because --gradient-shake runs
+                180deg (top to bottom): every letter gets the same vertical ramp whether the
+                gradient is clipped across the word or per glyph. It would NOT be identical for
+                a horizontal gradient — that would restart on each letter. If the gradient's
+                angle ever changes, this needs revisiting. */}
+            <span className="hero-gradient-shadow">
               {"Shake".split("").map((char, index) => (
-                <span key={`shake-${index}`} data-hero-char className="inline-block whitespace-pre">
+                <span
+                  key={`shake-${index}`}
+                  data-hero-char
+                  className="brand-shake inline-block whitespace-pre"
+                >
                   {char}
                 </span>
               ))}
@@ -173,11 +197,17 @@ export function HomeHero() {
         </p>
         {/* Eyebrow + oversized gradient-split headline: the same treatment /services uses on
             its hero (see services/page.tsx), ported here so the two hero styles match. */}
+        {/* The descriptor resolves character by character on load — the site's first and
+            quietest "this thing is being built in front of you" moment, and the only one above
+            the fold. It sits on the eyebrow rather than the H1 on purpose: the headline is the
+            emotional hook and has to be readable the instant it appears, whereas a category
+            label can afford half a second of theatre. The "+" stays static so the line has a
+            fixed left edge to resolve away from. */}
         <p
           data-hero-line
           className="hero-text-shadow mb-4 text-xs font-semibold uppercase tracking-widest text-[var(--color-cherry)]"
         >
-          + {DESCRIPTOR}
+          + <BuildText text={DESCRIPTOR} delay={700} />
         </p>
         {/* The hook. A question, not a claim: it hands the reader the judgement instead of
             making it for them, and the honest answer for most visitors is "no" — which is the

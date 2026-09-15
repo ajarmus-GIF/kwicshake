@@ -2,12 +2,13 @@ import { TextReveal } from "@/components/text/TextReveal";
 import { MagneticButton } from "@/components/interactive/MagneticButton";
 import { TransitionLink } from "@/components/transition/TransitionProvider";
 import { ParallaxMedia } from "@/components/media/ParallaxMedia";
-import { PlaceholderMedia } from "@/components/media/PlaceholderMedia";
+import { EditorialMedia } from "@/components/media/EditorialMedia";
 import { TeamMemberFlow } from "@/components/about/TeamMemberFlow";
 import { MonologuePull } from "@/components/marketing/MonologuePull";
 import { Tagline } from "@/components/marketing/Tagline";
 import { team } from "@/lib/team";
 import { SiteHeader } from "@/components/SiteHeader";
+import { SparkField } from "@/components/atmosphere/SparkField";
 
 export const metadata = {
   title: "About — Kwic Shake",
@@ -52,6 +53,7 @@ export default function AboutPage() {
       {/* Hero — same full-bleed dark band + glow + gradient headline as /services, so the two
           pages read as the same studio rather than two different templates. */}
       <section className="relative flex min-h-[60vh] flex-col justify-center overflow-hidden bg-[var(--color-raised)] px-6 py-24 text-[var(--color-on-dark)]">
+        <SparkField variant="diagonal" />
         <div
           className="pointer-events-none absolute -top-1/3 left-[-10%] h-[65vw] max-h-[850px] w-[65vw] max-w-[850px] rounded-full opacity-25 blur-3xl"
           style={{ background: "radial-gradient(circle, var(--color-glow), transparent 70%)" }}
@@ -110,7 +112,23 @@ export default function AboutPage() {
               className="pointer-events-none absolute -bottom-4 -left-4 -z-10 h-full w-full border border-[var(--color-cherry)]/40"
             />
             <ParallaxMedia rate={0.15} className="aspect-[4/3] md:aspect-[3/4]">
-              <PlaceholderMedia label="TODO: image" aspect="aspect-auto" className="h-full" />
+              {/* aspect-auto + h-full: the ParallaxMedia wrapper above already owns the
+                  ratio, and a second aspect rule here would fight it. */}
+              {/* The asset is cropped to the left half of its source frame on purpose. The
+                  right half carried a wall slogan — "INNOVATE. SCALE. IMPACT. TEAM SOLUTIONS."
+                  — which is precisely the interchangeable agency language the copy on this site
+                  argues against; lib/services.ts opens by naming what it is NOT. Letting it sit
+                  on the studio's own wall would have the picture contradict the writing. Re-crop
+                  from the source before swapping this file, or the slogan comes back. */}
+              <EditorialMedia
+                src="/images/studio-workspace.jpg"
+                alt="A desk mid-project: two monitors of work in progress, a laptop, a lamp still on."
+                label="Studio — workspace, 3:4"
+                aspect="aspect-auto"
+                className="h-full"
+                from="bottom"
+                sizes="(max-width: 768px) 100vw, 40vw"
+              />
             </ParallaxMedia>
           </div>
 

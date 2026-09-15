@@ -50,6 +50,23 @@ export interface Project {
   result: string[];
 
   tags: string[];
+
+  /**
+   * Image slots. Both optional, and both deliberately un-filled right now: no real photography
+   * or screenshots exist for this project yet, and a stock photo standing in for a client's
+   * actual website would misrepresent the work — the same reason the invented placeholder
+   * projects were deleted rather than rewritten (see the honesty rule above).
+   *
+   * Until a path is set, EditorialMedia renders its specified-but-empty frame and says what
+   * belongs there. Setting either field is the entire change needed — paths are served from
+   * /public, so "/images/revolt-cover.jpg" is the shape, and the layouts already reserve the
+   * right aspect ratio for each.
+   *
+   *   cover — 4:3, used in list and card views (home page proof slot, /work index)
+   *   hero  — 16:9 full-bleed band at the top of the case study page
+   */
+  cover?: string;
+  hero?: string;
 }
 
 export const projects: Project[] = [

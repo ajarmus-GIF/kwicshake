@@ -38,22 +38,28 @@ export function CaseStudyNarrative({ project }: { project: Project }) {
         return (
           <section
             key={chapter.key}
-            className={`relative overflow-hidden px-6 py-20 sm:py-24 ${
+            className={`relative px-6 py-20 sm:py-24 ${
               raised ? "bg-[var(--color-raised)] text-[var(--color-on-dark)]" : ""
             }`}
           >
-            <span
-              aria-hidden="true"
-              className={`pointer-events-none absolute top-4 select-none font-black leading-none text-[var(--color-cherry)]/[0.07] ${
-                raised ? "left-[-3%]" : "right-[-3%]"
-              }`}
-              style={{
-                fontFamily: "'Archivo Black', sans-serif",
-                fontSize: "clamp(6rem,16vw,12rem)",
-              }}
-            >
-              {String(index + 1).padStart(2, "0")}
-            </span>
+            {/* The oversized chapter numeral is deliberately bled off the edge (-3%), so it
+                needs clipping — but the clip has to live on this wrapper rather than on the
+                <section>, because the section also contains a md:sticky chapter label. An
+                overflow-hidden ancestor becomes the scroll container for a sticky descendant,
+                which would stop the label sticking entirely. See TeamMemberFlow.tsx. */}
+            <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+              <span
+                className={`absolute top-4 select-none font-black leading-none text-[var(--color-cherry)]/[0.07] ${
+                  raised ? "left-[-3%]" : "right-[-3%]"
+                }`}
+                style={{
+                  fontFamily: "'Archivo Black', sans-serif",
+                  fontSize: "clamp(6rem,16vw,12rem)",
+                }}
+              >
+                {String(index + 1).padStart(2, "0")}
+              </span>
+            </div>
 
             <div className="relative mx-auto grid max-w-5xl grid-cols-1 gap-8 md:grid-cols-[0.8fr_1.4fr] md:gap-14">
               <div className="md:sticky md:top-28 md:self-start">

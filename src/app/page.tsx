@@ -2,8 +2,9 @@ import { HomeHero } from "@/components/home/HomeHero";
 import { SiteHeader } from "@/components/SiteHeader";
 import { EyeCloudReveal } from "@/components/home/EyeCloudReveal";
 import { PurposeSection } from "@/components/home/PurposeSection";
-import { ServicesTeaser } from "@/components/home/ServicesTeaser";
+import { ServiceSplitScroll } from "@/components/home/ServiceSplitScroll";
 import { PossibilityList } from "@/components/home/PossibilityList";
+import { EditorialMedia } from "@/components/media/EditorialMedia";
 import { BeforeAfter } from "@/components/home/BeforeAfter";
 import { Marquee } from "@/components/scroll/Marquee";
 import { TextReveal } from "@/components/text/TextReveal";
@@ -57,13 +58,6 @@ const marqueeWords = [
   "Real-World Marketing",
 ];
 
-/** The three symptoms, in our voice — the setup that earns the visitor's own words below. */
-const symptoms = [
-  "Maybe your website feels stuck in the past.",
-  "Maybe your social media never quite sounds like you.",
-  "Maybe people find you, look around, and leave without understanding why they should care.",
-];
-
 const featured = projects[0];
 
 export default function HomePage() {
@@ -82,16 +76,13 @@ export default function HomePage() {
         tone="raised"
         support={
           <>
-            Your website is often the first interaction someone has with your business. Before
-            they contact you. Before they visit. Before they buy.{" "}
-            <span className="text-[var(--color-cherry)]">They&apos;re looking.</span>
+            How much they trust you. Before they contact you. Before they visit. Before they
+            buy. <span className="text-[var(--color-cherry)]">They&apos;re looking.</span>
           </>
         }
       >
-        People decide how much they trust you{" "}
-        <span className="text-[var(--color-cherry)]">
-          before they ever connect with you.
-        </span>
+        People decide{" "}
+        <span className="text-[var(--color-cherry)]">before they connect.</span>
       </StatementBand>
 
       {/* The conclusion of the band above, given its own air. Nothing else in this section on
@@ -117,20 +108,14 @@ export default function HomePage() {
           aria-hidden="true"
         />
 
-        <div className="relative mx-auto mb-16 max-w-3xl">
-          <p className="mb-5 text-xs font-semibold uppercase tracking-widest text-[var(--color-cherry)]">
+        {/* The three "Maybe your website feels stuck in the past."-style symptom lines were
+            removed here. They stated the problem in OUR voice immediately before the monologue
+            cards state it in the reader's — the same beat twice, and the weaker version first.
+            The eyebrow now leads straight into their own words. */}
+        <div className="relative mx-auto mb-12 max-w-3xl">
+          <p className="text-xs font-semibold uppercase tracking-widest text-[var(--color-cherry)]">
             + Sound Familiar
           </p>
-          <ul className="space-y-4">
-            {symptoms.map((line) => (
-              <li
-                key={line}
-                className="text-[clamp(1.25rem,3vw,1.9rem)] leading-snug tracking-tight"
-              >
-                {line}
-              </li>
-            ))}
-          </ul>
         </div>
 
         <MonologueGrid lines={problemMonologue} />
@@ -169,10 +154,15 @@ export default function HomePage() {
             as="h2"
             className="display-face text-balance text-[clamp(2rem,5.5vw,4rem)] font-medium leading-[1.06] tracking-tight"
           >
-            <span className="block">People don&apos;t buy because they understand.</span>
-            <span className="block text-[var(--color-cherry)]">
-              They buy because they believe.
-            </span>
+            They buy because{" "}
+            <span className="text-[var(--color-cherry)]">they believe.</span>
+          </TextReveal>
+
+          <TextReveal
+            as="p"
+            className="mx-auto mt-6 max-w-xl text-lg leading-snug text-[var(--color-muted)]"
+          >
+            Not because they understand.
           </TextReveal>
 
           <div className="mx-auto mt-14 max-w-2xl space-y-5 text-left sm:text-center">
@@ -257,13 +247,50 @@ export default function HomePage() {
             as="h2"
             className="display-face mb-14 max-w-3xl text-[clamp(1.75rem,4.5vw,3.25rem)] font-medium leading-[1.08] tracking-tight"
           >
-            Your business should feel like{" "}
+            The version{" "}
             <span className="text-[var(--color-cherry)]">
-              the version of itself you&apos;ve always pictured.
+              you&apos;ve always pictured.
             </span>
           </TextReveal>
+          <TextReveal
+            as="p"
+            className="mb-14 -mt-10 max-w-xl text-lg leading-snug text-[var(--color-muted)]"
+          >
+            Your business should feel like it.
+          </TextReveal>
 
-          <PossibilityList />
+          {/* The most earned image on the page: this section's whole subject is the reader
+              picturing a better version of their own business, and it is the one beat where a
+              picture is the argument rather than an illustration of it. Two slots at different
+              ratios and opposite wipe directions so the pair reads as a composition rather than
+              as a row of matching boxes.
+
+              The list keeps the wider column — the five lines are still what carries the beat;
+              the images support them. */}
+          <div className="grid grid-cols-1 gap-10 md:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] md:items-start md:gap-14">
+            <PossibilityList />
+
+            <div className="flex flex-col gap-5">
+              <EditorialMedia
+                src="/images/storefront-night.jpg"
+                alt="A small storefront at night, its windows the only lit thing on the street."
+                label="Client business — environment, 4:3"
+                aspect="aspect-[4/3]"
+                from="bottom"
+                sizes="(max-width: 768px) 100vw, 38vw"
+              />
+              <EditorialMedia
+                src="/images/site-on-screen.jpg"
+                alt="A laptop open in a dark room, its screen the brightest surface in the frame."
+                label="Finished site — on screen, 16:10"
+                aspect="aspect-[16/10]"
+                from="right"
+                delay={140}
+                className="md:ml-10"
+                sizes="(max-width: 768px) 100vw, 32vw"
+              />
+            </div>
+          </div>
 
           {/* The rhetorical turn. Two lines, the second correcting the first — kept out of the
               list above because it is a conclusion about all five items, not a sixth item. */}
@@ -282,12 +309,6 @@ export default function HomePage() {
             </TextReveal>
           </div>
 
-          <TextReveal
-            as="p"
-            className="display-face mt-20 max-w-3xl text-balance text-[clamp(1.5rem,3.6vw,2.5rem)] font-medium leading-snug tracking-tight"
-          >
-            Your business deserves to look as good as it actually is.
-          </TextReveal>
         </div>
       </section>
 
@@ -297,8 +318,13 @@ export default function HomePage() {
       {/* ── MECHANISM ───────────────────────────────────────────────────────────────────────
           Services appear this late on purpose. By now the reader wants an outcome; the six
           disciplines are how it gets made, which is a very different thing from a menu shown to
-          someone who hasn't decided they want anything. */}
-      <ServicesTeaser />
+          someone who hasn't decided they want anything.
+
+          This is also the page's one sticky split-screen — the single most attention-expensive
+          interaction on the site, spent here because this is the beat where six separate
+          disciplines have to read as one connected system. See ServiceSplitScroll for why there
+          is exactly one of these and why it is this section. */}
+      <ServiceSplitScroll />
 
       <BeforeAfter />
 
@@ -326,10 +352,14 @@ export default function HomePage() {
             as="h2"
             className="mb-14 max-w-3xl text-[clamp(1.75rem,4.5vw,3rem)] font-medium leading-tight"
           >
-            We don&apos;t want to show you pretty websites.{" "}
-            <span className="text-[var(--color-cherry)]">
-              We want to show you what changed.
-            </span>
+            We show you{" "}
+            <span className="text-[var(--color-cherry)]">what changed.</span>
+          </TextReveal>
+          <TextReveal
+            as="p"
+            className="mb-14 -mt-10 max-w-xl text-lg leading-snug text-[var(--color-muted)]"
+          >
+            Not pretty websites.
           </TextReveal>
 
           <FeaturedCaseStudy project={featured} />
@@ -345,16 +375,15 @@ export default function HomePage() {
               Straight from us
             </span>
             <span className="mx-2 text-[var(--color-cherry)]">&bull;</span>
-            We&apos;re early, and we&apos;d rather say so than pad this page. What we can offer
-            right now is our full attention on a small number of businesses. If that sounds like
-            the trade you want, email{" "}
+            We&apos;re early, and we&apos;d rather say so than pad this page. What we offer is
+            our full attention on a few businesses. Email{" "}
             <a
               href={`mailto:${CONTACT_EMAIL}`}
               className="text-[var(--color-cherry)] underline decoration-[var(--color-cherry)]/35 decoration-1 underline-offset-4 transition-[text-decoration-color] duration-300 hover:decoration-[var(--color-cherry)]"
             >
               {CONTACT_EMAIL}
             </a>{" "}
-            and talk to the two people who&apos;ll actually do the work.
+            and talk to the two people who&apos;ll do the work.
           </p>
         </div>
       </section>
@@ -372,7 +401,7 @@ export default function HomePage() {
             as="h2"
             className="display-face text-balance text-[clamp(1.75rem,4.5vw,3rem)] font-medium leading-tight tracking-tight"
           >
-            First, we figure out{" "}
+            First:{" "}
             <span className="text-[var(--color-cherry)]">what isn&apos;t working.</span>
           </TextReveal>
           <TextReveal
@@ -413,17 +442,49 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="bg-[var(--color-cherry-dark)] py-6">
-        <Marquee baseDuration={16}>
-          {marqueeWords.map((word, index) => (
+      {/* ── The typographic band ────────────────────────────────────────────────────────────
+          Two rows moving against each other. The upper row is the company name at display size,
+          travelling right-to-left; the lower row is the six disciplines, travelling left-to-right
+          at a different speed. Opposed motion is what makes this read as a mechanism rather than
+          as a single thick ticker, and the speed mismatch (22s against 16s) keeps the two rows
+          from settling into a mirrored rhythm.
+
+          The brand row exists for a specific reason: it is the one place on the page where the
+          full name is set large enough to be unmissable and repeated enough to be unforgettable,
+          which is precisely this band's job. It is the NAME here and not the tagline on purpose —
+          "Make them remember you." already lands twice on this page (the brand-line section and
+          the footer), and a third appearance in a loop would turn the site's one recurring idea
+          into wallpaper. See the note in lib/site.ts. */}
+      <section className="overflow-hidden bg-[var(--color-cherry-dark)] py-7">
+        <Marquee baseDuration={22} reverse>
+          {Array.from({ length: 4 }).map((_, index) => (
             <span
               key={index}
-              className="px-8 text-[clamp(1.5rem,4vw,2.5rem)] text-[var(--color-white)]/80"
+              className="brand-wordmark flex shrink-0 items-center gap-7 px-7 text-[clamp(1.75rem,4.5vw,3rem)] uppercase leading-none tracking-[0.04em] text-[var(--color-white)]"
             >
-              {word}
+              Kwic Shake
+              {/* Separator, so four repetitions read as a cadence rather than as one long
+                  run-on string. aria-hidden: the duplicate track is already hidden, but this
+                  glyph is decorative even in the visible copy. */}
+              <span aria-hidden="true" className="text-[var(--color-white)]/35">
+                &bull;
+              </span>
             </span>
           ))}
         </Marquee>
+
+        <div className="mt-4">
+          <Marquee baseDuration={16}>
+            {marqueeWords.map((word, index) => (
+              <span
+                key={index}
+                className="shrink-0 px-8 text-[clamp(1rem,2.4vw,1.5rem)] uppercase tracking-[0.12em] text-[var(--color-white)]/65"
+              >
+                {word}
+              </span>
+            ))}
+          </Marquee>
+        </div>
       </section>
 
       {/* ── ACTION ──────────────────────────────────────────────────────────────────────────
@@ -457,8 +518,8 @@ export default function HomePage() {
               as="h2"
               className="relative text-[clamp(2.25rem,6vw,4.5rem)] font-medium leading-[1.05] tracking-tight"
             >
-              Let&apos;s make you{" "}
-              <span className="text-[var(--color-cherry)]">impossible to scroll past.</span>
+              Impossible{" "}
+              <span className="text-[var(--color-cherry)]">to scroll past.</span>
             </TextReveal>
           </div>
 

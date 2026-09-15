@@ -1,4 +1,4 @@
-export interface Service {
+interface ServiceCopy {
   number: string;
   kicker: string;
   title: string;
@@ -14,6 +14,26 @@ export interface Service {
   closer?: string;
   bullets: string[];
 }
+
+/**
+ * Optional panel image for the home page's split-scroll (components/home/ServiceSplitScroll).
+ * Served from /public, so "/images/service-social-phone.jpg" is the shape.
+ *
+ * Optional because an image only belongs here when it argues the `hook` rather than decorating
+ * it — a stock desk photo under "Brand Consulting" says nothing the heading didn't. Entries
+ * without one render EditorialMedia's specified-but-empty frame, which is a designed state, so
+ * a half-filled set reads as deliberate rather than broken. Fill the rest only as images that
+ * earn their slot exist.
+ *
+ * Written as a union rather than two independent optionals so the pair cannot come apart: an
+ * image carrying an argument is content, not decoration, so it must not ship with a missing
+ * alt. `image` without `imageAlt` is a type error, which is the point.
+ */
+type ServiceImage =
+  | { image?: undefined; imageAlt?: undefined }
+  | { image: string; imageAlt: string };
+
+export type Service = ServiceCopy & ServiceImage;
 
 /**
  * The six disciplines, written transformation-first.
@@ -60,6 +80,9 @@ export const services: Service[] = [
       "You need to give people a reason to care. We help turn your business into something people actually want to follow — content direction, platform strategy, voice, and messaging that feels human instead of manufactured.",
     closer: "Because people don't connect with algorithms. They connect with people.",
     bullets: ["Platform Strategy", "Content Direction", "Voice & Tone", "Creative Concepts"],
+    image: "/images/service-social-phone.jpg",
+    imageAlt:
+      "Two hands holding a phone in the dark, the screen the only light on the person's face.",
   },
   {
     number: "03",
@@ -116,6 +139,9 @@ export const services: Service[] = [
       "Local SEO",
       "Technical Audits",
     ],
+    image: "/images/service-search-archive.jpg",
+    imageAlt:
+      "A long archive aisle of identical shelves, with a single shaft of light picking out one object.",
   },
 ];
 

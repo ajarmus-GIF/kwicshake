@@ -50,12 +50,17 @@ export function PurposeSection() {
             as="h2"
             className="hero-text-shadow text-[clamp(1.75rem,4.2vw,3rem)] font-medium leading-[1.1]"
           >
-            <span className="block text-[var(--color-white)]">
-              You already have a business to run.
-            </span>
-            <span className="block text-[var(--color-cherry)]">
-              You shouldn&apos;t have to become a marketer too.
-            </span>
+            <span className="block text-[var(--color-white)]">You have a</span>
+            <span className="block text-[var(--color-cherry)]">business to run.</span>
+          </TextReveal>
+
+          {/* The second half of the original headline. It is the argument, not the statement,
+              so it reads better one size down and directly under the claim it qualifies. */}
+          <TextReveal
+            as="p"
+            className="hero-text-shadow mt-5 max-w-lg text-lg leading-snug text-[var(--color-on-dark)]/80"
+          >
+            You shouldn&apos;t have to become a marketer too.
           </TextReveal>
 
           <ul className="mt-8 space-y-3">

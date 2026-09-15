@@ -3,7 +3,7 @@ import { TextReveal } from "@/components/text/TextReveal";
 import { MagneticButton } from "@/components/interactive/MagneticButton";
 import { TransitionLink } from "@/components/transition/TransitionProvider";
 import { ParallaxMedia } from "@/components/media/ParallaxMedia";
-import { PlaceholderMedia } from "@/components/media/PlaceholderMedia";
+import { EditorialMedia } from "@/components/media/EditorialMedia";
 import { CaseStudyNarrative } from "@/components/work/CaseStudyNarrative";
 import { Tagline } from "@/components/marketing/Tagline";
 import { getProject, projects } from "@/lib/projects";
@@ -84,10 +84,15 @@ export default async function ProjectPage({ params }: PageProps<"/work/[slug]">)
       </section>
 
       <ParallaxMedia rate={0.25} className="h-[55vh]">
-        <PlaceholderMedia
-          label={`TODO: ${project.title} hero image`}
+        {/* Full-bleed band, so `sizes` is the whole viewport — the default half-width
+            hint would have the browser fetch a file too small for the slot. */}
+        <EditorialMedia
+          src={project.hero}
+          alt={project.hero ? `${project.title} — ${project.summary}` : undefined}
+          label={`${project.title} — hero, 16:9`}
           aspect="aspect-auto"
           className="h-full"
+          sizes="100vw"
         />
       </ParallaxMedia>
 

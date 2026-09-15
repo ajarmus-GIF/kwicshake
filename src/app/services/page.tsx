@@ -11,6 +11,7 @@ import { MonologuePull } from "@/components/marketing/MonologuePull";
 import { Tagline } from "@/components/marketing/Tagline";
 import { ScrollDrift } from "@/components/scroll/ScrollDrift";
 import { services } from "@/lib/services";
+import { SparkField } from "@/components/atmosphere/SparkField";
 
 export const metadata = {
   title: "Services — Kwic Shake",
@@ -46,6 +47,7 @@ export default function ServicesPage() {
           would read as the whole band sliding, opposing ones read as depth. The copy takes the
           smaller of the two so the headline never lags noticeably behind the scroll. */}
       <section className="relative overflow-hidden bg-[var(--color-raised)] px-6 py-28 text-[var(--color-on-dark)] sm:py-36">
+        <SparkField variant="trail" />
         <ScrollDrift
           from={-14}
           to={14}
@@ -121,18 +123,23 @@ export default function ServicesPage() {
       {/* Intro + index. Left column is sticky through the list on desktop: the claim stays put
           while the six titles scroll past it, so the argument and the evidence are on screen
           together rather than one after the other. */}
-      <section className="relative overflow-hidden px-6 py-24 sm:py-28">
-        <ScrollDrift
-          from={-10}
-          to={10}
-          className="pointer-events-none absolute left-[-14%] top-0 h-[55vw] max-h-[640px] w-[55vw] max-w-[640px]"
-        >
-          <div
-            className="h-full w-full rounded-full opacity-[0.2] blur-3xl"
-            style={{ background: "radial-gradient(circle, var(--color-glow), transparent 70%)" }}
-            aria-hidden="true"
-          />
-        </ScrollDrift>
+      {/* overflow-hidden deliberately NOT on this section: it holds a md:sticky left column,
+          and an overflow-hidden ancestor would make this section the sticky scroll container,
+          so the column would never actually stick. The drifting glow is clipped by its own
+          wrapper instead. See components/about/TeamMemberFlow.tsx for the full explanation. */}
+      <section className="relative px-6 py-24 sm:py-28">
+        <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+          <ScrollDrift
+            from={-10}
+            to={10}
+            className="absolute left-[-14%] top-0 h-[55vw] max-h-[640px] w-[55vw] max-w-[640px]"
+          >
+            <div
+              className="h-full w-full rounded-full opacity-[0.2] blur-3xl"
+              style={{ background: "radial-gradient(circle, var(--color-glow), transparent 70%)" }}
+            />
+          </ScrollDrift>
+        </div>
 
         <div className="relative mx-auto grid max-w-5xl gap-12 md:grid-cols-[0.85fr_1.15fr] md:gap-16">
           <div className="md:sticky md:top-28 md:self-start">
