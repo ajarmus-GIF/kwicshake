@@ -3,27 +3,34 @@ import { NavLinks, navLinks } from "@/components/SiteHeader";
 import { TransitionLink } from "@/components/transition/TransitionProvider";
 
 /**
- * The home page's transparent nav, laid over the hero photo.
+ * The home page's nav, sitting on top of the hero photo.
  *
  * Home is the one route where the real SiteHeader sits below the fold (it comes after the
  * full-height hero), so this stands in above it. It shares `NavLinks` and `navLinks` with that
  * header, which is what stops the two bars from disagreeing when a destination is added or
  * renamed.
  *
- * Same hamburger behaviour as SiteHeader below `sm`, and for the same reason — five links plus a
- * pill plus the wordmark does not fit on a phone in one row. Here it matters slightly more: this
- * bar is absolutely positioned over the hero, so an overflowing row would push its contents off
- * the photo entirely rather than just wrapping awkwardly.
+ * ── Solid, not transparent ─────────────────────────────────────────────────────────────────
+ * This bar used to be transparent so the hero photo ran edge to edge behind it. That read as a
+ * different, floating navigation than the solid one further down the page, which is confusing
+ * when they are in fact the same set of destinations. It now carries the identical background
+ * and bottom border as SiteHeader, so scrolling past the hero doesn't appear to swap one nav
+ * for another.
+ *
+ * Because the bar is opaque, none of the `.hero-text-shadow` / `.hero-gradient-shadow`
+ * treatments apply to it any more — those exist to hold light text legible against a busy
+ * photo, and over a flat panel they only add a muddy halo. The rest of HomeHero still uses
+ * them; this header deliberately does not.
+ *
+ * Kept `absolute` rather than `sticky`: HomeHero is `overflow-hidden`, which makes it a scroll
+ * container with no scrollable overflow of its own, so a sticky child would never actually
+ * stick — it would behave exactly like this, with extra indirection.
  *
  * The <nav> here is deliberately unlabelled: the home page renders this bar AND SiteHeader, and
  * naming both "Main" would put two identically-named navigation landmarks on one page. SiteHeader
  * owns that name; this one is found by role. The two MobileNav panels this page also ends up with
  * do not repeat that problem — a closed panel is `inert`, which takes it out of the accessibility
  * tree entirely, and only one panel can be open at a time since an open one covers the viewport.
- *
- * The hamburger takes a drop-shadow rather than `.hero-text-shadow`: its bars are background
- * colour on empty spans, and a text-shadow has no glyph to attach to. `drop-shadow` filters the
- * rendered shape, which is what actually puts an edge under the bars on a bright photo.
  *
  * `data-hero-line` puts the whole bar into the hero's entrance stagger, and its position first
  * in DOM order means it leads that stagger — and that tabbing into the page reaches the nav
@@ -33,20 +40,20 @@ export function HeroHeader() {
   return (
     <div
       data-hero-line
-      className="absolute inset-x-0 top-0 z-10 px-6 py-4 text-sm font-bold text-[var(--color-on-dark)]"
+      className="absolute inset-x-0 top-0 z-10 border-b border-[var(--color-on-dark)]/20 bg-[var(--color-raised)] px-6 py-4 text-sm font-bold text-[var(--color-on-dark)]"
     >
       <div className="flex items-center justify-between gap-4">
         <TransitionLink
           href="/"
-          className="brand-wordmark hero-text-shadow tracking-tight hover:underline hover:underline-offset-4"
+          className="brand-wordmark tracking-tight hover:underline hover:underline-offset-4"
         >
           <span className="text-[var(--color-white)]">Kwic </span>
-          <span className="brand-shake hero-gradient-shadow">Shake</span>
+          <span className="brand-shake">Shake</span>
         </TransitionLink>
 
         <div className="flex items-center gap-4 sm:gap-6">
           <nav className="hidden items-center gap-6 sm:flex">
-            <NavLinks linkClassName="hero-text-shadow" />
+            <NavLinks />
           </nav>
           <TransitionLink
             href="/contact"
@@ -54,10 +61,7 @@ export function HeroHeader() {
           >
             Let&apos;s Talk
           </TransitionLink>
-          <MobileNav
-            links={navLinks}
-            triggerClassName="drop-shadow-[0_2px_6px_rgba(0,0,0,0.55)]"
-          />
+          <MobileNav links={navLinks} />
         </div>
       </div>
     </div>
