@@ -35,6 +35,22 @@ import { services } from "@/lib/services";
  * A scroll listener would recompute six getBoundingClientRect()s on every scroll event — six
  * forced layouts per frame, during the one interaction on the page that must not drop frames.
  *
+ * ── Why the panel is measured in viewport height ────────────────────────────────────────────
+ * A pinned column is only worth its cost if all of it is on screen. Built at fixed rem sizes the
+ * panel stood ~790px tall, which fits a 27" display and falls off the bottom of a 13" laptop —
+ * and the parts that fall off are the last ones, the number, the title and the progress rail,
+ * i.e. exactly the three things the panel exists to show. So the panel's own rhythm is stated in
+ * svh: the offset, the gaps, the icon, the numeral and the image cap all scale with the viewport
+ * so the whole composition lands inside it at 640px of height and still breathes at 1000px.
+ *
+ * `svh` and not `vh` — vh on mobile Safari means the *largest* viewport, the one you only get
+ * after the URL bar retracts, which would reintroduce the same overflow it is here to prevent.
+ * (The panel is desktop-only today, but the unit shouldn't be the reason that stays true.)
+ *
+ * The image is capped rather than given a fixed aspect: the frame keeps its full width and
+ * crops, because a slot that gets shorter reads as a considered crop, while one that gets
+ * narrower to preserve 4:3 reads as a thumbnail that lost an argument with the layout.
+ *
  * ── Mobile ──────────────────────────────────────────────────────────────────────────────────
  * There is no split below `md`. The sticky panel is not rendered at all, and each block carries
  * its own number, icon and title inline — the ordinary vertical list this content would have
@@ -110,10 +126,15 @@ export function ServiceSplitScroll() {
               service's number and title twice, once from a panel whose changes it cannot
               perceive. The panel is a visual restatement, so it is exposed visually only. */}
           <div aria-hidden="true" className="hidden md:block">
-            <div className="sticky top-28 self-start">
+            {/* The floor of this clamp is not arbitrary: SiteHeader is `sticky top-0` and stands
+                ~66px tall, so anything under 5rem parks the panel's first line behind it on a
+                short viewport. Ceiling is the original 7rem, which is what the composition wants
+                whenever the screen can afford it. */}
+            <div className="sticky top-[clamp(5rem,8svh,7rem)] self-start">
               <SystemLine label="Rendering Capability" settled={activeService.number} />
 
-              <div className="mt-8 flex h-24 w-24 items-center justify-center rounded-full"
+              <div
+                className="mt-[clamp(1rem,3svh,2rem)] flex aspect-square w-[clamp(3.5rem,9svh,6rem)] items-center justify-center rounded-full"
                 style={{
                   background: "color-mix(in srgb, var(--color-cherry) 10%, transparent)",
                   boxShadow: "0 0 40px var(--color-glow)",
@@ -122,7 +143,7 @@ export function ServiceSplitScroll() {
                 {/* Keyed on the active index so React swaps the element rather than mutating
                     it — that remount is what re-runs ServiceIcon's stroke-draw animation on
                     every change instead of only on first paint. */}
-                <ServiceIcon key={active} className="h-12 w-12 text-[var(--color-cherry)]">
+                <ServiceIcon key={active} className="h-1/2 w-1/2 text-[var(--color-cherry)]">
                   {serviceIcons[active]}
                 </ServiceIcon>
               </div>
@@ -141,7 +162,7 @@ export function ServiceSplitScroll() {
                 alt={activeService.imageAlt}
                 label={`${activeService.title} — 4:3`}
                 aspect="aspect-[4/3]"
-                className="mt-10"
+                className="mt-[clamp(1.25rem,3svh,2.5rem)] max-h-[26svh]"
                 from={active % 2 === 0 ? "bottom" : "left"}
                 sizes="(max-width: 1024px) 40vw, 360px"
               />
@@ -149,19 +170,19 @@ export function ServiceSplitScroll() {
               {/* The oversized number is the part that makes the panel read as "position in a
                   sequence" rather than "a card that keeps changing". tabular-nums so 01 and 06
                   occupy identical width and the title beneath never shifts sideways. */}
-              <p className="display-face mt-8 text-[clamp(2.75rem,6vw,5rem)] leading-[0.85] tabular-nums text-[var(--color-cherry)]">
+              <p className="display-face mt-[clamp(1rem,3svh,2rem)] text-[clamp(2.25rem,min(6vw,7svh),5rem)] leading-[0.85] tabular-nums text-[var(--color-cherry)]">
                 {activeService.number}
               </p>
-              <p className="mt-6 text-xs font-semibold uppercase tracking-widest text-[var(--color-muted)]">
+              <p className="mt-[clamp(0.75rem,2svh,1.5rem)] text-xs font-semibold uppercase tracking-widest text-[var(--color-muted)]">
                 {activeService.kicker}
               </p>
-              <p className="display-face mt-2 text-[clamp(1.5rem,2.6vw,2.25rem)] leading-tight">
+              <p className="display-face mt-2 text-[clamp(1.25rem,min(2.6vw,3.4svh),2.25rem)] leading-tight">
                 {activeService.title}
               </p>
 
               {/* Progress rail. Six segments, filled up to the active one — the reader's
                   answer to "how much of this is left", which a pinned section owes them. */}
-              <div className="mt-10 flex gap-1.5">
+              <div className="mt-[clamp(1rem,3svh,2.5rem)] flex gap-1.5">
                 {services.map((service, index) => (
                   <span
                     key={service.number}
