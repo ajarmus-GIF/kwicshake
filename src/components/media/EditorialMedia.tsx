@@ -30,12 +30,32 @@ import { useReducedMotion } from "@/hooks/useMediaQuery";
  * ── Why not next/image for the placeholder ──────────────────────────────────────────────────
  * There is no file to optimise. next/image with a fake src forces a remotePatterns entry and
  * emits a broken request. The placeholder is pure CSS and costs no bytes.
+ *
+ * ── Video slots ─────────────────────────────────────────────────────────────────────────────
+ * Passing `video` turns the same frame into a silent, looping clip — the frame, the hairline,
+ * the reveal and the crop discipline are unchanged, which is the point: a moving slot has to sit
+ * in a layout next to still ones without announcing itself as a different component.
+ *
+ * `src` stays required alongside it and does double duty as the poster: it is what paints before
+ * the clip has buffered, and it is the whole slot under `prefers-reduced-motion`, where the
+ * <video> is not rendered at all. Not rendering it is deliberate — a paused video element still
+ * fetches its first frames, so honouring the preference by rendering-but-not-playing would cost
+ * a reader who asked for less motion the same megabytes with none of the payoff.
+ *
+ * muted + playsInline are what make autoplay legal on iOS and in Chrome; without both, the clip
+ * silently never starts and the slot shows a frozen poster forever. There are no controls by
+ * design: this is a moving picture, not media the reader is being asked to operate.
  */
 
 export type MediaFrame = "editorial" | "soft";
 
 export function EditorialMedia({
   src,
+  /**
+   * Optional silent clip for this slot. `src` is still required when this is set — it is the
+   * poster and the reduced-motion fallback. See the note above.
+   */
+  video,
   alt,
   /** What belongs in this slot. Shown in the placeholder caption; ignored once `src` is set. */
   label = "Image",
@@ -55,6 +75,7 @@ export function EditorialMedia({
   className,
 }: {
   src?: string;
+  video?: string;
   alt?: string;
   label?: string;
   aspect?: string;
@@ -111,7 +132,25 @@ export function EditorialMedia({
       className={`media-frame ${revealed ? "is-revealed" : ""} relative overflow-hidden ${radius} ${aspect} ${className ?? ""}`}
       data-from={from}
     >
-      {src ? (
+      {video && !prefersReducedMotion ? (
+        <div className="media-inner absolute inset-0">
+          {/* role="img" because this carries the same information a photograph in this slot
+              would: it is described once, by `alt`, rather than announced as a player the
+              reader can operate. */}
+          <video
+            src={video}
+            poster={src}
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            role="img"
+            aria-label={alt}
+            className="h-full w-full object-cover"
+          />
+        </div>
+      ) : src ? (
         <div className="media-inner absolute inset-0">
           <Image
             src={src}

@@ -344,7 +344,11 @@ export default function HomePage() {
           style={{ background: "radial-gradient(circle, var(--color-glow), transparent 70%)" }}
           aria-hidden="true"
         />
-        <div className="relative mx-auto max-w-5xl">
+        {/* 6xl, not 5xl: the case-study frame below is now full width and showing a recording
+            of a real page, and 1024px was a container sized for a 4:3 card beside a paragraph.
+            The frame caps itself against viewport height, so the wider container buys size on a
+            desktop without pushing the bottom of the video off a laptop screen. */}
+        <div className="relative mx-auto max-w-6xl">
           <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-[var(--color-cherry)]">
             + The Work
           </p>
@@ -355,11 +359,14 @@ export default function HomePage() {
             We show you{" "}
             <span className="text-[var(--color-cherry)]">what changed.</span>
           </TextReveal>
+          {/* Two jobs now, where there used to be one. It still refuses the "pretty websites"
+              framing the rest of the industry leads with, and it now also tells the reader what
+              the moving frame underneath it is — a real page, running, rather than a render. */}
           <TextReveal
             as="p"
             className="mb-14 -mt-10 max-w-xl text-lg leading-snug text-[var(--color-muted)]"
           >
-            Not pretty websites.
+            Not pretty websites. The work itself, running.
           </TextReveal>
 
           <FeaturedCaseStudy project={featured} />

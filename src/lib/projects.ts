@@ -52,21 +52,37 @@ export interface Project {
   tags: string[];
 
   /**
-   * Image slots. Both optional, and both deliberately un-filled right now: no real photography
-   * or screenshots exist for this project yet, and a stock photo standing in for a client's
-   * actual website would misrepresent the work — the same reason the invented placeholder
-   * projects were deleted rather than rewritten (see the honesty rule above).
+   * Image slots. Optional, and unfilled until real work exists to put in them: a stock photo
+   * standing in for a client's actual website would misrepresent the work — the same reason the
+   * invented placeholder projects were deleted rather than rewritten (see the honesty rule
+   * above).
    *
    * Until a path is set, EditorialMedia renders its specified-but-empty frame and says what
-   * belongs there. Setting either field is the entire change needed — paths are served from
-   * /public, so "/images/revolt-cover.jpg" is the shape, and the layouts already reserve the
-   * right aspect ratio for each.
+   * belongs there. Setting a field is the entire change needed — paths are served from /public,
+   * and the layouts already reserve the right aspect ratio for each.
    *
-   *   cover — 4:3, used in list and card views (home page proof slot, /work index)
+   *   cover — 3:2, used in list and card views (home page proof slot, /work index)
    *   hero  — 16:9 full-bleed band at the top of the case study page
    */
   cover?: string;
   hero?: string;
+
+  /**
+   * Optional silent clip for the cover slot — the live site moving, rather than a still of it.
+   * `cover` is required alongside it: it is the poster, and it is the entire slot for a reader
+   * who has asked for reduced motion (see components/media/EditorialMedia.tsx).
+   *
+   * Worth the bytes only for work whose point is motion. The still is the default; this is the
+   * exception, and one exception per site is about right.
+   */
+  coverVideo?: string;
+
+  /**
+   * The line printed under the cover frame. Worth setting whenever the cover is a recording:
+   * without it the reader has to work out for themselves whether they are looking at the
+   * client's live site or at something we mocked up, and that answer is the reason it's there.
+   */
+  coverCaption?: string;
 }
 
 export const projects: Project[] = [
@@ -105,6 +121,15 @@ export const projects: Project[] = [
     ],
 
     tags: ["Positioning", "Brand", "Web"],
+
+    // Their hero, running. A still of this page is a picture of a headline; the recording shows
+    // the thing the headline sits on top of — footage of their own players — which is the part
+    // a parent reads as "this program is real". Cropped to the page: the recording was taken in
+    // a browser window, and the tabs and bookmarks bar around it belong to whoever hit record,
+    // not to the client's work.
+    cover: "/images/revolt-cover.jpg",
+    coverVideo: "/video/revolt-home.mp4",
+    coverCaption: "Revolt Lacrosse — the live home page, recorded from the browser. Not a mockup.",
   },
 ];
 
