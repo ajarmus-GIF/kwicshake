@@ -63,6 +63,10 @@
   /* defined for future use — nothing in this app currently has an error/success UI to wire it to */
   --color-error: var(--color-nova-secondary);
 
+  /* Wrong-answer red for the home page credibility guess (CredibilityGuess.tsx). The palette has
+     no red; this one is ~6:1 against --color-paper so it holds up as text too. */
+  --color-miss: #ff5d73;
+
   /* "SHAKE" half of the wordmark — hues sampled from the client's own 03_kwic_shake_brand.png,
      reused wherever the wordmark appears (hero, nav, footer) so it's a one-line change
      everywhere at once.
@@ -430,6 +434,44 @@ body {
   }
 
   .system-pulse {
+    animation: none;
+  }
+}
+
+/* Credibility guess (CredibilityGuess.tsx): the wrong-answer fill blinks red twice before it
+   slides to the real answer, and the result line rises in once it's known. Both drop to a static
+   state under reduced motion; the red fill alone still says "wrong". */
+@keyframes credibility-miss-flash {
+  0%,
+  50%,
+  100% {
+    opacity: 1;
+  }
+  25%,
+  75% {
+    opacity: 0.25;
+  }
+}
+
+.credibility-miss {
+  animation: credibility-miss-flash 0.6s steps(1, end);
+  box-shadow: 0 0 18px color-mix(in srgb, var(--color-miss) 60%, transparent);
+}
+
+@keyframes credibility-result-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+.credibility-result {
+  animation: credibility-result-in 0.45s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .credibility-miss,
+  .credibility-result {
     animation: none;
   }
 }

@@ -1,6 +1,7 @@
 import { HomeHero } from "@/components/home/HomeHero";
 import { SiteHeader } from "@/components/SiteHeader";
 import { EyeCloudReveal } from "@/components/home/EyeCloudReveal";
+import { CredibilityGuess } from "@/components/home/CredibilityGuess";
 import { PurposeSection } from "@/components/home/PurposeSection";
 import { ServiceSplitScroll } from "@/components/home/ServiceSplitScroll";
 import { PossibilityList } from "@/components/home/PossibilityList";
@@ -85,9 +86,17 @@ export default function HomePage() {
         <span className="text-[var(--color-cherry)]">before they connect.</span>
       </StatementBand>
 
-      {/* The conclusion of the band above, given its own air. Nothing else in this section on
-          purpose — it is the kind of line that only works if the reader has a second to sit
-          with it, and any supporting copy would immediately explain it into a platitude. */}
+      {/* The band's claim, made for the reader to prove to themselves: they guess the stat
+          before they're told it. Same raised ground as the band on purpose, and no top padding
+          (the band's own bottom padding is the gap), so the two read as one section rather than
+          breaking the ground alternation. StatementBand itself stays one statement, no slots. */}
+      <section className="relative bg-[var(--color-raised)] px-6 pb-28 text-[var(--color-on-dark)] sm:pb-36">
+        <CredibilityGuess />
+      </section>
+
+      {/* The conclusion of the band above, given its own air. The only support it gets is a
+          number, not an explanation: "50 milliseconds" makes the line concrete without talking
+          it into a platitude, and the quiet last line turns it from a warning into our job. */}
       <section className="relative overflow-hidden px-6 py-24 text-center sm:py-28">
         <TextReveal
           as="p"
@@ -95,6 +104,21 @@ export default function HomePage() {
         >
           Your first impression is{" "}
           <span className="text-[var(--color-cherry)]">already marketing.</span>
+        </TextReveal>
+        <TextReveal
+          as="p"
+          delay={0.15}
+          className="mx-auto mt-12 max-w-2xl text-balance text-[clamp(1.25rem,2.6vw,1.75rem)] leading-snug text-[var(--color-on-dark)]"
+        >
+          <span className="display-face text-[var(--color-cherry)]">50 milliseconds</span> is
+          all it takes.
+        </TextReveal>
+        <TextReveal
+          as="p"
+          delay={0.3}
+          className="mx-auto mt-4 max-w-md text-base text-[var(--color-muted)]"
+        >
+          We have to start with a good impression.
         </TextReveal>
       </section>
 
