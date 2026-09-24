@@ -15,3 +15,23 @@
 # package.json. It is what turns Next's server output into Netlify functions.
 [[plugins]]
   package = "@netlify/plugin-nextjs"
+
+# Static media gets a real cache lifetime. Netlify's default for files served out of the publish
+# directory is `max-age=0, must-revalidate`, which costs a conditional request per asset per
+# visit — cheap in bytes (a 304), not free in round trips, and the cover clip is the one asset
+# where a needless round trip is felt.
+#
+# A week rather than a year with `immutable`, because these paths are stable names, not
+# content-hashed ones: replacing revolt-home.mp4 with a new cut keeps the same URL. `stale-while-
+# revalidate` means the day after expiry is still served instantly while the refresh happens
+# behind it. Next's own /_next/static/* is content-hashed and already immutable for a year;
+# nothing here touches that.
+[[headers]]
+  for = "/video/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800, stale-while-revalidate=86400"
+
+[[headers]]
+  for = "/images/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800, stale-while-revalidate=86400"
