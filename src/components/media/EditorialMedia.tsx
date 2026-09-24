@@ -45,6 +45,18 @@ import { useReducedMotion } from "@/hooks/useMediaQuery";
  * muted + playsInline are what make autoplay legal on iOS and in Chrome; without both, the clip
  * silently never starts and the slot shows a frozen poster forever. There are no controls by
  * design: this is a moving picture, not media the reader is being asked to operate.
+ *
+ * ── The clip's bytes are not spent until someone is about to see them ───────────────────────
+ * The <video> renders with its poster from the first paint but without a `src`, and only picks
+ * one up when a second observer says the frame is within 400px of the viewport. A clip is
+ * megabytes where the rest of a page is kilobytes — a 4.7MB cover on a page whose entire
+ * remaining weight is 340KB — and it sits well below the fold, so paying for it on load means
+ * charging every visitor who bounces from the hero for something they never reached. `preload`
+ * and `autoplay` alone do not give this guarantee: they leave the timing to a heuristic that
+ * varies by browser, by connection type, and by whether the tab is backgrounded.
+ *
+ * 400px, not 0: the fetch wants a head start so the clip is moving by the time the frame is
+ * actually on screen, and that is about one flick of a trackpad at reading speed.
  */
 
 export type MediaFrame = "editorial" | "soft";
@@ -87,7 +99,11 @@ export function EditorialMedia({
   className?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const [revealed, setRevealed] = useState(false);
+  // Latched: once the clip has been asked for, it keeps its src. Scrolling back past the frame
+  // must not tear the source out from under a playing video.
+  const [videoRequested, setVideoRequested] = useState(false);
   const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
@@ -124,6 +140,31 @@ export function EditorialMedia({
     };
   }, [delay, prefersReducedMotion]);
 
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || !video || prefersReducedMotion || videoRequested) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        observer.disconnect();
+        setVideoRequested(true);
+      },
+      { rootMargin: "400px 0px" }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [video, prefersReducedMotion, videoRequested]);
+
+  // `autoplay` fires on a <video> that has a source at parse time; this one acquires its source
+  // later, so playback is started by hand. The rejection is expected and ignored — a browser
+  // that refuses autoplay leaves the poster up, which is a correct-looking frame either way.
+  useEffect(() => {
+    if (!videoRequested) return;
+    videoRef.current?.play().catch(() => {});
+  }, [videoRequested]);
+
   const radius = frame === "soft" ? "rounded-2xl" : "rounded-none";
 
   return (
@@ -138,13 +179,14 @@ export function EditorialMedia({
               would: it is described once, by `alt`, rather than announced as a player the
               reader can operate. */}
           <video
-            src={video}
+            ref={videoRef}
+            src={videoRequested ? video : undefined}
             poster={src}
             autoPlay
             muted
             loop
             playsInline
-            preload="metadata"
+            preload="none"
             role="img"
             aria-label={alt}
             className="h-full w-full object-cover"
