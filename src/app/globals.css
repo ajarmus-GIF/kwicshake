@@ -475,3 +475,37 @@ body {
     animation: none;
   }
 }
+
+/* 50ms test (FiftyMsTest.tsx): each countdown number punches in, and the closing title pops. */
+@keyframes fifty-count-in {
+  from {
+    opacity: 0;
+    transform: scale(1.6);
+  }
+}
+
+.fifty-count {
+  animation: fifty-count-in 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes fifty-title-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.06);
+  }
+}
+
+.fifty-title-pop {
+  animation: fifty-title-pop 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fifty-count,
+  .fifty-title-pop {
+    animation: none;
+  }
+}

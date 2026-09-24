@@ -2,6 +2,7 @@ import { HomeHero } from "@/components/home/HomeHero";
 import { SiteHeader } from "@/components/SiteHeader";
 import { EyeCloudReveal } from "@/components/home/EyeCloudReveal";
 import { CredibilityGuess } from "@/components/home/CredibilityGuess";
+import { FiftyMsTest } from "@/components/home/FiftyMsTest";
 import { PurposeSection } from "@/components/home/PurposeSection";
 import { ServiceSplitScroll } from "@/components/home/ServiceSplitScroll";
 import { PossibilityList } from "@/components/home/PossibilityList";
@@ -96,7 +97,8 @@ export default function HomePage() {
 
       {/* The conclusion of the band above, given its own air. The only support it gets is a
           number, not an explanation: "50 milliseconds" makes the line concrete without talking
-          it into a platitude, and the quiet last line turns it from a warning into our job. */}
+          it into a platitude, and the quiet last line turns it from a warning into our job. The
+          50ms test under it lets the reader feel the number instead of taking our word for it. */}
       <section className="relative overflow-hidden px-6 py-24 text-center sm:py-28">
         <TextReveal
           as="p"
@@ -120,6 +122,7 @@ export default function HomePage() {
         >
           We have to start with a good impression.
         </TextReveal>
+        <FiftyMsTest />
       </section>
 
       {/* ── PROBLEM ─────────────────────────────────────────────────────────────────────────
