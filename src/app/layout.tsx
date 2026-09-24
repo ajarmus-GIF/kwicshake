@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Caveat } from "next/font/google";
+import { Geist, Geist_Mono, Caveat, Archivo_Black, Karla } from "next/font/google";
 import "./globals.css";
 import { SmoothScroll } from "@/components/scroll/SmoothScroll";
 import { TransitionProvider } from "@/components/transition/TransitionProvider";
@@ -23,6 +23,32 @@ const caveat = Caveat({
   variable: "--font-quote",
   subsets: ["latin"],
   weight: "700",
+});
+
+// The two faces the site actually reads in. Both used to arrive through a stylesheet <link> to
+// fonts.googleapis.com in <head>, which is the worst available way to load a webfont: it is
+// render-blocking, and it blocks on a *third-party* origin, so first paint waited on a DNS
+// lookup, a TLS handshake and a CSS round trip before the browser even learned which .woff2
+// files it needed — then paid a second handshake to fonts.gstatic.com to fetch them.
+//
+// next/font downloads both at build time and serves them from this origin, hashed and
+// immutable, with a <link rel=preload> emitted in the same document that needs them. No
+// third-party connection, no blocking stylesheet, and no layout shift: `display: "swap"` plus
+// Next's generated fallback metrics keep the pre-swap text at the same measure.
+//
+// Archivo Black ships a single weight, so it is declared as one. Karla is a variable font and
+// takes the full 400-700 range the design uses, at one file rather than three.
+const archivoBlack = Archivo_Black({
+  variable: "--font-display",
+  subsets: ["latin"],
+  weight: "400",
+  display: "swap",
+});
+
+const karla = Karla({
+  variable: "--font-body",
+  subsets: ["latin"],
+  display: "swap",
 });
 
 // `metadataBase` is the Next.js equivalent of Astro's `site`: the absolute origin every
@@ -60,14 +86,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${caveat.variable} h-full`}
+      className={`${geistSans.variable} ${geistMono.variable} ${caveat.variable} ${archivoBlack.variable} ${karla.variable} h-full`}
     >
-      <head>
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Karla:wght@400;500;700&display=swap"
-        />
-      </head>
       <body className="flex min-h-full flex-col bg-[var(--color-bg)] text-[var(--color-fg)] antialiased">
         <TransitionProvider>
           <SmoothScroll>

@@ -74,7 +74,7 @@
      as a word. Keep any future restop above that ratio: this gradient is the company name. */
   --gradient-shake: linear-gradient(180deg, #c4a0ee 0%, #a87fd8 55%, #9568cc 100%);
 
-  --font-sans: "Karla", sans-serif;
+  --font-sans: var(--font-body), sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 }
 
@@ -96,8 +96,8 @@ html {
   -ms-overflow-style: none; /* old Edge/IE */
 }
 
-/* The display face. Archivo Black ships a single weight (400) — see the Google Fonts link in
-   layout.tsx — so a `font-medium`/`font-bold` class on anything wearing this face is inert;
+/* The display face. Archivo Black ships a single weight (400) — it is loaded through next/font
+   in layout.tsx — so a `font-medium`/`font-bold` class on anything wearing this face is inert;
    its heft comes from the face itself, not from font-weight. The -0.025em is the same value
    Tailwind's `tracking-tight` emits, so headings already have it without the class.
 
@@ -111,7 +111,7 @@ h4,
 h5,
 h6,
 .display-face {
-  font-family: "Archivo Black", sans-serif;
+  font-family: var(--font-display), sans-serif;
   letter-spacing: -0.025em;
 }
 
@@ -172,7 +172,7 @@ body {
    from an unrelated bundled product). Michroma is a free look-alike stand-in for now — same
    squared, geometric-caps feel, single weight (400) so no font-weight override is needed. */
 .brand-wordmark {
-  font-family: "Michroma", "Archivo Black", sans-serif;
+  font-family: "Michroma", var(--font-display), sans-serif;
 }
 
 /* The "Shake" half of the wordmark. Previously each of the three lockups (hero, nav, footer)
