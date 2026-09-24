@@ -10,8 +10,12 @@ interface ServiceCopy {
   hook: string;
   /** The explanation, only after the hook has earned it. What we actually do, plainly. */
   description: string;
-  /** Optional last word. Present only where a line genuinely lands; most entries don't need one. */
-  closer?: string;
+  /**
+   * The punchline. One bold, sales-point line set in the display face under the description —
+   * the sentence someone should still be carrying when they leave the band. Every service has
+   * one, and each must stand on its own without the paragraph above it.
+   */
+  closer: string;
   bullets: string[];
 }
 
@@ -63,6 +67,7 @@ export const services: Service[] = [
     hook: "Your website should do more than exist.",
     description:
       "It should make someone think: these are the people I want to work with. We design fast, modern, intentional websites that make your business easier to understand and harder to forget.",
+    closer: "People judge you in seconds. Make those seconds count.",
     bullets: [
       "Custom Interface Design",
       "Responsive Development",
@@ -91,6 +96,7 @@ export const services: Service[] = [
     hook: "Your brand is more than your logo.",
     description:
       "It's the feeling people get when they see your name. We help define what you stand for, how you sound, how you look, and what people should feel when they encounter you.",
+    closer: "People forget logos. They never forget how you made them feel.",
     bullets: [
       "Positioning",
       "Messaging",
@@ -106,6 +112,7 @@ export const services: Service[] = [
     hook: "Don't pay for attention you haven't earned.",
     description:
       "An ad can put you in front of thousands of people. That doesn't mean thousands of people will care. We find the message, audience, and creative angle that deserves the spend — before you start buying impressions.",
+    closer: "We make every dollar say something worth hearing.",
     bullets: ["Campaign Strategy", "Audience Targeting", "Creative Direction", "Budget Strategy"],
   },
   {
@@ -115,6 +122,7 @@ export const services: Service[] = [
     hook: "Your marketing doesn't stop at the edge of a screen.",
     description:
       "Your customers live in the real world. So should your marketing. We connect the physical side of your business to the digital side, so the whole thing feels like one ecosystem instead of a pile of disconnected pieces.",
+    closer: "Every sign, shirt, and box is a doorway. We make sure it leads to you.",
     bullets: [
       "QR Campaigns",
       "Apparel",

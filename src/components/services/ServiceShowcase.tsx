@@ -172,7 +172,7 @@ export function ServiceShowcase({
         ref={numeralRef}
         className="pointer-events-none absolute top-1/2 -translate-y-1/2 select-none font-black leading-none text-[clamp(9rem,26vw,20rem)]"
         style={{
-          fontFamily: "'Archivo Black', sans-serif",
+          fontFamily: "var(--font-display), sans-serif",
           color: "color-mix(in srgb, var(--color-cherry) 12%, transparent)",
           [reversed ? "left" : "right"]: "clamp(-2rem, -2vw, 1rem)",
         }}
@@ -180,6 +180,20 @@ export function ServiceShowcase({
       >
         {service.number}
       </span>
+
+      {/* Scrim over the numeral only. It sits between the numeral and everything else (the
+          glow and the copy come after it in paint order), so it knocks the purple digits back
+          behind the purple kicker and closer without dimming the glow or the text. Uses the
+          band's own ground so it reads as depth, not as a tinted panel. */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background: `color-mix(in srgb, ${
+            raised ? "var(--color-raised)" : "var(--color-bg)"
+          } 60%, transparent)`,
+        }}
+        aria-hidden="true"
+      />
 
       <div
         ref={glowRef}
@@ -255,9 +269,8 @@ export function ServiceShowcase({
               `description` sits muted underneath. It is the only part that describes what we
               actually do, and it is deliberately the least prominent of the three.
 
-              `closer` is optional and rare — two of six services have one. It only exists
-              where a line genuinely lands ("You shouldn't have to be famous to be found."),
-              and giving every service one would make all six feel written to a formula. */}
+              `closer` is the punchline: every service has one, set bold in the display face
+              and cherry so it's the line the eye lands on last and remembers. */}
           <TextReveal
             as="p"
             className="mb-5 text-[clamp(1.15rem,2.2vw,1.5rem)] font-medium leading-snug tracking-tight"
@@ -272,14 +285,12 @@ export function ServiceShowcase({
           >
             {service.description}
           </TextReveal>
-          {service.closer && (
-            <TextReveal
-              as="p"
-              className="mb-8 text-[clamp(1rem,1.8vw,1.2rem)] leading-snug text-[var(--color-cherry)]"
-            >
-              {service.closer}
-            </TextReveal>
-          )}
+          <TextReveal
+            as="p"
+            className="display-face mb-8 text-balance text-[clamp(1.35rem,2.6vw,1.9rem)] leading-tight text-[var(--color-cherry)]"
+          >
+            {service.closer}
+          </TextReveal>
           <ul ref={bulletsRef} className="mt-2 flex flex-wrap gap-3">
             {service.bullets.map((bullet) => (
               <li

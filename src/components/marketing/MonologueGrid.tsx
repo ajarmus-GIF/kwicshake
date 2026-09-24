@@ -27,6 +27,19 @@ import type { MonologueLine } from "@/lib/monologue";
  * Reduced motion gets the full set immediately, laid out identically. The stagger is emphasis,
  * never the difference between readable and not.
  */
+/**
+ * One Nova palette colour per card, cycled in order, so the set reads as five separate voices
+ * rather than five copies of one card. The accent only tints the border, background wash and
+ * quote glyph; the sentence itself stays --color-fg so contrast never depends on the accent.
+ */
+const cardAccents = [
+  "var(--color-cherry)",
+  "var(--color-nova-secondary)",
+  "var(--color-ash)",
+  "var(--color-cherry-dark)",
+  "var(--color-white)",
+];
+
 export function MonologueGrid({ lines }: { lines: MonologueLine[] }) {
   const listRef = useRef<HTMLUListElement>(null);
   const prefersReducedMotion = useReducedMotion();
@@ -76,14 +89,17 @@ export function MonologueGrid({ lines }: { lines: MonologueLine[] }) {
               : ""
           }`}
         >
-          <blockquote className="relative h-full border border-[var(--color-border)] bg-[var(--color-surface)] px-7 pb-8 pt-14 transition-colors duration-300 hover:border-[var(--color-cherry)]/40">
+          <blockquote
+            className="relative h-full border border-[color-mix(in_srgb,var(--accent)_35%,transparent)] bg-[color-mix(in_srgb,var(--color-surface)_88%,var(--accent))] px-7 pb-8 pt-14 transition-colors duration-300 hover:border-[color-mix(in_srgb,var(--accent)_75%,transparent)]"
+            style={{ "--accent": cardAccents[index % cardAccents.length] } as React.CSSProperties}
+          >
             {/* Sits ABOVE the text, not behind it. Overlapping the first line made the
                 opening word look broken rather than decorated, so the card carries extra top
                 padding (pt-14) and the glyph occupies that space on its own. */}
             <span
               aria-hidden="true"
-              className="pointer-events-none absolute left-6 top-3 select-none font-black leading-none text-[var(--color-cherry)]/25"
-              style={{ fontFamily: "'Archivo Black', sans-serif", fontSize: "3rem" }}
+              className="pointer-events-none absolute left-6 top-3 select-none font-black leading-none text-[color-mix(in_srgb,var(--accent)_70%,transparent)]"
+              style={{ fontFamily: "var(--font-display), sans-serif", fontSize: "3rem" }}
             >
               &ldquo;
             </span>

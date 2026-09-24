@@ -1,4 +1,6 @@
 import { TextReveal } from "@/components/text/TextReveal";
+import { BuildText } from "@/components/text/BuildText";
+import { HeroEntrance } from "@/components/text/HeroEntrance";
 import { MagneticButton } from "@/components/interactive/MagneticButton";
 import { TransitionLink } from "@/components/transition/TransitionProvider";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -52,34 +54,32 @@ export default function ProcessPage() {
           />
         </ScrollDrift>
 
-        <div className="relative mx-auto w-full max-w-5xl">
-          <SystemLine label="Loading Sequence" settled="SIX STAGES" className="mb-5" />
-          <p className="mb-6 text-xs font-semibold uppercase tracking-widest text-[var(--color-cherry)]">
-            + Process
-          </p>
-          <TextReveal
-            as="h1"
-            className="max-w-4xl text-[clamp(2.25rem,6vw,4.75rem)] font-medium leading-[1.04] tracking-tight"
+        <HeroEntrance className="relative mx-auto w-full max-w-5xl">
+          <div data-hero-line>
+            <SystemLine label="Loading Sequence" settled="SIX STAGES" className="mb-5" />
+          </div>
+          <p
+            data-hero-line
+            className="mb-6 text-xs font-semibold uppercase tracking-widest text-[var(--color-cherry)]"
           >
-            First, we figure out{" "}
-            <span
-              className="bg-clip-text text-transparent"
-              style={{
-                backgroundImage:
-                  "linear-gradient(90deg, var(--color-cherry), var(--color-nova-secondary))",
-              }}
-            >
+            + <BuildText text="Process" delay={700} />
+          </p>
+          <h1 className="max-w-4xl text-[clamp(2.25rem,6vw,4.75rem)] font-medium leading-[1.04] tracking-tight">
+            <span data-hero-line className="block text-[var(--color-white)]">
+              First, we figure out
+            </span>
+            <span data-hero-line className="block text-[var(--color-cherry)]">
               what isn&apos;t working.
             </span>
-          </TextReveal>
-          <TextReveal
-            as="p"
+          </h1>
+          <p
+            data-hero-line
             className="mt-8 max-w-xl text-base leading-relaxed text-[var(--color-on-dark)]/65 sm:text-lg"
           >
             Not what you think isn&apos;t working. What&apos;s actually getting in the way — which
             is often somewhere nobody was looking.
-          </TextReveal>
-        </div>
+          </p>
+        </HeroEntrance>
       </section>
 
       <section className="relative overflow-hidden px-6 py-24 sm:py-28">

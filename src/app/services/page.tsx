@@ -1,4 +1,6 @@
 import { TextReveal } from "@/components/text/TextReveal";
+import { BuildText } from "@/components/text/BuildText";
+import { HeroEntrance } from "@/components/text/HeroEntrance";
 import { MagneticButton } from "@/components/interactive/MagneticButton";
 import { TransitionLink } from "@/components/transition/TransitionProvider";
 import { Marquee } from "@/components/scroll/Marquee";
@@ -60,47 +62,48 @@ export default function ServicesPage() {
           />
         </ScrollDrift>
         <ScrollDrift from={5} to={-5} className="relative mx-auto max-w-5xl">
-          <p className="mb-6 text-xs font-semibold uppercase tracking-widest text-[var(--color-cherry)]">
-            + Services
-          </p>
-          <TextReveal
-            as="h1"
-            className="max-w-4xl text-[clamp(2.5rem,7vw,5.5rem)] font-medium leading-[1.02] tracking-tight"
-          >
-            What we{" "}
-            <span
-              className="bg-clip-text text-transparent"
-              style={{
-                backgroundImage:
-                  "linear-gradient(90deg, var(--color-cherry), var(--color-nova-secondary))",
-              }}
+          <HeroEntrance>
+            <p
+              data-hero-line
+              className="mb-6 text-xs font-semibold uppercase tracking-widest text-[var(--color-cherry)]"
             >
-              actually do.
-            </span>
-          </TextReveal>
+              + <BuildText text="Services" delay={700} />
+            </p>
+            {/* Two block lines in the home hero's white → cherry split, each its own step in the
+                entrance stagger. Solid cherry rather than the old cherry → nova-secondary gradient,
+                for the contrast reason noted on that token in globals.css. */}
+            <h1 className="max-w-4xl text-[clamp(2.5rem,7vw,5.5rem)] font-medium leading-[1.02] tracking-tight">
+              <span data-hero-line className="block text-[var(--color-white)]">
+                What we
+              </span>
+              <span data-hero-line className="block text-[var(--color-cherry)]">
+                actually do.
+              </span>
+            </h1>
 
-          <div className="mt-10 flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
-            <TextReveal as="p" className="max-w-md text-[var(--color-on-dark)]/60">
-              We build the pieces of your marketing so they work together. Six disciplines, one
-              system — not six invoices that never speak to each other.
-            </TextReveal>
-            <div className="flex flex-wrap gap-4">
-              <MagneticButton
-                as={TransitionLink}
-                href="/work"
-                className="inline-flex items-center gap-2 border border-[var(--color-on-dark)] px-6 py-3 text-sm"
-              >
-                Explore the Work
-              </MagneticButton>
-              <MagneticButton
-                as={TransitionLink}
-                href="/contact"
-                className="btn-primary inline-flex items-center gap-2 px-6 py-3 text-sm text-[var(--color-button-primary-text)]"
-              >
-                Start a Conversation
-              </MagneticButton>
+            <div className="mt-10 flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
+              <p data-hero-line className="max-w-md text-[var(--color-on-dark)]/60">
+                We build the pieces of your marketing so they work together. Six disciplines, one
+                system — not six invoices that never speak to each other.
+              </p>
+              <div data-hero-line className="flex flex-wrap gap-4">
+                <MagneticButton
+                  as={TransitionLink}
+                  href="/work"
+                  className="inline-flex items-center gap-2 border border-[var(--color-on-dark)] px-6 py-3 text-sm"
+                >
+                  Explore the Work
+                </MagneticButton>
+                <MagneticButton
+                  as={TransitionLink}
+                  href="/contact"
+                  className="btn-primary inline-flex items-center gap-2 px-6 py-3 text-sm text-[var(--color-button-primary-text)]"
+                >
+                  Start a Conversation
+                </MagneticButton>
+              </div>
             </div>
-          </div>
+          </HeroEntrance>
         </ScrollDrift>
       </section>
 

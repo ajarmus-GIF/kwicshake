@@ -1,4 +1,6 @@
 import { TextReveal } from "@/components/text/TextReveal";
+import { BuildText } from "@/components/text/BuildText";
+import { HeroEntrance } from "@/components/text/HeroEntrance";
 import { ContactForm } from "@/components/contact/ContactForm";
 import { MonologuePull } from "@/components/marketing/MonologuePull";
 import { Tagline } from "@/components/marketing/Tagline";
@@ -51,24 +53,27 @@ export default function ContactPage() {
           style={{ background: "radial-gradient(circle, var(--color-glow), transparent 70%)" }}
           aria-hidden="true"
         />
-        <div className="relative mx-auto max-w-4xl">
-          <p className="mb-6 text-xs font-semibold uppercase tracking-widest text-[var(--color-cherry)]">
-            + Let&apos;s Talk
-          </p>
-          <TextReveal
-            as="h1"
-            className="max-w-3xl text-balance text-[clamp(2rem,5.5vw,4rem)] font-medium leading-[1.06] tracking-tight"
+        <HeroEntrance className="relative mx-auto max-w-4xl">
+          <p
+            data-hero-line
+            className="mb-6 text-xs font-semibold uppercase tracking-widest text-[var(--color-cherry)]"
           >
-            <span className="block">You don&apos;t need to have everything figured out.</span>
-            <span className="block text-[var(--color-cherry)]">
+            + <BuildText text="Let's Talk" delay={700} />
+          </p>
+          <h1 className="max-w-3xl text-balance text-[clamp(2rem,5.5vw,4rem)] font-medium leading-[1.06] tracking-tight">
+            <span data-hero-line className="block text-[var(--color-white)]">
+              You don&apos;t need to have everything figured out.
+            </span>
+            <span data-hero-line className="block text-[var(--color-cherry)]">
               You just need to know something could be better.
             </span>
-          </TextReveal>
+          </h1>
 
           <ul className="mt-12 space-y-3">
             {maybes.map((line) => (
               <li
                 key={line}
+                data-hero-line
                 className="max-w-2xl text-base leading-relaxed text-[var(--color-on-dark)]/70 sm:text-lg"
               >
                 {line}
@@ -76,10 +81,13 @@ export default function ContactPage() {
             ))}
           </ul>
 
-          <p className="mt-10 text-[clamp(1.5rem,3.5vw,2.25rem)] font-medium leading-none text-[var(--color-cherry)]">
+          <p
+            data-hero-line
+            className="mt-10 text-[clamp(1.5rem,3.5vw,2.25rem)] font-medium leading-none text-[var(--color-cherry)]"
+          >
             That&apos;s okay.
           </p>
-        </div>
+        </HeroEntrance>
       </section>
 
       {/* Said before the form rather than after it: the hesitation this addresses is the one

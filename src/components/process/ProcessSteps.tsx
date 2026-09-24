@@ -71,7 +71,7 @@ export function ProcessSteps() {
           <span
             aria-hidden="true"
             className="pointer-events-none absolute -right-2 -top-4 select-none font-black leading-none text-[var(--color-cherry)]/[0.09] transition-transform duration-500 group-hover:-translate-y-1"
-            style={{ fontFamily: "'Archivo Black', sans-serif", fontSize: "clamp(5rem,9vw,7rem)" }}
+            style={{ fontFamily: "var(--font-display), sans-serif", fontSize: "clamp(5rem,9vw,7rem)" }}
           >
             {step.number}
           </span>

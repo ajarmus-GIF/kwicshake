@@ -1,4 +1,6 @@
 import { TextReveal } from "@/components/text/TextReveal";
+import { BuildText } from "@/components/text/BuildText";
+import { HeroEntrance } from "@/components/text/HeroEntrance";
 import { MagneticButton } from "@/components/interactive/MagneticButton";
 import { TransitionLink } from "@/components/transition/TransitionProvider";
 import { ParallaxMedia } from "@/components/media/ParallaxMedia";
@@ -50,8 +52,9 @@ export default function AboutPage() {
     <>
       <SiteHeader />
 
-      {/* Hero — same full-bleed dark band + glow + gradient headline as /services, so the two
-          pages read as the same studio rather than two different templates. */}
+      {/* Hero — same full-bleed dark band, glow and white → cherry headline as /services, and
+          the same HeroEntrance load-in as home, so every page reads as the same studio rather
+          than a different template. */}
       <section className="relative flex min-h-[60vh] flex-col justify-center overflow-hidden bg-[var(--color-raised)] px-6 py-24 text-[var(--color-on-dark)]">
         <SparkField variant="diagonal" />
         <div
@@ -59,27 +62,25 @@ export default function AboutPage() {
           style={{ background: "radial-gradient(circle, var(--color-glow), transparent 70%)" }}
           aria-hidden="true"
         />
-        <div className="relative mx-auto w-full max-w-5xl">
-          <p className="mb-6 text-xs font-semibold uppercase tracking-widest text-[var(--color-cherry)]">
-            + The Studio
-          </p>
-          <TextReveal
-            as="h1"
-            className="max-w-4xl text-[clamp(2.25rem,6vw,4.75rem)] font-medium leading-[1.04] tracking-tight"
+        <HeroEntrance className="relative mx-auto w-full max-w-5xl">
+          <p
+            data-hero-line
+            className="mb-6 text-xs font-semibold uppercase tracking-widest text-[var(--color-cherry)]"
           >
-            <span className="block">Two brothers.</span>
-            <span className="block">One obsession:</span>
-            <span
-              className="block bg-clip-text text-transparent"
-              style={{
-                backgroundImage:
-                  "linear-gradient(90deg, var(--color-cherry), var(--color-nova-secondary))",
-              }}
-            >
+            + <BuildText text="The Studio" delay={700} />
+          </p>
+          <h1 className="max-w-4xl text-[clamp(2.25rem,6vw,4.75rem)] font-medium leading-[1.04] tracking-tight">
+            <span data-hero-line className="block text-[var(--color-white)]">
+              Two brothers.
+            </span>
+            <span data-hero-line className="block text-[var(--color-white)]">
+              One obsession:
+            </span>
+            <span data-hero-line className="block text-[var(--color-cherry)]">
               Making good businesses look impossible to ignore.
             </span>
-          </TextReveal>
-        </div>
+          </h1>
+        </HeroEntrance>
       </section>
 
       {/* Origin. One frustration, and it is about businesses like the reader's rather than
@@ -88,7 +89,7 @@ export default function AboutPage() {
         <span
           className="pointer-events-none absolute left-[-4%] top-0 select-none font-black leading-none opacity-[0.06]"
           style={{
-            fontFamily: "'Archivo Black', sans-serif",
+            fontFamily: "var(--font-display), sans-serif",
             fontSize: "clamp(8rem,22vw,16rem)",
             color: "var(--color-cherry)",
           }}
@@ -266,7 +267,7 @@ export default function AboutPage() {
         <span
           className="pointer-events-none absolute right-[-4%] top-0 select-none font-black leading-none opacity-[0.06]"
           style={{
-            fontFamily: "'Archivo Black', sans-serif",
+            fontFamily: "var(--font-display), sans-serif",
             fontSize: "clamp(8rem,22vw,16rem)",
             color: "var(--color-cherry)",
           }}

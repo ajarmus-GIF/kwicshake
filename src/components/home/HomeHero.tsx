@@ -10,6 +10,7 @@ import { TransitionLink } from "@/components/transition/TransitionProvider";
 import { HeroHeader } from "@/components/home/HeroHeader";
 import { SparkField } from "@/components/atmosphere/SparkField";
 import { BuildText } from "@/components/text/BuildText";
+import { HERO_LINE_FROM, HERO_LINE_TO } from "@/components/text/HeroEntrance";
 import { DESCRIPTOR } from "@/lib/site";
 
 /**
@@ -38,11 +39,7 @@ export function HomeHero() {
   useGSAP(
     () => {
       if (!prefersReducedMotion) {
-        gsap.fromTo(
-          "[data-hero-line]",
-          { autoAlpha: 0, y: 24 },
-          { autoAlpha: 1, y: 0, duration: 0.9, ease: "power3.out", stagger: 0.12, delay: 0.1 }
-        );
+        gsap.fromTo("[data-hero-line]", HERO_LINE_FROM, HERO_LINE_TO);
 
         // Wordmark drops in per letter, then the whole lockup wobbles on its baseline. The
         // fall and the tilt are separate tweens at the same timeline position on purpose:

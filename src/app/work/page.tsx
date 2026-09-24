@@ -1,4 +1,6 @@
 import { TextReveal } from "@/components/text/TextReveal";
+import { BuildText } from "@/components/text/BuildText";
+import { HeroEntrance } from "@/components/text/HeroEntrance";
 import { MagneticButton } from "@/components/interactive/MagneticButton";
 import { TransitionLink } from "@/components/transition/TransitionProvider";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -47,21 +49,25 @@ export default function WorkPage() {
           style={{ background: "radial-gradient(circle, var(--color-glow), transparent 70%)" }}
           aria-hidden="true"
         />
-        <div className="relative mx-auto max-w-5xl">
-          <SystemLine label="Compiling Case Studies" settled="ARCHIVE" className="mb-5" />
-          <p className="mb-6 text-xs font-semibold uppercase tracking-widest text-[var(--color-cherry)]">
-            + The Work
-          </p>
-          <TextReveal
-            as="h1"
-            className="max-w-4xl text-[clamp(2rem,5.5vw,4.25rem)] font-medium leading-[1.05] tracking-tight"
+        <HeroEntrance className="relative mx-auto max-w-5xl">
+          <div data-hero-line>
+            <SystemLine label="Compiling Case Studies" settled="ARCHIVE" className="mb-5" />
+          </div>
+          <p
+            data-hero-line
+            className="mb-6 text-xs font-semibold uppercase tracking-widest text-[var(--color-cherry)]"
           >
-            <span className="block">We don&apos;t want to show you pretty websites.</span>
-            <span className="block text-[var(--color-cherry)]">
+            + <BuildText text="The Work" delay={700} />
+          </p>
+          <h1 className="max-w-4xl text-[clamp(2rem,5.5vw,4.25rem)] font-medium leading-[1.05] tracking-tight">
+            <span data-hero-line className="block text-[var(--color-white)]">
+              We don&apos;t want to show you pretty websites.
+            </span>
+            <span data-hero-line className="block text-[var(--color-cherry)]">
               We want to show you what changed.
             </span>
-          </TextReveal>
-        </div>
+          </h1>
+        </HeroEntrance>
       </section>
 
       {/* The structure, published before any project. Someone deciding whether to trust this

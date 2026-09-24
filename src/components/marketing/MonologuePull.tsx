@@ -43,7 +43,7 @@ export function MonologuePull({
         <span
           aria-hidden="true"
           className="mb-2 block select-none font-black leading-none text-[var(--color-cherry)]/25"
-          style={{ fontFamily: "'Archivo Black', sans-serif", fontSize: "clamp(3rem,7vw,5rem)" }}
+          style={{ fontFamily: "var(--font-display), sans-serif", fontSize: "clamp(3rem,7vw,5rem)" }}
         >
           &ldquo;
         </span>

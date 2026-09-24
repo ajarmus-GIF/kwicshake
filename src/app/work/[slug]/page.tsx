@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
-import { TextReveal } from "@/components/text/TextReveal";
+import { BuildText } from "@/components/text/BuildText";
+import { HeroEntrance } from "@/components/text/HeroEntrance";
 import { MagneticButton } from "@/components/interactive/MagneticButton";
 import { TransitionLink } from "@/components/transition/TransitionProvider";
 import { ParallaxMedia } from "@/components/media/ParallaxMedia";
@@ -51,9 +52,11 @@ export default async function ProjectPage({ params }: PageProps<"/work/[slug]">)
           style={{ background: "radial-gradient(circle, var(--color-glow), transparent 70%)" }}
           aria-hidden="true"
         />
-        <div className="relative mx-auto max-w-5xl">
-          <p className="mb-5 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs font-semibold uppercase tracking-widest text-[var(--color-cherry)]">
-            <span>{project.category}</span>
+        <HeroEntrance className="relative mx-auto max-w-5xl">
+          <p
+            data-hero-line
+            className="mb-5 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs font-semibold uppercase tracking-widest text-[var(--color-cherry)]">
+            <BuildText text={project.category} delay={700} />
             <span aria-hidden="true" className="opacity-40">
               /
             </span>
@@ -65,22 +68,22 @@ export default async function ProjectPage({ params }: PageProps<"/work/[slug]">)
             )}
           </p>
 
-          <TextReveal
-            as="h1"
-            className="max-w-3xl text-[clamp(2.25rem,6vw,4.5rem)] font-medium leading-[1.05] tracking-tight"
+          <h1
+            data-hero-line
+            className="max-w-3xl text-[clamp(2.25rem,6vw,4.5rem)] font-medium leading-[1.05] tracking-tight text-[var(--color-white)]"
           >
             {project.title}
-          </TextReveal>
+          </h1>
 
           {/* The client's mission, not our scope. It is the reason the project matters and the
               thing every chapter below is measured against. */}
-          <TextReveal
-            as="p"
+          <p
+            data-hero-line
             className="mt-8 max-w-2xl text-[clamp(1.15rem,2.6vw,1.6rem)] leading-snug"
           >
             {project.mission}
-          </TextReveal>
-        </div>
+          </p>
+        </HeroEntrance>
       </section>
 
       <ParallaxMedia rate={0.25} className="h-[55vh]">

@@ -53,7 +53,7 @@ export function CaseStudyNarrative({ project }: { project: Project }) {
                   raised ? "left-[-3%]" : "right-[-3%]"
                 }`}
                 style={{
-                  fontFamily: "'Archivo Black', sans-serif",
+                  fontFamily: "var(--font-display), sans-serif",
                   fontSize: "clamp(6rem,16vw,12rem)",
                 }}
               >
