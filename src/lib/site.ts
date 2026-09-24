@@ -18,6 +18,12 @@ export const CONTACT_EMAIL = "info@kwicshake.com";
 export const WEB3FORMS_ACCESS_KEY = "dd1e6d63-581e-4bc1-a7f7-bf933cceec2d";
 
 /**
+ * Web3Forms access key for the /comingsoon page's form, kept separate from the main contact
+ * form's so those leads land in their own inbox. Public by design, same as the key above.
+ */
+export const COMING_SOON_WEB3FORMS_ACCESS_KEY = "80905338-5928-4a43-b8bb-9b78c570518a";
+
+/**
  * The brand line. It is the site's recurring idea rather than a slogan bolted onto a logo, so
  * it is imported wherever it appears (footer, the home page's emotional close, the end of the
  * work story, the About close) instead of being retyped — the same reason CONTACT_EMAIL lives

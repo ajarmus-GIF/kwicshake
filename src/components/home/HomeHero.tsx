@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { getImageProps } from "next/image";
+import { HeroPicture } from "@/components/media/HeroPicture";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap";
 import { useReducedMotion } from "@/hooks/useMediaQuery";
@@ -29,16 +29,6 @@ import { DESCRIPTOR } from "@/lib/site";
  * reveals the section background peeking through at the top as it tilts.
  */
 const BRAND = "Kwic Shake";
-
-const heroImageShared = { alt: "", fill: true, priority: true, sizes: "100vw" } as const;
-const { props: desktopHero } = getImageProps({
-  ...heroImageShared,
-  src: "/images/hero-bg-desktop.jpg",
-});
-const { props: mobileHero } = getImageProps({
-  ...heroImageShared,
-  src: "/images/hero-bg-mobile.jpg",
-});
 
 export function HomeHero() {
   const scope = useRef<HTMLDivElement>(null);
@@ -112,13 +102,7 @@ export function HomeHero() {
       style={{ perspective: "1200px" }}
     >
       <div ref={imageWrapRef} className="absolute inset-0">
-        {/* Art-directed: a portrait phone shot below `sm`, the landscape laptop shot above it.
-            A <picture> rather than two <Image>s toggled with `hidden`, so each device only
-            downloads the one it shows. The breakpoint matches Tailwind's `sm` (640px). */}
-        <picture>
-          <source media="(max-width: 639px)" srcSet={mobileHero.srcSet} sizes={mobileHero.sizes} />
-          <img {...desktopHero} alt="" className="object-cover" />
-        </picture>
+        <HeroPicture />
       </div>
       {/* Legibility scrim, weighted toward the text column rather than flat across the frame.
           A flat 20% wash was enough for the old three-word slogan, which sat on a quiet corner

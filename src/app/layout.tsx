@@ -4,6 +4,7 @@ import "./globals.css";
 import { SmoothScroll } from "@/components/scroll/SmoothScroll";
 import { TransitionProvider } from "@/components/transition/TransitionProvider";
 import { SiteFooter } from "@/components/SiteFooter";
+import { FooterGate } from "@/components/FooterGate";
 import { TAGLINE } from "@/lib/site";
 
 // TODO: swap for real typefaces via next/font/local or next/font/google.
@@ -92,7 +93,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <TransitionProvider>
           <SmoothScroll>
             <main className="flex-1">{children}</main>
-            <SiteFooter />
+            <FooterGate>
+              <SiteFooter />
+            </FooterGate>
           </SmoothScroll>
         </TransitionProvider>
       </body>
