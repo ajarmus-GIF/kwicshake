@@ -1,7 +1,7 @@
 import { ServiceIcon } from "@/components/services/ServiceIcon";
 import { MagneticButton } from "@/components/interactive/MagneticButton";
 import { TransitionLink } from "@/components/transition/TransitionProvider";
-import { CONTACT_EMAIL, TAGLINE, DESCRIPTOR } from "@/lib/site";
+import { CONTACT_EMAIL, LOCATIONS, TAGLINE, DESCRIPTOR } from "@/lib/site";
 
 /**
  * Compact two-row footer:
@@ -130,15 +130,21 @@ export function SiteFooter() {
             </p>
           </div>
 
-          {/* Email sits in the closing row itself, between the wordmark and the ask, rather than
-              in a band of its own. `flex-1` hands it whatever space the two fixed blocks leave,
-              so it centers in the gap instead of being pushed against either one. */}
-          <a
-            href={`mailto:${CONTACT_EMAIL}`}
-            className="text-sm tracking-[0.08em] text-[var(--color-cherry)] underline decoration-[var(--color-cherry)]/35 decoration-1 underline-offset-4 transition-[text-decoration-color] duration-300 hover:decoration-[var(--color-cherry)] md:flex-1 md:text-center"
-          >
-            {CONTACT_EMAIL}
-          </a>
+          {/* Email and locations sit in the closing row itself, between the wordmark and the
+              ask, rather than in a band of their own. `flex-1` hands them whatever space the two
+              fixed blocks leave, so they center in the gap instead of being pushed against
+              either one. */}
+          <div className="md:flex-1 md:text-center">
+            <a
+              href={`mailto:${CONTACT_EMAIL}`}
+              className="text-sm tracking-[0.08em] text-[var(--color-cherry)] underline decoration-[var(--color-cherry)]/35 decoration-1 underline-offset-4 transition-[text-decoration-color] duration-300 hover:decoration-[var(--color-cherry)]"
+            >
+              {CONTACT_EMAIL}
+            </a>
+            <p className="mt-3 text-[0.65rem] uppercase tracking-[0.3em] text-[var(--color-on-dark)]/40">
+              {LOCATIONS.join(" · ")}
+            </p>
+          </div>
 
           <div className="md:shrink-0 md:text-right">
             <h2 className="text-[1.375rem] font-medium leading-tight tracking-tight sm:text-2xl">

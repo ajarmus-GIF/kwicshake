@@ -8,6 +8,9 @@
  */
 export const CONTACT_EMAIL = "info@kwicshake.com";
 
+/** Where the studio works from. Shown under the email in the footer. */
+export const LOCATIONS = ["Minneapolis, MN", "St. Louis, MO"];
+
 /**
  * Web3Forms access key. This is a PUBLIC identifier by design — Web3Forms is a client-side
  * form service, so the key ships in the browser bundle and there is nothing to hide. It
