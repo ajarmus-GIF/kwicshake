@@ -122,7 +122,7 @@ export function CredibilityGuess() {
         id={questionId}
         className="display-face text-balance text-[clamp(1.35rem,3vw,2rem)] leading-tight tracking-tight"
       >
-        How many people judge a company&apos;s credibility on its website design alone?
+        How many people judge a company&apos;s credibility on its website design?
       </p>
 
       {/* Readout. Fixed-width digits so the number doesn't shuffle the layout as it changes. */}
@@ -207,6 +207,18 @@ export function CredibilityGuess() {
         </div>
       </div>
 
+      <p className="mt-2 text-[0.7rem] text-[var(--color-muted)]">
+        Source:{" "}
+        <a
+          href="https://credibility.stanford.edu/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline decoration-[var(--color-cherry)] underline-offset-2 hover:text-[var(--color-cherry)]"
+        >
+          Stanford Web Credibility Research
+        </a>
+      </p>
+
       {/* Result. Reserved height so the section doesn't jump when the answer appears. */}
       <div aria-live="polite" className="mt-10 min-h-[5.5rem] sm:min-h-[4.5rem]">
         {phase === "idle" && (
@@ -223,8 +235,7 @@ export function CredibilityGuess() {
         {phase === "revealed" && (
           <p className="credibility-result mx-auto max-w-lg text-base leading-relaxed sm:text-lg">
             <span className="font-semibold text-[var(--color-cherry)]">It&apos;s 75%.</span>{" "}
-            Three in four people judge a company&apos;s credibility on its website design
-            alone.
+            Three in four people judge a company&apos;s credibility on its website design.
           </p>
         )}
       </div>
