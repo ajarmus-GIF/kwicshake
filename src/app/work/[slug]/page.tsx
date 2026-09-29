@@ -5,6 +5,7 @@ import { TransitionLink } from "@/components/transition/TransitionProvider";
 import { ParallaxMedia } from "@/components/media/ParallaxMedia";
 import { EditorialMedia } from "@/components/media/EditorialMedia";
 import { CaseStudyNarrative } from "@/components/work/CaseStudyNarrative";
+import { CaseStudyRedesign } from "@/components/work/CaseStudyRedesign";
 import { Tagline } from "@/components/marketing/Tagline";
 import { getProject, projects } from "@/lib/projects";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -84,6 +85,10 @@ export default async function ProjectPage({ params }: PageProps<"/work/[slug]">)
           </p>
         </HeroEntrance>
       </section>
+
+      {project.redesign && (
+        <CaseStudyRedesign title={project.title} redesign={project.redesign} />
+      )}
 
       <ParallaxMedia rate={0.25} className="h-[55vh]">
         {/* Full-bleed band, so `sizes` is the whole viewport — the default half-width

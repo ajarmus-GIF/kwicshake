@@ -83,6 +83,26 @@ export interface Project {
    * client's live site or at something we mocked up, and that answer is the reason it's there.
    */
   coverCaption?: string;
+
+  /**
+   * The before/after browser comparison under the case study's title. Both screenshots must be
+   * captured at the same browser viewport so they overlay pixel for pixel; `width`/`height` are
+   * that shared size, and the frame reserves exactly that aspect ratio.
+   */
+  redesign?: {
+    eyebrow: string;
+    /** Two lines: the first plain, the second in the accent. */
+    heading: [string, string];
+    intro: string;
+    /** Shown in the mock address bar. */
+    url: string;
+    before: string;
+    after: string;
+    width: number;
+    height: number;
+    /** What changed, as short label + line pairs under the comparison. */
+    shifts: { label: string; line: string }[];
+  };
 }
 
 export const projects: Project[] = [
@@ -130,6 +150,25 @@ export const projects: Project[] = [
     cover: "/images/revolt-cover.jpg",
     coverVideo: "/video/revolt-home.mp4",
     coverCaption: "Revolt Lacrosse — the live home page, recorded from the browser. Not a mockup.",
+
+    redesign: {
+      eyebrow: "Revolt Lacrosse — Website Redesign",
+      heading: ["Same Revolt.", "Different Experience."],
+      intro: "Drag between the original website and the redesigned experience.",
+      url: "revoltlc.com",
+      before: "/images/revolt-before.jpg",
+      after: "/images/revolt-after.jpg",
+      width: 2880,
+      height: 1800,
+      shifts: [
+        { label: "Clearer Hierarchy", line: "From information-heavy to intentional." },
+        { label: "Stronger Identity", line: "From template-driven to unmistakably Revolt." },
+        {
+          label: "Better Path to Action",
+          line: "From browsing information to knowing exactly where to go next.",
+        },
+      ],
+    },
   },
 ];
 

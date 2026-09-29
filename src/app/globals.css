@@ -506,3 +506,30 @@ body {
     animation: none;
   }
 }
+
+/* Before/after browser comparison (components/work/SiteComparison.tsx). The frame's depth is a
+   plain drop shadow plus the palette's own glow, so it lifts off the page without a new colour.
+   The handle pulses in the same glow only while the one-time intro nudge runs. */
+.comparison-frame {
+  box-shadow:
+    0 40px 80px -40px rgba(0, 0, 0, 0.85),
+    0 0 70px -30px var(--color-glow);
+}
+
+.comparison-viewport[data-dragging] {
+  cursor: grabbing;
+}
+
+.comparison-viewport[data-intro] .comparison-handle {
+  animation: comparison-handle-pulse 1.3s ease-in-out infinite;
+}
+
+@keyframes comparison-handle-pulse {
+  0%,
+  100% {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), 0 0 0 0 var(--color-glow);
+  }
+  50% {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), 0 0 26px 6px var(--color-glow);
+  }
+}
