@@ -20,8 +20,8 @@ export const metadata = {
  * someone talks themselves out of sending the message. In practice that means fighting three
  * specific hesitations, and each one has a piece of this page assigned to it:
  *
- *   "I don't know what I need."      → the headline, and the "I'm not sure yet" option in the
- *                                      form's service select.
+ *   "I don't know what I need."      → the headline, and the "Honestly, I don't know" answer in
+ *                                      the form's "most broken" question.
  *   "I should have done this ages
  *    ago and I'm embarrassed."       → the pull quote, which says the quiet part first.
  *   "This is going to become a

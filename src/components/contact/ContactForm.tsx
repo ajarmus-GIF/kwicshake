@@ -2,7 +2,6 @@
 
 import { useState, type FormEvent } from "react";
 import { MagneticButton } from "@/components/interactive/MagneticButton";
-import { services } from "@/lib/services";
 import { CONTACT_EMAIL, WEB3FORMS_ACCESS_KEY } from "@/lib/site";
 
 /**
@@ -22,12 +21,21 @@ import { CONTACT_EMAIL, WEB3FORMS_ACCESS_KEY } from "@/lib/site";
  * rather than to Web3Forms. `botcheck` is Web3Forms' honeypot convention: it is hidden from
  * people, and a submission arriving with it filled is dropped as a bot.
  *
- * The "I'm not sure yet" option in the service select is not filler. This page's headline
- * promises the visitor doesn't need to have everything figured out, and a required dropdown of
- * six confident service names silently withdraws that promise at the last step — the one moment
- * someone is most likely to close the tab. Keeping it as the first real option makes not knowing
- * a legitimate answer rather than a gap the visitor has to bluff their way past.
+ * "Honestly, I don't know" in the "most broken" question is not filler. This page's headline
+ * promises the visitor doesn't need to have everything figured out, and a required question with
+ * only confident answers silently withdraws that promise at the last step — the one moment
+ * someone is most likely to close the tab. Keeping it makes not knowing a legitimate answer
+ * rather than a gap the visitor has to bluff their way past.
  */
+const brokenOptions = [
+  "Website",
+  "Brand",
+  "Getting found",
+  "Advertising",
+  "Social",
+  "Honestly, I don't know",
+];
+
 export function ContactForm() {
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
 
@@ -100,28 +108,29 @@ export function ContactForm() {
           required
           className="sm:col-span-2"
         />
-        <div className="sm:col-span-2">
-          <label htmlFor="serviceInterest" className="mb-2 block text-sm text-[var(--color-muted)]">
-            What can we help with?
-          </label>
-          <select
-            id="serviceInterest"
-            name="serviceInterest"
-            required
-            defaultValue=""
-            className="w-full border border-[var(--color-form-border)] bg-[var(--color-form-bg)] px-4 py-3 text-base text-[var(--color-fg)] outline-none focus:border-[var(--color-form-border-focus)]"
-          >
-            <option value="" disabled>
-              Pick whatever is closest
-            </option>
-            <option value="Not sure yet">I&apos;m not sure yet — help me figure it out</option>
-            {services.map((service) => (
-              <option key={service.number} value={service.title}>
-                {service.title}
-              </option>
+        <fieldset className="sm:col-span-2">
+          <legend className="mb-2 block text-sm text-[var(--color-muted)]">
+            What feels most broken right now?
+          </legend>
+          <div className="flex flex-wrap gap-2">
+            {brokenOptions.map((option) => (
+              <label key={option} className="cursor-pointer">
+                {/* Native radio kept (visually hidden) so `required`, keyboard arrows and
+                    screen readers all behave; the pill is just its styled label. */}
+                <input
+                  type="radio"
+                  name="mostBroken"
+                  value={option}
+                  required
+                  className="peer sr-only"
+                />
+                <span className="inline-block border border-[var(--color-form-border)] bg-[var(--color-form-bg)] px-4 py-2 text-sm text-[var(--color-fg)] transition-colors hover:border-[var(--color-form-border-focus)] peer-checked:border-[var(--color-cherry)] peer-checked:text-[var(--color-cherry)] peer-focus-visible:border-[var(--color-form-border-focus)]">
+                  {option}
+                </span>
+              </label>
             ))}
-          </select>
-        </div>
+          </div>
+        </fieldset>
         <div className="sm:col-span-2">
           <label htmlFor="keyFeature" className="mb-2 block text-sm text-[var(--color-muted)]">
             What&apos;s one thing you wish your business did better online?
