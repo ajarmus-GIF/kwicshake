@@ -1,0 +1,14 @@
+# Cloudflare cache headers (the same rules netlify.toml sets for Netlify).
+#
+# A week rather than a year with `immutable`, because these paths are stable names, not
+# content-hashed ones: replacing revolt-home.mp4 with a new cut keeps the same URL.
+# Next's own /_next/static/* is content-hashed, so it can be cached for good.
+
+/video/*
+  Cache-Control: public, max-age=604800, stale-while-revalidate=86400
+
+/images/*
+  Cache-Control: public, max-age=604800, stale-while-revalidate=86400
+
+/_next/static/*
+  Cache-Control: public, max-age=31536000, immutable

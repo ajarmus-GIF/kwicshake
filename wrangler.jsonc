@@ -1,0 +1,14 @@
+// Cloudflare Workers deploy config. `npm run build` writes the static site to /out and
+// `npx wrangler deploy` uploads it as static assets — no Worker script, nothing runs per request.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "kwicshake",
+  "compatibility_date": "2026-09-29",
+  "assets": {
+    "directory": "./out",
+    // Serve /work/revolt-lacrosse from work/revolt-lacrosse.html, and Next's 404 page for
+    // anything that doesn't exist.
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
+  }
+}

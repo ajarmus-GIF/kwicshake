@@ -1,20 +1,14 @@
 # Netlify build configuration.
 #
-# This is a Next.js 15 App Router app, NOT a static-site generator, so `publish` is ".next"
-# and never "dist" or "out" — Next writes neither. The Netlify Next.js runtime reads the
-# .next build output and wires up routing itself; pointing publish at a plain folder would
-# deploy an empty site.
+# The site builds as a static export (see next.config.ts): `npm run build` writes plain HTML,
+# JS and assets to /out, and that folder is what gets published. No Next.js runtime plugin is
+# needed — there is no server code to turn into functions.
 #
-# Declaring the config here rather than answering `netlify init`'s prompts means the build
-# settings live in the repo and survive re-linking, a new site, or a different machine.
+# Kept while kwicshake.com still points at Netlify; Cloudflare's equivalents are wrangler.jsonc
+# and public/_headers.
 [build]
   command = "npm run build"
-  publish = ".next"
-
-# Netlify installs this automatically from the manifest — it does not need to be in
-# package.json. It is what turns Next's server output into Netlify functions.
-[[plugins]]
-  package = "@netlify/plugin-nextjs"
+  publish = "out"
 
 # Static media gets a real cache lifetime. Netlify's default for files served out of the publish
 # directory is `max-age=0, must-revalidate`, which costs a conditional request per asset per
