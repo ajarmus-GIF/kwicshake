@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* Wordmark placeholder face — see the TODO on .brand-wordmark below. */
+/* Wordmark face — see .brand-wordmark below. */
 @import "@fontsource/michroma";
 
 /*
@@ -87,7 +87,6 @@
   --color-foreground: var(--color-fg);
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
-  --font-quote: var(--font-quote);
 }
 
 * {
@@ -171,10 +170,8 @@ body {
 }
 
 /* The "Kwic Shake" wordmark, shared by the hero lockup, the nav bar, and the footer — one
-   class so all three stay in sync. TODO: swap for ITC Handel Gothic Arabic Bold if/when a
-   licensed font file is available (not on Google Fonts/Fontsource, and not something to lift
-   from an unrelated bundled product). Michroma is a free look-alike stand-in for now — same
-   squared, geometric-caps feel, single weight (400) so no font-weight override is needed. */
+   class so all three stay in sync. Michroma is the official wordmark face: squared,
+   geometric caps, single weight (400) so no font-weight override is needed. */
 .brand-wordmark {
   font-family: "Michroma", var(--font-display), sans-serif;
 }

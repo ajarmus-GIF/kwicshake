@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Caveat, Archivo_Black, Karla } from "next/font/google";
+import { Geist_Mono, Archivo_Black, Karla } from "next/font/google";
 import "./globals.css";
 import { SmoothScroll } from "@/components/scroll/SmoothScroll";
 import { TransitionProvider } from "@/components/transition/TransitionProvider";
@@ -7,24 +7,12 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { FooterGate } from "@/components/FooterGate";
 import { TAGLINE } from "@/lib/site";
 
-// TODO: swap for real typefaces via next/font/local or next/font/google.
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-// TODO: swap for a real display/quote typeface — placeholder bouncy hand-lettered script,
-// bold weight, standing in for a custom hand-lettered quote treatment.
-const caveat = Caveat({
-  variable: "--font-quote",
-  subsets: ["latin"],
-  weight: "700",
-});
+// The site's official typefaces:
+//   Archivo Black — display (headings and `.display-face`), --font-display
+//   Karla         — body text, --font-body
+//   Geist Mono    — small uppercase labels and captions (Tailwind `font-mono`), --font-geist-mono
+//   Michroma      — the "Kwic Shake" wordmark only; loaded from @fontsource in globals.css
+// Change a face here (or the wordmark in globals.css), not per component.
 
 // The two faces the site actually reads in. Both used to arrive through a stylesheet <link> to
 // fonts.googleapis.com in <head>, which is the worst available way to load a webfont: it is
@@ -48,6 +36,12 @@ const archivoBlack = Archivo_Black({
 
 const karla = Karla({
   variable: "--font-body",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
   subsets: ["latin"],
   display: "swap",
 });
@@ -87,7 +81,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${caveat.variable} ${archivoBlack.variable} ${karla.variable} h-full`}
+      className={`${geistMono.variable} ${archivoBlack.variable} ${karla.variable} h-full`}
     >
       <body className="flex min-h-full flex-col bg-[var(--color-bg)] text-[var(--color-fg)] antialiased">
         <TransitionProvider>
