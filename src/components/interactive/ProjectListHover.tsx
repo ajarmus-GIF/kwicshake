@@ -19,7 +19,7 @@ export function ProjectListHover({ projects }: { projects: Project[] }) {
               {project.title}
             </span>
             <span className="shrink-0 text-sm text-[var(--color-muted)]">
-              {project.category} — {project.year}
+              {project.category} — Built {project.year}
             </span>
           </TransitionLink>
         </li>

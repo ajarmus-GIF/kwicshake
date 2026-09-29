@@ -1,5 +1,4 @@
 import { notFound } from "next/navigation";
-import { BuildText } from "@/components/text/BuildText";
 import { HeroEntrance } from "@/components/text/HeroEntrance";
 import { MagneticButton } from "@/components/interactive/MagneticButton";
 import { TransitionLink } from "@/components/transition/TransitionProvider";
@@ -56,11 +55,11 @@ export default async function ProjectPage({ params }: PageProps<"/work/[slug]">)
           <p
             data-hero-line
             className="mb-5 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs font-semibold uppercase tracking-widest text-[var(--color-cherry)]">
-            <BuildText text={project.category} delay={700} />
+            <span>{project.category}</span>
             <span aria-hidden="true" className="opacity-40">
               /
             </span>
-            <span>{project.year}</span>
+            <span>Built {project.year}</span>
             {project.status === "in-progress" && (
               <span className="rounded-full border border-[var(--color-cherry)]/40 px-3 py-1 text-[0.65rem] tracking-[0.16em]">
                 In Progress

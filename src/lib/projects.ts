@@ -90,7 +90,7 @@ export const projects: Project[] = [
     slug: "revolt-lacrosse",
     title: "Revolt Lacrosse",
     client: "Revolt Lacrosse",
-    year: "2022",
+    year: "2026",
     category: "Youth Sports Program",
     role: "Positioning, Brand & Web",
     status: "in-progress",

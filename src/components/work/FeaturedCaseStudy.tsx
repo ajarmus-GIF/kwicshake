@@ -108,7 +108,7 @@ export function FeaturedCaseStudy({ project }: { project: Project }) {
             <span aria-hidden="true" className="opacity-40">
               /
             </span>
-            <span>{project.year}</span>
+            <span>Built {project.year}</span>
             {project.status === "in-progress" && (
               <span className="rounded-full border border-[var(--color-cherry)]/40 px-3 py-1 text-[0.65rem] tracking-[0.16em]">
                 In Progress
