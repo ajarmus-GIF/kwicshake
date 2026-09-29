@@ -54,7 +54,7 @@ export function MonologueGrid({ lines }: { lines: MonologueLine[] }) {
 
       const trigger = ScrollTrigger.create({
         trigger: list,
-        start: "top 80%",
+        start: "top 105%",
         once: true,
         onEnter: () => {
           gsap.to(cards, {

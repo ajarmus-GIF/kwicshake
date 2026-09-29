@@ -42,7 +42,7 @@ export function PossibilityList() {
 
       const trigger = ScrollTrigger.create({
         trigger: list,
-        start: "top 78%",
+        start: "top 103%",
         once: true,
         onEnter: () => {
           gsap.to(rows, {

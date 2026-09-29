@@ -25,8 +25,10 @@ import { serviceAnchorId } from "@/components/services/ServiceIndex";
  *
  * ONE-SHOT (fire once on entry) — medallion pop, kicker rule, bullet stagger. Sequenced by
  * ScrollTrigger start percentages rather than one timeline so each piece answers to its own
- * position: the medallion leads at "top 88%", ServiceIcon draws its strokes at "top 85%" (see
- * that component), and the chips land last at "top 75%". Reading down the band, things arrive
+ * position: the medallion leads at "top 113%", ServiceIcon draws its strokes at "top 110%" (see
+ * that component), and the kicker follows at "top 107%". Over 100% means the trigger fires
+ * while the band is still just below the fold, so each piece is already arriving as it scrolls
+ * into view rather than waiting on screen for it. Reading down the band, things arrive
  * in the order the eye reaches them.
  *
  * No infinite loops here on purpose. GrowthFunnel's falling motes are the page's one idling
@@ -104,7 +106,7 @@ export function ServiceShowcase({
           rotate: 0,
           duration: 1.05,
           ease: "back.out(1.5)",
-          scrollTrigger: { trigger: section, start: "top 88%", once: true },
+          scrollTrigger: { trigger: section, start: "top 113%", once: true },
         }
       );
 
@@ -116,7 +118,7 @@ export function ServiceShowcase({
           scaleX: 1,
           duration: 0.7,
           ease: "power3.out",
-          scrollTrigger: { trigger: section, start: "top 82%", once: true },
+          scrollTrigger: { trigger: section, start: "top 107%", once: true },
         }
       );
       gsap.fromTo(
@@ -128,7 +130,7 @@ export function ServiceShowcase({
           duration: 0.6,
           ease: "power3.out",
           delay: 0.15,
-          scrollTrigger: { trigger: section, start: "top 82%", once: true },
+          scrollTrigger: { trigger: section, start: "top 107%", once: true },
         }
       );
 
@@ -144,7 +146,7 @@ export function ServiceShowcase({
             duration: 0.55,
             ease: "back.out(2)",
             stagger: 0.07,
-            scrollTrigger: { trigger: bulletsRef.current, start: "top 88%", once: true },
+            scrollTrigger: { trigger: bulletsRef.current, start: "top 113%", once: true },
           }
         );
       }

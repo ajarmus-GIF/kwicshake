@@ -30,7 +30,7 @@ export function TextReveal({
   children,
   delay = 0,
   stagger = 0.08,
-  start = "top 85%",
+  start = "top 110%",
   className,
 }: {
   as?: ElementType;
