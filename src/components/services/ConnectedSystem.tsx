@@ -57,7 +57,7 @@ export function ConnectedSystem() {
 
       const trigger = ScrollTrigger.create({
         trigger: list,
-        start: "top 101%",
+        start: "top 86%",
         once: true,
         onEnter: () => {
           gsap

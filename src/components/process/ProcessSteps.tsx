@@ -40,7 +40,7 @@ export function ProcessSteps() {
 
       const trigger = ScrollTrigger.create({
         trigger: list,
-        start: "top 105%",
+        start: "top 90%",
         once: true,
         onEnter: () => {
           gsap.to(cards, {

@@ -43,7 +43,7 @@ export function ServiceIndex() {
 
       const trigger = ScrollTrigger.create({
         trigger: list,
-        start: "top 107%",
+        start: "top 92%",
         once: true,
         onEnter: () => {
           gsap.to(rows, {

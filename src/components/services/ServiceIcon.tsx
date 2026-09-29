@@ -35,7 +35,7 @@ export function ServiceIcon({
 
       const trigger = ScrollTrigger.create({
         trigger: svg,
-        start: "top 110%",
+        start: "top 95%",
         once: true,
         onEnter: () => {
           gsap.to(shapes, {

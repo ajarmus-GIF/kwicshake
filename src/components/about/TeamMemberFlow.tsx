@@ -64,7 +64,7 @@ export function TeamMemberFlow({
           y: 28,
           duration: 0.75,
           ease: "power3.out",
-          scrollTrigger: { trigger: beat, start: "top 113%", once: true },
+          scrollTrigger: { trigger: beat, start: "top 98%", once: true },
         });
       });
 
