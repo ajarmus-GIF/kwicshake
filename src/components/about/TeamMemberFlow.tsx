@@ -121,7 +121,7 @@ export function TeamMemberFlow({
       >
         {/* Identity panel — sticks through the beats on md+, plain block below that. */}
         <div className={`md:sticky md:top-24 md:self-start ${panelIsRight ? "md:order-2" : ""}`}>
-          <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-[var(--color-cherry)]">
+          <p className="eyebrow mb-4">
             + {member.role}
           </p>
           <h3

@@ -55,7 +55,7 @@ export default function WorkPage() {
           </div>
           <p
             data-hero-line
-            className="mb-6 text-xs font-semibold uppercase tracking-widest text-[var(--color-cherry)]"
+            className="eyebrow mb-6"
           >
             + <BuildText text="The Work" delay={700} />
           </p>
@@ -73,10 +73,10 @@ export default function WorkPage() {
       {/* The structure, published before any project. Someone deciding whether to trust this
           studio learns more from the six questions we commit to answering than from any single
           answer — and it sets the expectation the case study below then meets. */}
-      <section className="relative overflow-hidden px-6 py-24 sm:py-28">
+      <section className="section-y relative overflow-hidden px-6">
         <div className="relative mx-auto max-w-5xl">
           <div className="mb-14 max-w-2xl">
-            <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-[var(--color-cherry)]">
+            <p className="eyebrow mb-4">
               + How We Tell It
             </p>
             <TextReveal
@@ -106,7 +106,7 @@ export default function WorkPage() {
         </div>
       </section>
 
-      <section className="relative overflow-hidden bg-[var(--color-surface)] px-6 py-24 sm:py-28">
+      <section className="section-y relative overflow-hidden bg-[var(--color-surface)] px-6">
         <div
           className="pointer-events-none absolute -bottom-1/4 left-[-12%] h-[55vw] max-h-[650px] w-[55vw] max-w-[650px] rounded-full opacity-[0.16] blur-3xl"
           style={{ background: "radial-gradient(circle, var(--color-glow), transparent 70%)" }}
@@ -122,7 +122,7 @@ export default function WorkPage() {
       <MonologuePull where="work" />
 
       {/* The honest state of the portfolio, stated rather than disguised. */}
-      <section className="relative overflow-hidden px-6 py-28 text-center sm:py-32">
+      <section className="section-y relative overflow-hidden px-6 text-center">
         <div
           className="pointer-events-none absolute left-1/2 top-1/2 h-[55vw] max-h-[640px] w-[55vw] max-w-[640px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-[0.18] blur-3xl"
           style={{ background: "radial-gradient(circle, var(--color-glow), transparent 70%)" }}
@@ -131,7 +131,7 @@ export default function WorkPage() {
         <div className="relative mx-auto max-w-3xl">
           <TextReveal
             as="h2"
-            className="display-face text-balance text-[clamp(1.75rem,4.5vw,3rem)] font-medium leading-tight tracking-tight"
+            className="section-title"
           >
             Your business could be{" "}
             <span className="text-[var(--color-cherry)]">next.</span>
@@ -156,7 +156,7 @@ export default function WorkPage() {
 
       {/* Close — the philosophy behind the work rather than another CTA. The button above is
           the ask; this is what the work is for. */}
-      <section className="relative overflow-hidden bg-[var(--color-raised)] px-6 py-28 text-center text-[var(--color-on-dark)] sm:py-36">
+      <section className="section-y-lg relative overflow-hidden bg-[var(--color-raised)] px-6 text-center text-[var(--color-on-dark)]">
         <div
           className="pointer-events-none absolute -bottom-1/3 left-1/2 h-[60vw] max-h-[700px] w-[60vw] max-w-[700px] -translate-x-1/2 rounded-full opacity-25 blur-3xl"
           style={{ background: "radial-gradient(circle, var(--color-glow), transparent 70%)" }}

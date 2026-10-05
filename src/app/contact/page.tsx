@@ -56,7 +56,7 @@ export default function ContactPage() {
         <HeroEntrance className="relative mx-auto max-w-4xl">
           <p
             data-hero-line
-            className="mb-6 text-xs font-semibold uppercase tracking-widest text-[var(--color-cherry)]"
+            className="eyebrow mb-6"
           >
             + <BuildText text="Let's Talk" delay={700} />
           </p>
@@ -94,7 +94,7 @@ export default function ContactPage() {
           that stops people from starting, not the one that stops them from finishing. */}
       <MonologuePull where="contact" />
 
-      <section className="relative overflow-hidden px-6 py-24 sm:py-28">
+      <section className="section-y relative overflow-hidden px-6">
         <div
           className="pointer-events-none absolute -bottom-1/4 left-[-12%] h-[50vw] max-h-[600px] w-[50vw] max-w-[600px] rounded-full opacity-[0.16] blur-3xl"
           style={{ background: "radial-gradient(circle, var(--color-glow), transparent 70%)" }}
@@ -144,7 +144,7 @@ export default function ContactPage() {
         </div>
       </section>
 
-      <section className="relative overflow-hidden bg-[var(--color-raised)] px-6 py-24 text-center text-[var(--color-on-dark)] sm:py-28">
+      <section className="section-y-lg relative overflow-hidden bg-[var(--color-raised)] px-6 text-center text-[var(--color-on-dark)]">
         <div
           className="pointer-events-none absolute -bottom-1/3 left-1/2 h-[55vw] max-h-[640px] w-[55vw] max-w-[640px] -translate-x-1/2 rounded-full opacity-25 blur-3xl"
           style={{ background: "radial-gradient(circle, var(--color-glow), transparent 70%)" }}

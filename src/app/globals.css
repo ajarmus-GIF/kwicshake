@@ -28,6 +28,17 @@
     interiors, and text on the accent gradient/cherry-dark backgrounds */
   --color-glow: rgba(107, 47, 168, 0.45); /* Nova optional glow, spec value */
 
+  /* Electric mint — primary accent: results/growth signals (CTAs, conversion stats, metrics,
+    checkmarks). As text: 13.9:1 on --color-paper, 13.4:1 on --color-surface, 13.2:1 on
+    --color-raised — clears 4.5:1 everywhere, same as the background-use direction (--color-paper
+    text on a mint fill, see --color-on-accent below). Safe as both a text and a background role. */
+  --color-mint: #3df5c4;
+  /* Sunset orange — secondary accent, used sparingly for urgency/highlights. As text: 8.3:1 on
+    --color-paper, 8.0:1 on --color-surface, 7.8:1 on --color-raised — also clears 4.5:1 in both
+    directions (text-on-paper and --color-paper-on-fill share the same pair, so the ratio is
+    identical either way). */
+  --color-orange: #ff8a3d;
+
   /* derived ash alpha values */
   --color-ash-22: color-mix(in srgb, var(--color-ash) 22%, transparent); /* hairlines, card border, nav bottom border */
   --color-ash-40: color-mix(in srgb, var(--color-ash) 40%, transparent); /* form field border */
@@ -45,6 +56,16 @@
      visual separation, same contrast constraint applies */
   --color-raised: color-mix(in srgb, var(--color-paper) 97%, var(--color-ink) 3%);
   --color-on-dark: var(--color-ink);
+
+  /* accent (tokens only — not yet wired into any component). Both raw values are light, so the
+    text-on-accent role is --color-paper, not white; see the contrast notes on --color-mint and
+    --color-orange above for the numbers backing this. */
+  --color-accent: var(--color-mint);
+  --color-accent-secondary: var(--color-orange);
+  /* Hover state for the mint accent — darkened toward the page background rather than a new raw
+    hex, so it stays a one-token relationship instead of a second color to maintain. */
+  --color-accent-hover: color-mix(in srgb, var(--color-mint) 78%, var(--color-paper) 22%);
+  --color-on-accent: var(--color-paper);
 
   /* buttons */
   --color-button-primary-bg: linear-gradient(90deg, var(--color-cherry-dark), var(--color-nova-secondary));
@@ -78,6 +99,23 @@
      as a word. Keep any future restop above that ratio: this gradient is the company name. */
   --gradient-shake: linear-gradient(180deg, #c4a0ee 0%, #a87fd8 55%, #9568cc 100%);
 
+  /* Kwic Wins tones (see .wins-tone below and lib/wins.ts). Built only from the Nova palette
+     above — each background is --color-paper, --color-raised, or --color-paper with a little of
+     one brand purple mixed in, and each accent is a brand colour as-is — so the scroll shift
+     reads as the site's own purples catching different light rather than new colours.
+     --color-ink body text holds 15:1+ on every ground; cherry is kept to the plain --color-paper
+     ground, where it clears 4.5:1 (4.8:1); the lilac and white accents hold 7.8:1+. */
+  --color-tone-cherry-bg: var(--color-paper);
+  --color-tone-cherry: var(--color-cherry);
+  --color-tone-nova-bg: color-mix(in srgb, var(--color-paper) 78%, var(--color-cherry-dark) 22%);
+  --color-tone-nova: #c4a0ee; /* SHAKE gradient top */
+  --color-tone-dusk-bg: color-mix(in srgb, var(--color-paper) 75%, var(--color-nova-secondary) 25%);
+  --color-tone-dusk: #c4a0ee;
+  --color-tone-night-bg: var(--color-raised);
+  --color-tone-night: var(--color-white);
+  --color-tone-lilac-bg: color-mix(in srgb, var(--color-paper) 88%, var(--color-cherry) 12%);
+  --color-tone-lilac: #c4a0ee;
+
   --font-sans: var(--font-body), sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 }
@@ -85,6 +123,10 @@
 @theme inline {
   --color-background: var(--color-bg);
   --color-foreground: var(--color-fg);
+  --color-accent: var(--color-accent);
+  --color-accent-secondary: var(--color-accent-secondary);
+  --color-accent-hover: var(--color-accent-hover);
+  --color-on-accent: var(--color-on-accent);
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
 }
@@ -216,47 +258,6 @@ body {
     color: transparent;
     -webkit-text-stroke: 1px var(--color-cherry);
   }
-}
-
-/* Left-edge scrim for the Purpose section's dissolve graphic. Two independent axes, which is
-   why the horizontal falloff is a MASK rather than more color stops — a single linear-gradient
-   can only run one direction, so colour and fade have to be separated to vary in 2D:
-
-     vertical (background)  — starts at --color-surface, the exact background of the section
-       above, and settles into --color-bg by 45%. The top edge reads as a continuation of that
-       section rather than a new panel butted against it. Pair this with removing the bottom
-       border on the section above, or the seam is still drawn as a hard line.
-     horizontal (mask)      — opaque through the text column, gone by 50%. The handshake's
-       solid mass starts at 50.5% of the graphic's width, so the hands are never behind a veil.
-       Stops are eased, not linear: a straight ramp would be down to ~14% opacity right where
-       the last line of text sits. */
-.purpose-scrim {
-  background: linear-gradient(
-    180deg,
-    var(--color-surface) 0%,
-    color-mix(in srgb, var(--color-surface) 45%, var(--color-bg)) 20%,
-    var(--color-bg) 45%
-  );
-  -webkit-mask-image: linear-gradient(
-    90deg,
-    rgba(0, 0, 0, 1) 0%,
-    rgba(0, 0, 0, 1) 5%,
-    rgba(0, 0, 0, 0.96) 20%,
-    rgba(0, 0, 0, 0.84) 31%,
-    rgba(0, 0, 0, 0.58) 39%,
-    rgba(0, 0, 0, 0.26) 45%,
-    rgba(0, 0, 0, 0) 50%
-  );
-  mask-image: linear-gradient(
-    90deg,
-    rgba(0, 0, 0, 1) 0%,
-    rgba(0, 0, 0, 1) 5%,
-    rgba(0, 0, 0, 0.96) 20%,
-    rgba(0, 0, 0, 0.84) 31%,
-    rgba(0, 0, 0, 0.58) 39%,
-    rgba(0, 0, 0, 0.26) 45%,
-    rgba(0, 0, 0, 0) 50%
-  );
 }
 
 /* Primary CTA: the Nova accent gradient. Needs a real class (not a Tailwind bg-[var(...)]
@@ -531,5 +532,156 @@ body {
   }
   50% {
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), 0 0 26px 6px var(--color-glow);
+  }
+}
+
+/* ── Kwic Wins (components/wins/*, app/wins/*) ─────────────────────────────────────────────────
+   `data-tone` on any element sets --tone-bg / --tone-accent for everything inside it. The feed
+   sets it on its wrapper from whichever post is on screen, and each post also sets its own, so
+   a post's accents stay its own colour while the background behind the whole feed shifts.
+
+   The shift is a plain CSS transition on the computed colour — changing the variable changes
+   background-color, and the transition picks that up. No per-frame JS. */
+[data-tone="cherry"] {
+  --tone-bg: var(--color-tone-cherry-bg);
+  --tone-accent: var(--color-tone-cherry);
+}
+[data-tone="nova"] {
+  --tone-bg: var(--color-tone-nova-bg);
+  --tone-accent: var(--color-tone-nova);
+}
+[data-tone="dusk"] {
+  --tone-bg: var(--color-tone-dusk-bg);
+  --tone-accent: var(--color-tone-dusk);
+}
+[data-tone="night"] {
+  --tone-bg: var(--color-tone-night-bg);
+  --tone-accent: var(--color-tone-night);
+}
+[data-tone="lilac"] {
+  --tone-bg: var(--color-tone-lilac-bg);
+  --tone-accent: var(--color-tone-lilac);
+}
+.wins-tone {
+  background-color: var(--tone-bg);
+  transition: background-color 0.9s ease;
+}
+
+/* A home-page band wearing a Kwic Wins tone. Re-points the site accent and muted text at the
+   tone, so everything inside that already says --color-cherry (TextReveal spans, Tagline, the
+   50ms test) follows the band's colour without being edited. Muted text is mixed from the ink
+   rather than kept at --color-ash, which drops under 4.5:1 on the lighter tone grounds. */
+.tone-section {
+  --color-cherry: var(--tone-accent);
+  --color-muted: color-mix(in srgb, var(--color-ink) 68%, var(--tone-bg));
+  --color-glow: color-mix(in srgb, var(--tone-accent) 40%, transparent);
+  background-color: var(--tone-bg);
+  color: var(--color-ink);
+}
+
+.tone-text {
+  color: var(--tone-accent);
+  transition: color 0.9s ease;
+}
+
+.tone-fill {
+  background-color: var(--tone-accent);
+  color: var(--color-paper);
+  transition:
+    background-color 0.9s ease,
+    box-shadow 0.3s ease;
+}
+
+.tone-fill:hover {
+  box-shadow: 0 0 32px color-mix(in srgb, var(--tone-accent) 55%, transparent);
+}
+
+.tone-glow {
+  background: radial-gradient(circle, color-mix(in srgb, var(--tone-accent) 30%, transparent), transparent 70%);
+}
+
+.tone-frame {
+  box-shadow:
+    0 50px 90px -40px rgba(0, 0, 0, 0.9),
+    0 0 80px -30px color-mix(in srgb, var(--tone-accent) 55%, transparent);
+}
+
+/* The oversized post number. Filled fallback first, outline only where the engine can stroke —
+   same defensive ordering as .name-outline. */
+.tone-outline {
+  color: color-mix(in srgb, var(--tone-accent) 18%, transparent);
+}
+
+@supports (-webkit-text-stroke: 1px currentColor) {
+  .tone-outline {
+    color: transparent;
+    -webkit-text-stroke: 1.5px color-mix(in srgb, var(--tone-accent) 45%, transparent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wins-tone,
+  .tone-text,
+  .tone-fill {
+    transition: none;
+  }
+}
+
+/* ── Section system ──────────────────────────────────────────────────────────────────────────
+   One rhythm and one set of section labels for every page, so sections added at different times
+   still read as one site. In the components layer so a Tailwind utility on the same element can
+   still override a single property where a section genuinely needs to differ.
+
+   .section-y      every content section (96px, 128px from sm up)
+   .section-y-lg   the closing statement / call to action on a page (112px, 160px)
+   .eyebrow        the "+ Label" line above a section title. Colour is --color-cherry, which a
+                   .tone-section re-points at its tone, so it follows the band's colour too.
+   .section-title  a section's h2
+   .section-lede   the one supporting line under a section title */
+@layer components {
+  .section-y {
+    padding-block: 6rem;
+  }
+  .section-y-lg {
+    padding-block: 7rem;
+  }
+  @media (min-width: 40rem) {
+    .section-y {
+      padding-block: 8rem;
+    }
+    .section-y-lg {
+      padding-block: 10rem;
+    }
+  }
+
+  .eyebrow {
+    font-family: var(--font-geist-mono), ui-monospace, monospace;
+    font-size: 0.75rem;
+    line-height: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    color: var(--color-cherry);
+    transition: color 0.9s ease;
+  }
+
+  .section-title {
+    font-size: clamp(2rem, 5vw, 3.75rem);
+    font-weight: 500;
+    line-height: 1.06;
+    text-wrap: balance;
+  }
+
+  .section-lede {
+    margin-top: 1.5rem;
+    max-width: 36rem;
+    font-size: 1.125rem;
+    line-height: 1.4;
+    color: var(--color-muted);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .eyebrow {
+    transition: none;
   }
 }

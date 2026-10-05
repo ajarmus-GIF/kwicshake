@@ -60,7 +60,7 @@ export default function ProcessPage() {
           </div>
           <p
             data-hero-line
-            className="mb-6 text-xs font-semibold uppercase tracking-widest text-[var(--color-cherry)]"
+            className="eyebrow mb-6"
           >
             + <BuildText text="Process" delay={700} />
           </p>
@@ -82,7 +82,7 @@ export default function ProcessPage() {
         </HeroEntrance>
       </section>
 
-      <section className="relative overflow-hidden px-6 py-24 sm:py-28">
+      <section className="section-y relative overflow-hidden px-6">
         <div
           className="pointer-events-none absolute -top-1/4 right-[-12%] h-[55vw] max-h-[650px] w-[55vw] max-w-[650px] rounded-full opacity-[0.16] blur-3xl"
           style={{ background: "radial-gradient(circle, var(--color-glow), transparent 70%)" }}
@@ -96,7 +96,7 @@ export default function ProcessPage() {
       {/* The reframe, and the reason steps 05 and 06 exist. Set as a two-line statement rather
           than a paragraph so the second line — the one carrying the actual idea — lands on its
           own. */}
-      <section className="relative overflow-hidden bg-[var(--color-surface)] px-6 py-28 text-center sm:py-32">
+      <section className="section-y relative overflow-hidden bg-[var(--color-surface)] px-6 text-center">
         <div
           className="pointer-events-none absolute left-1/2 top-1/2 h-[55vw] max-h-[640px] w-[55vw] max-w-[640px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-[0.18] blur-3xl"
           style={{ background: "radial-gradient(circle, var(--color-glow), transparent 70%)" }}
@@ -105,7 +105,7 @@ export default function ProcessPage() {
         <div className="relative mx-auto max-w-3xl">
           <TextReveal
             as="h2"
-            className="display-face text-balance text-[clamp(1.75rem,4.5vw,3rem)] font-medium leading-tight tracking-tight"
+            className="section-title"
           >
             <span className="block">Because good marketing isn&apos;t one brilliant idea.</span>
             <span className="mt-3 block text-[var(--color-cherry)]">
@@ -115,7 +115,7 @@ export default function ProcessPage() {
         </div>
       </section>
 
-      <section className="relative overflow-hidden bg-[var(--color-raised)] px-6 py-28 text-center text-[var(--color-on-dark)] sm:py-36">
+      <section className="section-y-lg relative overflow-hidden bg-[var(--color-raised)] px-6 text-center text-[var(--color-on-dark)]">
         <div
           className="pointer-events-none absolute -bottom-1/3 left-1/2 h-[60vw] max-h-[700px] w-[60vw] max-w-[700px] -translate-x-1/2 rounded-full opacity-25 blur-3xl"
           style={{ background: "radial-gradient(circle, var(--color-glow), transparent 70%)" }}
@@ -124,7 +124,7 @@ export default function ProcessPage() {
         <div className="relative mx-auto max-w-3xl">
           <TextReveal
             as="h2"
-            className="mb-10 text-balance text-[clamp(2rem,5.5vw,4rem)] font-medium leading-[1.06] tracking-tight"
+            className="section-title mb-10"
           >
             You don&apos;t have to know which step you&apos;re on.
           </TextReveal>

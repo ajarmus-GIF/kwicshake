@@ -103,7 +103,7 @@ export default async function ProjectPage({ params }: PageProps<"/work/[slug]">)
         />
       </ParallaxMedia>
 
-      <section className="mx-auto max-w-5xl px-6 py-20 sm:py-24">
+      <section className="section-y mx-auto max-w-5xl px-6">
         <dl className="grid grid-cols-1 gap-8 sm:grid-cols-3">
           <div>
             <dt className="mb-2 text-xs uppercase tracking-[0.2em] text-[var(--color-muted)]">
@@ -137,7 +137,7 @@ export default async function ProjectPage({ params }: PageProps<"/work/[slug]">)
 
       <CaseStudyNarrative project={project} />
 
-      <section className="relative overflow-hidden px-6 py-28 text-center sm:py-36">
+      <section className="section-y-lg relative overflow-hidden px-6 text-center">
         <div
           className="pointer-events-none absolute -bottom-1/3 left-1/2 h-[60vw] max-h-[700px] w-[60vw] max-w-[700px] -translate-x-1/2 rounded-full opacity-[0.2] blur-3xl"
           style={{ background: "radial-gradient(circle, var(--color-glow), transparent 70%)" }}

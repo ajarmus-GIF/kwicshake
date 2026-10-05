@@ -77,7 +77,7 @@ export function ProcessSteps() {
           </span>
 
           <div className="relative">
-            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-cherry)]">
+            <p className="eyebrow mb-4">
               {step.number} &mdash; {step.label}
             </p>
             <p className="display-face mb-4 text-[clamp(1.15rem,2.2vw,1.5rem)] leading-snug tracking-tight">

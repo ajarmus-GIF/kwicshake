@@ -65,7 +65,7 @@ export default function AboutPage() {
         <HeroEntrance className="relative mx-auto w-full max-w-5xl">
           <p
             data-hero-line
-            className="mb-6 text-xs font-semibold uppercase tracking-widest text-[var(--color-cherry)]"
+            className="eyebrow mb-6"
           >
             + <BuildText text="The Studio" delay={700} />
           </p>
@@ -85,7 +85,7 @@ export default function AboutPage() {
 
       {/* Origin. One frustration, and it is about businesses like the reader's rather than
           about us — which is what keeps an origin story from being self-indulgent. */}
-      <section className="relative overflow-hidden px-6 py-24 sm:py-28">
+      <section className="section-y relative overflow-hidden px-6">
         <span
           className="pointer-events-none absolute left-[-4%] top-0 select-none font-black leading-none opacity-[0.06]"
           style={{
@@ -135,7 +135,7 @@ export default function AboutPage() {
 
           <div className="flex flex-col gap-8">
             <div>
-              <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-[var(--color-cherry)]">
+              <p className="eyebrow mb-4">
                 + Why We Started
               </p>
               {/* `.display-face` is load-bearing, not decoration: every h1-h6 gets Archivo Black
@@ -171,7 +171,7 @@ export default function AboutPage() {
 
       {/* The goal, in our own words — the only place on the site where we say what we want. It
           is phrased as three things we want FOR the reader's business, not three things we do. */}
-      <section className="relative overflow-hidden bg-[var(--color-surface)] px-6 py-28 sm:py-32">
+      <section className="section-y relative overflow-hidden bg-[var(--color-surface)] px-6">
         <div
           className="pointer-events-none absolute -top-1/4 left-[-12%] h-[55vw] max-h-[650px] w-[55vw] max-w-[650px] rounded-full opacity-[0.18] blur-3xl"
           style={{ background: "radial-gradient(circle, var(--color-glow), transparent 70%)" }}
@@ -223,19 +223,19 @@ export default function AboutPage() {
           that will NOT happen: every agency claims to care, and none of those claims are
           checkable. "You'll talk to the people actually doing the work" is checkable on the
           first call, which is what makes it worth saying. */}
-      <section className="relative overflow-hidden px-6 py-28 sm:py-32">
+      <section className="section-y relative overflow-hidden px-6">
         <div
           className="pointer-events-none absolute -bottom-1/4 right-[-12%] h-[55vw] max-h-[650px] w-[55vw] max-w-[650px] rounded-full opacity-[0.18] blur-3xl"
           style={{ background: "radial-gradient(circle, var(--color-glow), transparent 70%)" }}
           aria-hidden="true"
         />
         <div className="relative mx-auto max-w-4xl">
-          <p className="mb-5 text-xs font-semibold uppercase tracking-widest text-[var(--color-cherry)]">
+          <p className="eyebrow mb-6">
             + What You&apos;re Actually Getting
           </p>
           <TextReveal
             as="h2"
-            className="display-face text-[clamp(2rem,5.5vw,4rem)] font-medium leading-[1.06] tracking-tight"
+            className="section-title"
           >
             You won&apos;t get lost here.
           </TextReveal>
@@ -276,12 +276,12 @@ export default function AboutPage() {
           02
         </span>
         <div className="relative mx-auto max-w-6xl">
-          <p className="mb-4 text-sm font-semibold uppercase tracking-widest text-[var(--color-cherry)]">
+          <p className="eyebrow mb-6">
             + Who&apos;s Behind It
           </p>
           <TextReveal
             as="h2"
-            className="text-[clamp(2.75rem,6.5vw,4.75rem)] font-medium leading-tight tracking-tight"
+            className="section-title"
           >
             The <span className="text-[var(--color-cherry)]">Team</span>
           </TextReveal>
@@ -301,7 +301,7 @@ export default function AboutPage() {
       {/* ── The two of us ───────────────────────────────────────────────────────────────────
           The argument that two people is a feature. It only works after both founders have been
           introduced, which is why it sits here rather than in the hero. */}
-      <section className="relative overflow-hidden bg-[var(--color-surface)] px-6 py-28 sm:py-32">
+      <section className="section-y relative overflow-hidden bg-[var(--color-surface)] px-6">
         <div
           className="pointer-events-none absolute left-1/2 top-1/3 h-[60vw] max-h-[700px] w-[60vw] max-w-[700px] -translate-x-1/2 rounded-full opacity-[0.18] blur-3xl"
           style={{ background: "radial-gradient(circle, var(--color-glow), transparent 70%)" }}
@@ -310,7 +310,7 @@ export default function AboutPage() {
         <div className="relative mx-auto max-w-3xl">
           <TextReveal
             as="h2"
-            className="display-face text-[clamp(1.75rem,4.5vw,3rem)] font-medium leading-[1.1] tracking-tight"
+            className="section-title"
           >
             <span className="block">Different strengths.</span>
             <span className="block text-[var(--color-cherry)]">Same standard.</span>
@@ -344,7 +344,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="relative overflow-hidden bg-[var(--color-raised)] px-6 py-28 text-center text-[var(--color-on-dark)] sm:py-36">
+      <section className="section-y-lg relative overflow-hidden bg-[var(--color-raised)] px-6 text-center text-[var(--color-on-dark)]">
         <div
           className="pointer-events-none absolute -bottom-1/3 left-1/2 h-[60vw] max-h-[700px] w-[60vw] max-w-[700px] -translate-x-1/2 rounded-full opacity-25 blur-3xl"
           style={{ background: "radial-gradient(circle, var(--color-glow), transparent 70%)" }}
@@ -353,7 +353,7 @@ export default function AboutPage() {
         <div className="relative mx-auto max-w-3xl">
           <TextReveal
             as="h2"
-            className="mb-10 text-balance text-[clamp(2rem,5.5vw,4rem)] font-medium leading-[1.06] tracking-tight"
+            className="section-title mb-10"
           >
             Curious what we&apos;d build for you?
           </TextReveal>

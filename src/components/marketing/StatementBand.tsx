@@ -50,7 +50,7 @@ export function StatementBand({
 
   return (
     <section
-      className={`relative overflow-hidden px-6 py-28 sm:py-36 ${ground} ${
+      className={`section-y-lg relative overflow-hidden px-6 ${ground} ${
         centered ? "text-center" : ""
       }`}
     >
@@ -63,7 +63,7 @@ export function StatementBand({
       />
       <div className={`relative ${centered ? "mx-auto" : ""} max-w-4xl`}>
         {eyebrow && (
-          <p className="mb-6 text-xs font-semibold uppercase tracking-widest text-[var(--color-cherry)]">
+          <p className="eyebrow mb-6">
             + {eyebrow}
           </p>
         )}

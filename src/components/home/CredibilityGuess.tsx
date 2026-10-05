@@ -115,7 +115,7 @@ export function CredibilityGuess() {
 
   return (
     <div className="relative mx-auto max-w-2xl text-center">
-      <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-[var(--color-cherry)]">
+      <p className="eyebrow mb-6">
         + Take a guess
       </p>
       <p

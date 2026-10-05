@@ -16,6 +16,8 @@ import { Tagline } from "@/components/marketing/Tagline";
 import { FeaturedCaseStudy } from "@/components/work/FeaturedCaseStudy";
 import { QuoteStartCta } from "@/components/home/QuoteStartCta";
 import { MagneticButton } from "@/components/interactive/MagneticButton";
+import { ScrollThread } from "@/components/atmosphere/ScrollThread";
+import { ToneShift } from "@/components/atmosphere/ToneShift";
 import { TransitionLink } from "@/components/transition/TransitionProvider";
 import { projects } from "@/lib/projects";
 import { problemMonologue } from "@/lib/monologue";
@@ -41,10 +43,11 @@ import { CONTACT_EMAIL } from "@/lib/site";
  * someone to be impressed before they want anything.
  *
  * ── Ground alternation ──────────────────────────────────────────────────────────────────────
- * Adjacent bands never share a background. The page runs photo → raised → default → surface →
- * raised → default → photo → default → raised → surface → cherry → raised, so a long scroll
- * reads as distinct moments rather than one continuous slab. If you add a section, check its
- * neighbours.
+ * Adjacent bands never share a background, so a long scroll reads as distinct moments rather
+ * than one continuous slab. The quieter, text-only beats wear the Kwic Wins tones (`data-tone` +
+ * `.tone-section`, see globals.css) and are stitched
+ * internally with the same dotted ScrollThread the Wins feed uses, so the page shifts colour as
+ * it goes the way that feed does. If you add a section, check its neighbours.
  *
  * ── What deliberately is NOT here ───────────────────────────────────────────────────────────
  * The six service explanations (they live on /services), the full process detail (/process), and
@@ -91,7 +94,7 @@ export default function HomePage() {
           before they're told it. Same raised ground as the band on purpose, and no top padding
           (the band's own bottom padding is the gap), so the two read as one section rather than
           breaking the ground alternation. StatementBand itself stays one statement, no slots. */}
-      <section className="relative bg-[var(--color-raised)] px-6 pb-28 text-[var(--color-on-dark)] sm:pb-36">
+      <section className="relative bg-[var(--color-raised)] px-6 pb-24 text-[var(--color-on-dark)] sm:pb-32">
         <CredibilityGuess />
       </section>
 
@@ -99,18 +102,29 @@ export default function HomePage() {
           number, not an explanation: "50 milliseconds" makes the line concrete without talking
           it into a platitude, and the quiet last line turns it from a warning into our job. The
           50ms test under it lets the reader feel the number instead of taking our word for it. */}
-      <section className="relative overflow-hidden px-6 py-24 text-center sm:py-28">
+      <section
+        data-tone="cherry"
+        className="tone-section section-y relative overflow-hidden px-6 text-center"
+      >
+        <div
+          className="tone-glow pointer-events-none absolute left-1/2 top-0 h-[60vw] max-h-[640px] w-[60vw] max-w-[640px] -translate-x-1/2 rounded-full opacity-50 blur-3xl"
+          aria-hidden="true"
+        />
+        <p className="eyebrow relative mb-6">
+          + The First Look
+        </p>
         <TextReveal
           as="p"
-          className="display-face mx-auto max-w-3xl text-balance text-[clamp(1.75rem,4.5vw,3rem)] font-medium leading-tight tracking-tight"
+          className="display-face section-title relative mx-auto max-w-3xl"
         >
           Your first impression is{" "}
           <span className="text-[var(--color-cherry)]">already marketing.</span>
         </TextReveal>
+        <ScrollThread arrow className="mx-auto mt-8 h-16 max-w-3xl sm:h-20" />
         <TextReveal
           as="p"
           delay={0.15}
-          className="mx-auto mt-12 max-w-2xl text-balance text-[clamp(1.25rem,2.6vw,1.75rem)] leading-snug text-[var(--color-on-dark)]"
+          className="relative mx-auto mt-8 max-w-2xl text-balance text-[clamp(1.25rem,2.6vw,1.75rem)] leading-snug text-[var(--color-on-dark)]"
         >
           <span className="display-face text-[var(--color-cherry)]">50 milliseconds</span> is
           all it takes.
@@ -128,10 +142,9 @@ export default function HomePage() {
       {/* ── PROBLEM ─────────────────────────────────────────────────────────────────────────
           Two voices, in order. First ours, naming the symptoms gently ("maybe"), then theirs,
           in the monologue cards. Ours makes it safe to admit; theirs makes it recognisable. */}
-      <section className="relative overflow-hidden bg-[var(--color-surface)] px-6 py-28 sm:py-32">
+      <ToneShift initial="night" className="section-y relative overflow-hidden px-6">
         <div
-          className="pointer-events-none absolute -top-1/4 left-[-12%] h-[55vw] max-h-[650px] w-[55vw] max-w-[650px] rounded-full opacity-[0.18] blur-3xl"
-          style={{ background: "radial-gradient(circle, var(--color-glow), transparent 70%)" }}
+          className="tone-glow pointer-events-none absolute -top-1/4 left-[-12%] h-[55vw] max-h-[650px] w-[55vw] max-w-[650px] rounded-full opacity-60 blur-3xl"
           aria-hidden="true"
         />
 
@@ -139,8 +152,8 @@ export default function HomePage() {
             removed here. They stated the problem in OUR voice immediately before the monologue
             cards state it in the reader's — the same beat twice, and the weaker version first.
             The eyebrow now leads straight into their own words. */}
-        <div className="relative mx-auto mb-12 max-w-3xl">
-          <p className="text-xs font-semibold uppercase tracking-widest text-[var(--color-cherry)]">
+        <div className="relative mx-auto mb-14 max-w-5xl">
+          <p className="eyebrow">
             + Sound Familiar
           </p>
         </div>
@@ -150,10 +163,19 @@ export default function HomePage() {
         {/* The turn. After eight sentences of recognition, the first thing the page says about
             itself — and it is one line, because arriving quietly after all that recognition is
             what makes it land. */}
-        <div className="relative mx-auto mt-24 max-w-3xl text-center">
+        {/* Same 5xl measure as the cards, so the thread leaves from under the last one. */}
+        <div className="relative mx-auto max-w-5xl">
+          <ScrollThread
+            from={problemMonologue.length % 2 === 1 ? 320 : 680}
+            to={500}
+            arrow
+            className="mt-4 h-20 sm:h-28"
+          />
+        </div>
+        <div className="relative mx-auto max-w-3xl text-center">
           <TextReveal
             as="p"
-            className="text-[clamp(1.25rem,3vw,1.75rem)] leading-snug text-[var(--color-muted)]"
+            className="mt-10 text-[clamp(1.25rem,3vw,1.75rem)] leading-snug text-[var(--color-muted)]"
           >
             That&apos;s where we come in.
           </TextReveal>
@@ -165,21 +187,26 @@ export default function HomePage() {
             <span className="text-[var(--color-cherry)]">take the next step.</span>
           </TextReveal>
         </div>
-      </section>
+      </ToneShift>
 
       {/* ── EMOTION ─────────────────────────────────────────────────────────────────────────
           The thesis of the whole company, stated plainly. Everything the site sells follows
           from this one idea, so it gets the sparest treatment on the page. */}
-      <section className="relative overflow-hidden px-6 py-28 sm:py-36">
+      <section
+        data-tone="dusk"
+        className="tone-section section-y relative overflow-hidden px-6"
+      >
         <div
-          className="pointer-events-none absolute left-1/2 top-1/2 h-[60vw] max-h-[700px] w-[60vw] max-w-[700px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-[0.2] blur-3xl"
-          style={{ background: "radial-gradient(circle, var(--color-glow), transparent 70%)" }}
+          className="tone-glow pointer-events-none absolute left-1/2 top-1/4 h-[60vw] max-h-[700px] w-[60vw] max-w-[700px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-60 blur-3xl"
           aria-hidden="true"
         />
         <div className="relative mx-auto max-w-4xl text-center">
+          <p className="eyebrow mb-6">
+            + Why People Choose
+          </p>
           <TextReveal
             as="h2"
-            className="display-face text-balance text-[clamp(2rem,5.5vw,4rem)] font-medium leading-[1.06] tracking-tight"
+            className="section-title"
           >
             They buy because{" "}
             <span className="text-[var(--color-cherry)]">they believe.</span>
@@ -187,26 +214,57 @@ export default function HomePage() {
 
           <TextReveal
             as="p"
-            className="mx-auto mt-6 max-w-xl text-lg leading-snug text-[var(--color-muted)]"
+            className="section-lede mx-auto"
           >
             Not because they understand.
           </TextReveal>
+        </div>
 
-          <div className="mx-auto mt-14 max-w-2xl space-y-5 text-left sm:text-center">
-            <TextReveal as="p" className="text-lg leading-snug sm:text-xl">
-              They remember the business that made them feel confident.
-            </TextReveal>
-            <TextReveal as="p" className="text-lg leading-snug sm:text-xl">
-              They trust the company that looked like it knew exactly what it was doing.
-            </TextReveal>
-            <TextReveal as="p" className="text-lg leading-snug sm:text-xl">
-              They choose the brand that made the decision feel easy.
-            </TextReveal>
-          </div>
+        {/* The three reasons, zigzagging down the page the way the Kwic Wins feed does — an
+            oversized outlined number on alternating sides, the thread drawing from one to the
+            next — so three sentences read as one descent toward the line that closes them. */}
+        <ol className="relative mx-auto mt-16 max-w-4xl">
+          {[
+            "They remember the business that made them feel confident.",
+            "They trust the company that looked like it knew exactly what it was doing.",
+            "They choose the brand that made the decision feel easy.",
+          ].map((line, index, lines) => {
+            const right = index % 2 === 1;
+            return (
+              <li key={line}>
+                <div
+                  className={`flex items-center gap-5 sm:gap-8 ${right ? "flex-row-reverse text-right" : ""}`}
+                >
+                  <span
+                    aria-hidden="true"
+                    className="display-face tone-outline w-[1.3em] shrink-0 text-center text-[clamp(3.5rem,9vw,7rem)] leading-none"
+                  >
+                    {index + 1}
+                  </span>
+                  <TextReveal
+                    as="p"
+                    className="display-face max-w-xl text-balance text-[clamp(1.3rem,3vw,2.1rem)] leading-snug"
+                  >
+                    {line}
+                  </TextReveal>
+                </div>
+                {index < lines.length - 1 && (
+                  <ScrollThread
+                    from={right ? 935 : 65}
+                    to={right ? 65 : 935}
+                    className="my-3 h-16 sm:h-24"
+                  />
+                )}
+              </li>
+            );
+          })}
+        </ol>
 
+        <div className="relative mx-auto max-w-4xl text-center">
+          <ScrollThread from={65} to={500} arrow className="mt-3 h-20 sm:h-28" />
           <TextReveal
             as="p"
-            className="mt-12 text-[clamp(1.5rem,3.5vw,2.25rem)] font-medium leading-none text-[var(--color-cherry)]"
+            className="mt-10 text-[clamp(1.5rem,3.5vw,2.25rem)] font-medium leading-none text-[var(--color-cherry)]"
           >
             That&apos;s what we&apos;re building.
           </TextReveal>
@@ -216,7 +274,7 @@ export default function HomePage() {
       {/* The eye-into-thought-cloud morph. It was already making exactly this argument before
           the rewrite — seen versus remembered — so it stays untouched and simply moves to where
           that argument now belongs: immediately before the brand line it sets up. */}
-      <section className="border-t border-[var(--color-border)] bg-[var(--color-surface)] px-6 py-20">
+      <section className="border-t border-[var(--color-border)] bg-[var(--color-surface)] section-y px-6">
         <EyeCloudReveal
           lineOne={
             <>
@@ -236,21 +294,24 @@ export default function HomePage() {
       {/* The brand line, arriving as the conclusion of the emotional argument rather than as a
           slogan. Everything above it — trust, belief, seen versus remembered — is the reason it
           means anything here. */}
-      <section className="relative overflow-hidden bg-[var(--color-raised)] px-6 py-28 text-center text-[var(--color-on-dark)] sm:py-36">
+      <section
+        data-tone="nova"
+        className="tone-section section-y relative overflow-hidden px-6 text-center"
+      >
         <div
-          className="pointer-events-none absolute left-1/2 top-1/2 h-[60vw] max-h-[700px] w-[60vw] max-w-[700px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-25 blur-3xl"
-          style={{ background: "radial-gradient(circle, var(--color-glow), transparent 70%)" }}
+          className="tone-glow pointer-events-none absolute left-1/2 top-1/2 h-[60vw] max-h-[700px] w-[60vw] max-w-[700px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-70 blur-3xl"
           aria-hidden="true"
         />
         <div className="relative mx-auto max-w-3xl">
           <TextReveal
             as="p"
-            className="text-balance text-[clamp(1.25rem,2.8vw,1.75rem)] leading-snug text-[var(--color-on-dark)]/70"
+            className="text-balance text-[clamp(1.25rem,2.8vw,1.75rem)] leading-snug text-[var(--color-muted)]"
           >
             Your website isn&apos;t just a website. It&apos;s the moment someone decides whether
             you&apos;re worth their time.
           </TextReveal>
-          <div className="mt-12">
+          <ScrollThread arrow className="mt-8 h-16 sm:h-20" />
+          <div className="mt-10">
             <Tagline size="lg" />
           </div>
         </div>
@@ -260,19 +321,19 @@ export default function HomePage() {
           The first section on the page that describes a good outcome. It only arrives after the
           reader has recognised the problem and accepted the premise — offered earlier it would
           be a feature list, offered here it is a picture of their own business. */}
-      <section className="relative overflow-hidden px-6 py-28 sm:py-32">
+      <section className="section-y relative overflow-hidden px-6">
         <div
           className="pointer-events-none absolute -bottom-1/4 right-[-12%] h-[55vw] max-h-[650px] w-[55vw] max-w-[650px] rounded-full opacity-[0.16] blur-3xl"
           style={{ background: "radial-gradient(circle, var(--color-glow), transparent 70%)" }}
           aria-hidden="true"
         />
         <div className="relative mx-auto max-w-4xl">
-          <p className="mb-5 text-xs font-semibold uppercase tracking-widest text-[var(--color-cherry)]">
+          <p className="eyebrow mb-6">
             + What It Could Look Like
           </p>
           <TextReveal
             as="h2"
-            className="display-face mb-14 max-w-3xl text-[clamp(1.75rem,4.5vw,3.25rem)] font-medium leading-[1.08] tracking-tight"
+            className="section-title max-w-3xl"
           >
             The version{" "}
             <span className="text-[var(--color-cherry)]">
@@ -281,7 +342,7 @@ export default function HomePage() {
           </TextReveal>
           <TextReveal
             as="p"
-            className="mb-14 -mt-10 max-w-xl text-lg leading-snug text-[var(--color-muted)]"
+            className="section-lede"
           >
             Your business should feel like it.
           </TextReveal>
@@ -294,7 +355,7 @@ export default function HomePage() {
 
               The list keeps the wider column — the five lines are still what carries the beat;
               the images support them. */}
-          <div className="grid grid-cols-1 gap-10 md:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] md:items-start md:gap-14">
+          <div className="mt-14 grid grid-cols-1 gap-10 md:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] md:items-start md:gap-14">
             <PossibilityList />
 
             <div className="flex flex-col gap-5">
@@ -357,7 +418,7 @@ export default function HomePage() {
 
       {/* ── PROOF ───────────────────────────────────────────────────────────────────────── */}
       <section
-        className="relative overflow-hidden bg-[var(--color-raised)] px-6 py-28 text-[var(--color-on-dark)] sm:py-32"
+        className="section-y relative overflow-hidden bg-[var(--color-raised)] px-6 text-[var(--color-on-dark)]"
         style={
           {
             "--color-fg": "var(--color-on-dark)",
@@ -376,12 +437,12 @@ export default function HomePage() {
             The frame caps itself against viewport height, so the wider container buys size on a
             desktop without pushing the bottom of the video off a laptop screen. */}
         <div className="relative mx-auto max-w-6xl">
-          <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-[var(--color-cherry)]">
+          <p className="eyebrow mb-6">
             + The Work
           </p>
           <TextReveal
             as="h2"
-            className="mb-14 max-w-3xl text-[clamp(1.75rem,4.5vw,3rem)] font-medium leading-tight"
+            className="section-title max-w-3xl"
           >
             We show you{" "}
             <span className="text-[var(--color-cherry)]">what changed.</span>
@@ -391,12 +452,14 @@ export default function HomePage() {
               the moving frame underneath it is — a real page, running, rather than a render. */}
           <TextReveal
             as="p"
-            className="mb-14 -mt-10 max-w-xl text-lg leading-snug text-[var(--color-muted)]"
+            className="section-lede"
           >
             Not pretty websites. The work itself, running.
           </TextReveal>
 
-          <FeaturedCaseStudy project={featured} />
+          <div className="mt-14">
+            <FeaturedCaseStudy project={featured} />
+          </div>
 
           {/* Founders' note. Plain <p>, not TextReveal — SplitText rewraps text nodes into
               per-line divs, and this paragraph has an anchor inside it that React owns.
@@ -426,26 +489,35 @@ export default function HomePage() {
           A teaser, not the process. Six verbs is enough to convert "this sounds like a big
           undertaking" into "that's six steps and none of them are mine"; the detail lives on
           /process for the reader who wants to be sure. */}
-      <section className="relative overflow-hidden bg-[var(--color-surface)] px-6 py-28 sm:py-32">
+      <section
+        data-tone="night"
+        className="tone-section section-y relative overflow-hidden px-6"
+      >
+        <div
+          className="tone-glow pointer-events-none absolute -bottom-1/4 right-[-10%] h-[55vw] max-h-[640px] w-[55vw] max-w-[640px] rounded-full opacity-60 blur-3xl"
+          aria-hidden="true"
+        />
         <div className="relative mx-auto max-w-4xl text-center">
-          <p className="mb-5 text-xs font-semibold uppercase tracking-widest text-[var(--color-cherry)]">
+          <p className="eyebrow mb-6">
             + How It Goes
           </p>
           <TextReveal
             as="h2"
-            className="display-face text-balance text-[clamp(1.75rem,4.5vw,3rem)] font-medium leading-tight tracking-tight"
+            className="section-title"
           >
             First:{" "}
             <span className="text-[var(--color-cherry)]">what isn&apos;t working.</span>
           </TextReveal>
           <TextReveal
             as="p"
-            className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-[var(--color-muted)] sm:text-lg"
+            className="section-lede mx-auto"
           >
             Not what you think isn&apos;t working. What&apos;s actually getting in the way.
           </TextReveal>
 
-          <ol className="mx-auto mt-14 flex max-w-3xl flex-wrap items-center justify-center gap-x-3 gap-y-4 sm:gap-x-4">
+          <ScrollThread arrow className="mt-8 h-14 sm:h-16" />
+
+          <ol className="mx-auto mt-10 flex max-w-3xl flex-wrap items-center justify-center gap-x-3 gap-y-4 sm:gap-x-4">
             {processSteps.map((step, index) => (
               <li key={step.number} className="flex items-center gap-3 sm:gap-4">
                 <span className="text-xs font-semibold uppercase tracking-[0.18em]">
@@ -468,9 +540,10 @@ export default function HomePage() {
               as={TransitionLink}
               href="/process"
               radius={100}
-              className="inline-flex items-center gap-2 border border-[var(--color-fg)] px-7 py-3.5 text-sm uppercase tracking-widest transition-colors hover:border-[var(--color-cherry)] hover:text-[var(--color-cherry)]"
+              className="tone-fill inline-flex items-center gap-3 rounded-full px-7 py-4 text-xs font-bold uppercase tracking-widest"
             >
               See How We Work
+              <span aria-hidden="true">&rarr;</span>
             </MagneticButton>
           </div>
         </div>
@@ -526,43 +599,36 @@ export default function HomePage() {
           rewrite intact — it is the least sales-shaped call to action on the site, which is
           exactly right for a visitor who has just been told they don't have to have it figured
           out. See QuoteStartCta for why the button is built to sit inside a line of prose. */}
-      <section className="relative overflow-hidden bg-[var(--color-raised)] px-6 py-28 text-center text-[var(--color-on-dark)] sm:py-36">
+      <section
+        data-tone="nova"
+        className="tone-section section-y-lg relative overflow-hidden px-6 text-center"
+      >
         <div
-          className="pointer-events-none absolute -bottom-1/3 left-1/2 h-[60vw] max-h-[700px] w-[60vw] max-w-[700px] -translate-x-1/2 rounded-full opacity-25 blur-3xl"
-          style={{ background: "radial-gradient(circle, var(--color-glow), transparent 70%)" }}
+          className="tone-glow pointer-events-none absolute left-1/2 top-1/2 h-[60vw] max-h-[700px] w-[60vw] max-w-[700px] -translate-x-1/2 -translate-y-1/2 rounded-full blur-3xl"
           aria-hidden="true"
         />
         <div className="relative mx-auto max-w-3xl">
-          {/* Light leak behind the accent line. `mix-blend-screen` is what makes it read as
-              light rather than as a purple panel laid over the section: screen is additive, so
-              on this near-black background it brightens toward cherry instead of flatly tinting.
-              Biased low (top-[62%]) so the bloom pools behind the accent half of the line rather
-              than the white first half, and inset negatively so its soft edge is already past
-              the text before it falls off. The section's own `overflow-hidden` clips it. */}
-          <div className="relative mb-8">
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-x-[-18%] top-[62%] h-[80%] -translate-y-1/2 opacity-70 blur-[70px] mix-blend-screen"
-              style={{
-                background:
-                  "radial-gradient(ellipse 62% 52% at 50% 50%, color-mix(in srgb, var(--color-white) 62%, transparent) 0%, transparent 72%)",
-              }}
-            />
-            <TextReveal
-              as="h2"
-              className="relative text-[clamp(2.25rem,6vw,4.5rem)] font-medium leading-[1.05] tracking-tight"
-            >
-              Impossible{" "}
-              <span className="text-[var(--color-cherry)]">to scroll past.</span>
-            </TextReveal>
-          </div>
+          <p className="eyebrow mb-6">
+            + Your Move
+          </p>
+          <TextReveal
+            as="h2"
+            className="section-title text-[var(--color-white)]"
+          >
+            Impossible{" "}
+            <span className="text-[var(--color-cherry)]">to scroll past.</span>
+          </TextReveal>
 
-          <figure className="flex flex-col items-center gap-3">
-            <blockquote className="text-[clamp(1.25rem,2.5vw,1.75rem)] leading-relaxed text-[var(--color-on-dark)]/75">
+          {/* The thread drops from the headline into the quote, whose last word is the button —
+              the same "follow the line, land on the ask" move as the Kwic Wins feed. */}
+          <ScrollThread arrow className="mt-8 h-20 sm:h-28" />
+
+          <figure className="mt-10 flex flex-col items-center gap-4">
+            <blockquote className="text-balance text-[clamp(1.35rem,2.8vw,2rem)] leading-relaxed text-[var(--color-fg)]/85">
               The scariest moment is always just before you{" "}
               <QuoteStartCta />
             </blockquote>
-            <figcaption className="whitespace-nowrap text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-cherry)]">
+            <figcaption className="eyebrow whitespace-nowrap">
               &mdash; Stephen King
             </figcaption>
           </figure>

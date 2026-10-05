@@ -20,6 +20,9 @@ import { TransitionLink } from "@/components/transition/TransitionProvider";
  * filled-gradient look is declared once and both paths reach it. Adding a second, hand-copied
  * set of "flash" classes is how the two silently drift apart the next time one is edited.
  *
+ * Colours come from `--tone-accent`, so the button takes whichever Kwic Wins tone its section
+ * wears (the home close sets one) — the same filled-pill look as the feed's "Get it free".
+ *
  * `prefers-reduced-motion` skips the flash entirely — no timer is ever set, no ScrollTrigger is
  * mounted, and the button is exactly the hover-only control it would otherwise be.
  */
@@ -66,12 +69,11 @@ export function QuoteStartCta() {
       href="/contact"
       aria-label="Start a project"
       data-flash={flash}
-      className="group relative inline-block whitespace-nowrap rounded-full border border-[var(--color-cherry)]/45 px-[0.6em] py-[0.06em] align-baseline text-[var(--color-cherry)] transition-[color,border-color,box-shadow] duration-300 hover:border-transparent hover:text-[var(--color-button-primary-text)] hover:shadow-[0_0_28px_var(--color-glow)] data-[flash=true]:border-transparent data-[flash=true]:text-[var(--color-button-primary-text)] data-[flash=true]:shadow-[0_0_28px_var(--color-glow)]"
+      className="group relative inline-block whitespace-nowrap rounded-full border border-[var(--tone-accent)]/50 px-[0.6em] py-[0.06em] align-baseline text-[var(--tone-accent)] transition-[color,border-color,box-shadow] duration-300 hover:border-transparent hover:text-[var(--color-paper)] hover:shadow-[0_0_32px_color-mix(in_srgb,var(--tone-accent)_55%,transparent)] data-[flash=true]:border-transparent data-[flash=true]:text-[var(--color-paper)] data-[flash=true]:shadow-[0_0_32px_color-mix(in_srgb,var(--tone-accent)_55%,transparent)]"
     >
       <span
         aria-hidden="true"
-        className="absolute inset-0 rounded-full opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-data-[flash=true]:opacity-100"
-        style={{ backgroundImage: "var(--color-button-primary-bg)" }}
+        className="absolute inset-0 rounded-full bg-[var(--tone-accent)] opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-data-[flash=true]:opacity-100"
       />
       <span className="relative">start</span>
     </TransitionLink>

@@ -84,7 +84,7 @@ export function ServiceSplitScroll() {
   const activeService = services[active];
 
   return (
-    <section className="relative bg-[var(--color-surface)] px-6 py-24 sm:py-28">
+    <section className="section-y relative bg-[var(--color-surface)] px-6">
       {/* NO overflow-hidden on the section itself. An overflow-hidden ancestor becomes the
           scroll container for any position:sticky descendant, and the left panel then never
           sticks — it scrolls away with the column and the whole interaction silently disappears.
@@ -100,10 +100,10 @@ export function ServiceSplitScroll() {
       <div className="relative mx-auto max-w-6xl">
         <div className="mb-16 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-[var(--color-cherry)]">
+            <p className="eyebrow mb-6">
               + What We Actually Do
             </p>
-            <h2 className="max-w-2xl text-[clamp(1.75rem,4.5vw,3rem)] font-medium leading-tight">
+            <h2 className="section-title max-w-2xl">
               Pieces that{" "}
               <span className="text-[var(--color-cherry)]">work together.</span>
             </h2>

@@ -12,7 +12,7 @@ import { TransitionLink } from "@/components/transition/TransitionProvider";
  * stay boringly reliable through page transitions.
  *
  * ── Small screens ──────────────────────────────────────────────────────────────────────────
- * A single row of five links plus a pill plus the wordmark measures roughly 440px at `text-sm`,
+ * A single row of six links plus a pill plus the wordmark measures roughly 520px at `text-sm`,
  * against about 352px of usable width on a 400px screen — so below `sm` the links collapse into
  * a hamburger (see MobileNav) and only the wordmark, the pill, and the trigger stay in the bar.
  *
@@ -37,6 +37,7 @@ export const navLinks = [
   { href: "/work", label: "Work" },
   { href: "/process", label: "Process" },
   { href: "/about", label: "About" },
+  { href: "/wins", label: "Free Wins" },
 ];
 
 export function NavLinks({ linkClassName = "" }: { linkClassName?: string }) {

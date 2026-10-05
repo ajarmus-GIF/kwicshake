@@ -65,7 +65,7 @@ export default function ServicesPage() {
           <HeroEntrance>
             <p
               data-hero-line
-              className="mb-6 text-xs font-semibold uppercase tracking-widest text-[var(--color-cherry)]"
+              className="eyebrow mb-6"
             >
               + <BuildText text="Services" delay={700} />
             </p>
@@ -130,7 +130,7 @@ export default function ServicesPage() {
           and an overflow-hidden ancestor would make this section the sticky scroll container,
           so the column would never actually stick. The drifting glow is clipped by its own
           wrapper instead. See components/about/TeamMemberFlow.tsx for the full explanation. */}
-      <section className="relative px-6 py-24 sm:py-28">
+      <section className="section-y relative px-6">
         <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
           <ScrollDrift
             from={-10}
@@ -146,7 +146,7 @@ export default function ServicesPage() {
 
         <div className="relative mx-auto grid max-w-5xl gap-12 md:grid-cols-[0.85fr_1.15fr] md:gap-16">
           <div className="md:sticky md:top-28 md:self-start">
-            <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-[var(--color-cherry)]">
+            <p className="eyebrow mb-4">
               + The Short Version
             </p>
             <TextReveal
@@ -187,19 +187,19 @@ export default function ServicesPage() {
 
       {/* The system. Deliberately last: it only lands once all six disciplines have been met
           individually, because its argument is that those six are one machine. */}
-      <section className="relative overflow-hidden px-6 py-28 sm:py-32">
+      <section className="section-y relative overflow-hidden px-6">
         <div
           className="pointer-events-none absolute left-1/2 top-1/3 h-[60vw] max-h-[720px] w-[60vw] max-w-[720px] -translate-x-1/2 rounded-full opacity-[0.22] blur-3xl"
           style={{ background: "radial-gradient(circle, var(--color-glow), transparent 70%)" }}
           aria-hidden="true"
         />
         <div className="relative mx-auto mb-16 max-w-3xl text-center">
-          <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-[var(--color-cherry)]">
+          <p className="eyebrow mb-6">
             + Why It Works Together
           </p>
           <TextReveal
             as="h2"
-            className="display-face text-balance text-[clamp(1.75rem,4.5vw,3rem)] font-medium leading-tight tracking-tight"
+            className="section-title"
           >
             Every piece of marketing should{" "}
             <span className="text-[var(--color-cherry)]">
@@ -213,7 +213,7 @@ export default function ServicesPage() {
       </section>
 
       {/* Close — full-bleed dark band, mirrors the hero's gradient treatment for a bookend. */}
-      <section className="relative overflow-hidden bg-[var(--color-raised)] px-6 py-28 text-center text-[var(--color-on-dark)] sm:py-36">
+      <section className="section-y-lg relative overflow-hidden bg-[var(--color-raised)] px-6 text-center text-[var(--color-on-dark)]">
         <ScrollDrift
           from={-16}
           to={10}

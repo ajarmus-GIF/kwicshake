@@ -195,7 +195,7 @@ export function HomeHero() {
             fixed left edge to resolve away from. */}
         <p
           data-hero-line
-          className="hero-text-shadow mb-4 text-xs font-semibold uppercase tracking-widest text-[var(--color-cherry)]"
+          className="eyebrow hero-text-shadow mb-4"
         >
           + <BuildText text={DESCRIPTOR} delay={700} />
         </p>

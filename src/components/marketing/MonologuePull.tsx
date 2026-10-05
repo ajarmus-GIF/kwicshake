@@ -30,7 +30,7 @@ export function MonologuePull({
 
   return (
     <section
-      className={`relative overflow-hidden px-6 py-24 text-center sm:py-28 ${
+      className={`section-y relative overflow-hidden px-6 text-center ${
         raised ? "bg-[var(--color-raised)] text-[var(--color-on-dark)]" : "bg-[var(--color-surface)]"
       }`}
     >

@@ -21,7 +21,7 @@ import { TextReveal } from "@/components/text/TextReveal";
  * This section is NOT a services pitch and must not become one. The moment a deliverable or a
  * price or a "learn more" appears here, the reader is back to evaluating rather than exhaling.
  */
-import Image from "next/image";
+import { ScrollThread } from "@/components/atmosphere/ScrollThread";
 
 const notYourJob = [
   "You shouldn't need to understand SEO.",
@@ -29,55 +29,61 @@ const notYourJob = [
   "You shouldn't need to spend your nights wondering why your website isn't working.",
 ];
 
+/**
+ * Laid out as one drop down the middle of the page: claim, then each thing off their plate,
+ * strung together by the dotted thread (see atmosphere/ScrollThread) and landing on the arrow
+ * into "That's our job." The thread is what makes three separate sentences read as a single
+ * release, and the answer arrive as where the line was always going.
+ *
+ * The handshake graphic that used to sit behind this was removed — the copy carries the beat.
+ */
 export function PurposeSection() {
   return (
-    <section className="relative isolate overflow-hidden bg-[var(--color-bg)] px-6 py-28 sm:py-32">
-      <Image
-        src="/images/purpose-dissolve.png"
-        alt=""
-        fill
-        sizes="100vw"
-        className="object-cover object-right"
+    <section
+      data-tone="lilac"
+      className="section-y tone-section relative overflow-hidden px-6 text-center"
+    >
+      <div
+        className="tone-glow pointer-events-none absolute left-1/2 top-1/3 h-[70vw] max-h-[760px] w-[70vw] max-w-[760px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-60 blur-3xl"
+        aria-hidden="true"
       />
-      <div aria-hidden="true" className="purpose-scrim absolute inset-0" />
 
-      {/* No `mx-auto max-w-*` wrapper: the block sits flush against the section's own px-6
-          gutter, the same way HomeHero's text column does, rather than starting at a centered
-          container's left edge. */}
-      <div className="relative">
-        <div className="max-w-2xl text-left">
-          <TextReveal
-            as="h2"
-            className="hero-text-shadow text-[clamp(1.75rem,4.2vw,3rem)] font-medium leading-[1.1]"
-          >
-            <span className="block text-[var(--color-white)]">You have a</span>
-            <span className="block text-[var(--color-cherry)]">business to run.</span>
-          </TextReveal>
+      <div className="relative mx-auto max-w-3xl">
+        <p className="eyebrow mb-6">
+          + Not Your Job
+        </p>
+        <TextReveal
+          as="h2"
+          className="section-title"
+        >
+          <span className="block text-[var(--color-white)]">You have a</span>
+          <span className="block text-[var(--color-cherry)]">business to run.</span>
+        </TextReveal>
+        <TextReveal
+          as="p"
+          className="mx-auto mt-6 max-w-lg text-lg leading-snug text-[var(--color-muted)] sm:text-xl"
+        >
+          You shouldn&apos;t have to become a marketer too.
+        </TextReveal>
 
-          {/* The second half of the original headline. It is the argument, not the statement,
-              so it reads better one size down and directly under the claim it qualifies. */}
-          <TextReveal
-            as="p"
-            className="hero-text-shadow mt-5 max-w-lg text-lg leading-snug text-[var(--color-on-dark)]/80"
-          >
-            You shouldn&apos;t have to become a marketer too.
-          </TextReveal>
-
-          <ul className="mt-8 space-y-3">
-            {notYourJob.map((line) => (
-              <li
-                key={line}
-                className="hero-text-shadow max-w-xl text-base leading-relaxed text-[var(--color-on-dark)]/80 sm:text-lg"
+        <ul>
+          {notYourJob.map((line) => (
+            <li key={line}>
+              <ScrollThread className="h-16 sm:h-20" />
+              <TextReveal
+                as="p"
+                className="mx-auto mt-4 max-w-xl text-balance text-lg leading-relaxed text-[var(--color-fg)]/85 sm:text-xl"
               >
                 {line}
-              </li>
-            ))}
-          </ul>
+              </TextReveal>
+            </li>
+          ))}
+        </ul>
 
-          <p className="hero-text-shadow mt-8 text-[clamp(1.5rem,3.5vw,2.25rem)] font-medium leading-none text-[var(--color-cherry)]">
-            That&apos;s our job.
-          </p>
-        </div>
+        <ScrollThread arrow className="mt-4 h-20 sm:h-24" />
+        <p className="display-face mt-8 text-[clamp(2.25rem,6vw,4rem)] leading-none text-[var(--color-cherry)]">
+          That&apos;s our job.
+        </p>
       </div>
     </section>
   );

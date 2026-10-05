@@ -18,10 +18,10 @@ export function CaseStudyRedesign({
   redesign: NonNullable<Project["redesign"]>;
 }) {
   return (
-    <section className="relative px-4 py-20 sm:px-6 sm:py-28">
+    <section className="section-y relative px-4 sm:px-6">
       <div className="mx-auto max-w-6xl">
         <div className="mb-12 max-w-2xl sm:mb-14">
-          <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-[var(--color-cherry)]">
+          <p className="eyebrow mb-6">
             + {redesign.eyebrow}
           </p>
           <TextReveal

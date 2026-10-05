@@ -36,7 +36,7 @@ const after = [
 
 export function BeforeAfter({ attribution }: { attribution?: string }) {
   return (
-    <section className="relative overflow-hidden px-6 py-28 sm:py-32">
+    <section className="section-y relative overflow-hidden px-6">
       <div
         className="pointer-events-none absolute -top-1/4 right-[-12%] h-[55vw] max-h-[650px] w-[55vw] max-w-[650px] rounded-full opacity-[0.16] blur-3xl"
         style={{ background: "radial-gradient(circle, var(--color-glow), transparent 70%)" }}
@@ -45,12 +45,12 @@ export function BeforeAfter({ attribution }: { attribution?: string }) {
 
       <div className="relative mx-auto max-w-5xl">
         <div className="mb-14 max-w-2xl">
-          <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-[var(--color-cherry)]">
+          <p className="eyebrow mb-6">
             + The Shift
           </p>
           <TextReveal
             as="h2"
-            className="display-face text-[clamp(2rem,5vw,3.5rem)] font-medium leading-[1.06] tracking-tight"
+            className="section-title"
           >
             <span className="block">Same business.</span>
             <span className="block text-[var(--color-cherry)]">
