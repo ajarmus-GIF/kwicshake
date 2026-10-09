@@ -14,6 +14,7 @@ import { BelieveMoments } from "@/components/reveal/BelieveMoments";
 import { ImagineYours } from "@/components/reveal/ImagineYours";
 import { DoThis } from "@/components/reveal/DoThis";
 import { ServiceEngine } from "@/components/reveal/ServiceEngine";
+import { ConceptStudies } from "@/components/concepts/ConceptStudies";
 import { projects } from "@/lib/projects";
 import { processSteps } from "@/lib/process";
 
@@ -101,6 +102,16 @@ export default function HomeConceptOnePage() {
       {/* ── POSSIBILITY: pick a business ──────────────────────────────────────────────── */}
       <section className="section-y relative overflow-hidden bg-[var(--color-paper)] px-6">
         <ImagineYours />
+        {/* The same idea, art-directed: real studies of what eight different businesses could
+            look like. Follows the toy directly so "you get your own world" has proof under it. */}
+        <div className="relative mx-auto mt-24 max-w-6xl">
+          <p className="eyebrow mb-4">+ More worlds</p>
+          <p className="display-face mb-10 max-w-2xl text-balance text-[clamp(1.5rem,3vw,2.25rem)] leading-tight">
+            Same phone. Same room.{" "}
+            <span className="text-[var(--color-cherry)]">Eight different businesses.</span>
+          </p>
+          <ConceptStudies />
+        </div>
       </section>
 
       {/* ── RELIEF ────────────────────────────────────────────────────────────────────── */}

@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { MagneticButton } from "@/components/interactive/MagneticButton";
 import { TransitionLink } from "@/components/transition/TransitionProvider";
-import { PixelField } from "@/components/reveal/PixelField";
+import { ConceptHeroPicture } from "@/components/concepts/ConceptHeroPicture";
+import { ConceptStudies } from "@/components/concepts/ConceptStudies";
 import { useReducedMotion } from "@/hooks/useMediaQuery";
 import type { World } from "@/lib/worlds";
 import { StatGuess } from "./StatGuess";
@@ -67,29 +69,40 @@ export function CustomerRun() {
       <Rail unlocked={unlocked} done={done} />
 
       {/* ── The door ───────────────────────────────────────────────────────────────────── */}
-      <Stage id="moment-0" look="door">
-        <div className="relative text-center">
-          <PixelField className="-inset-x-[10%] -inset-y-[40%]" />
-          <p className="eyebrow relative mb-8">+ A one-minute experiment</p>
-          <h1 className="relative mx-auto max-w-4xl text-[clamp(2.75rem,8vw,6.5rem)] leading-[0.95] text-[var(--color-white)]">
-            Don&apos;t read this website.{" "}
-            <span className="text-[var(--color-cherry)]">Use it.</span>
-          </h1>
-          <p className="relative mx-auto mt-8 max-w-xl text-[clamp(1.1rem,2.2vw,1.4rem)] leading-snug text-[var(--color-ink)]/80">
-            For the next minute you&apos;re a customer looking for a business. Every choice you make
-            is one your customers are already making about you.
-          </p>
-          {unlocked === 0 && (
-            <button
-              type="button"
-              onClick={() => open(1)}
-              className="relative mt-12 inline-flex items-center gap-3 rounded-full bg-[var(--color-cherry)] px-10 py-5 text-sm font-bold uppercase tracking-widest text-[var(--color-paper)] transition-shadow hover:shadow-[0_0_40px_var(--color-glow)]"
-            >
-              I&apos;m the customer <span aria-hidden="true">→</span>
-            </button>
-          )}
+      {/* Top image behind the door. Copy on a scrim (left on desktop, bottom on phones) so the
+          phone at the centre of the photo stays clear. */}
+      <section
+        id="moment-0"
+        className="relative flex min-h-[100svh] items-end overflow-hidden bg-[var(--color-paper)] text-[var(--color-ink)] lg:items-center"
+      >
+        <ConceptHeroPicture className="object-cover object-center" />
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 bg-[linear-gradient(0deg,var(--color-paper)_10%,color-mix(in_srgb,var(--color-paper)_80%,transparent)_45%,transparent_72%)] lg:bg-[linear-gradient(90deg,var(--color-paper)_0%,var(--color-paper)_18%,color-mix(in_srgb,var(--color-paper)_85%,transparent)_34%,transparent_50%)]"
+        />
+        <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[var(--color-paper)] to-transparent" />
+        <div className="relative mx-auto w-full max-w-7xl px-6 pb-16 pt-32 lg:py-28">
+          <div className="max-w-[30rem]">
+            <p className="eyebrow mb-6">+ A one-minute experiment</p>
+            <h1 className="text-[clamp(2.6rem,4.6vw,4.25rem)] leading-[0.95] text-[var(--color-white)]">
+              Don&apos;t read this website. <span className="text-[var(--color-cherry)]">Use it.</span>
+            </h1>
+            <p className="mt-6 max-w-md text-[clamp(1.05rem,1.8vw,1.3rem)] leading-snug text-[var(--color-ink)]/85">
+              For the next minute you&apos;re a customer looking for a business. Every choice you
+              make is one your customers are already making about you.
+            </p>
+            {unlocked === 0 && (
+              <button
+                type="button"
+                onClick={() => open(1)}
+                className="mt-10 inline-flex items-center gap-3 rounded-full bg-[var(--color-cherry)] px-10 py-5 text-sm font-bold uppercase tracking-widest text-[var(--color-paper)] transition-shadow hover:shadow-[0_0_40px_var(--color-glow)]"
+              >
+                I&apos;m the customer <span aria-hidden="true">→</span>
+              </button>
+            )}
+          </div>
         </div>
-      </Stage>
+      </section>
 
       {shown(1) && (
         <Stage id="moment-1" look="glass" index={1} name={moments[0]} done={done.has(1)} onSkip={() => skip(1)}>
@@ -194,6 +207,17 @@ export function CustomerRun() {
               doing to you. We fix the part people see first.
             </p>
 
+            {/* The fix, shown: a site resolving out of pixels into its rebuilt self. */}
+            <div className="relative mx-auto mt-12 aspect-[8/3] max-w-4xl overflow-hidden rounded-2xl border border-[var(--color-ash-22)] shadow-[0_40px_90px_-40px_rgba(0,0,0,0.9),0_0_80px_-40px_var(--color-glow)]">
+              <Image
+                src="/images/concepts/redesign-band.jpg"
+                alt="A website on a laptop and a phone, its old version dissolving into pixels as the redesigned version takes its place."
+                fill
+                sizes="(min-width: 896px) 56rem, 100vw"
+                className="object-cover"
+              />
+            </div>
+
             {(waited !== null || hunt) && (
               <dl className="mx-auto mt-12 grid max-w-2xl gap-px overflow-hidden rounded-2xl border border-[var(--color-ash-22)] bg-[var(--color-ash-22)] sm:grid-cols-3">
                 <RunStat label="Time to judge a site" value="50ms" />
@@ -202,7 +226,14 @@ export function CustomerRun() {
               </dl>
             )}
 
-            <div className="mt-12 flex flex-wrap items-center justify-center gap-4">
+            <div className="mx-auto mt-20 max-w-6xl text-left">
+              <p className="display-face mb-8 text-balance text-center text-[clamp(1.4rem,3vw,2.1rem)] leading-tight">
+                What could <span className="text-[var(--color-cherry)]">{business}</span> look like?
+              </p>
+              <ConceptStudies />
+            </div>
+
+            <div className="mt-14 flex flex-wrap items-center justify-center gap-4">
               <MagneticButton
                 as={TransitionLink}
                 href="/contact"

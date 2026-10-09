@@ -22,12 +22,17 @@ const scenes: { quote: string; tone: WinTone; caption: string; scene: ReactNode 
   {
     quote: "I know we're better than our website makes us look.",
     tone: "night",
-    caption: "The plate vs. the page",
+    caption: "The room vs. the page",
     scene: (
       <div className="grid h-full grid-cols-2">
-        <div className="relative grid place-items-center" style={{ background: restaurant.panel }}>
-          <span className="block aspect-square w-[62%] rounded-full bg-[radial-gradient(circle,#f1ebe1_0%,#d9d0c0_48%,#1a1612_50%,#2a2116_100%)] shadow-[0_30px_60px_-20px_rgba(0,0,0,0.9)]" />
-          <span className="absolute left-1/2 top-1/2 h-[14%] w-[30%] -translate-x-1/2 -translate-y-1/2 rounded-[40%] bg-[linear-gradient(90deg,#e8735a,#f4a37f)]" />
+        <div className="relative">
+          <Image
+            src="/images/concepts/cafe.jpg"
+            alt="A warmly lit restaurant dining room at night, every table full."
+            fill
+            sizes="(max-width: 768px) 50vw, 23vw"
+            className="object-cover"
+          />
         </div>
         <div className="grid place-items-center bg-[#16121d] p-3">
           <BrowserFrame url="kaito.example" className="w-full">

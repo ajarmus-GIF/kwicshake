@@ -15,6 +15,7 @@ import { problemMonologue } from "@/lib/monologue";
 import { processSteps } from "@/lib/process";
 import { services } from "@/lib/services";
 import { DESCRIPTOR } from "@/lib/site";
+import { ConceptHeroPicture } from "@/components/concepts/ConceptHeroPicture";
 
 // Unlisted concept: reachable by URL only, never linked from the site, and kept out of search.
 export const metadata = {
@@ -33,10 +34,17 @@ export const metadata = {
  * The two interactive pieces from the live home page — the credibility-stat slider quiz and the
  * 50ms test — are "stage" beats: full width, no wipe or tilt, because they have to stay usable.
  */
-const photo = (src: string, alt: string) => (
-  <div data-beat-photo className="absolute inset-0">
-    <Image src={src} alt={alt} fill sizes="(min-width: 1024px) 58vw, 100vw" className="object-cover" />
-  </div>
+const photo = (src: string, alt: string, chip?: string) => (
+  <>
+    <div data-beat-photo className="absolute inset-0">
+      <Image src={src} alt={alt} fill sizes="(min-width: 1024px) 58vw, 100vw" className="object-cover" />
+    </div>
+    {chip && (
+      <span className="absolute bottom-5 left-5 rounded-full bg-black/55 px-3 py-1.5 font-mono text-[0.65rem] uppercase tracking-[0.2em] text-[var(--color-white)] backdrop-blur-sm">
+        {chip}
+      </span>
+    )}
+  </>
 );
 
 const reasons = [
@@ -159,9 +167,20 @@ const beats: Beat[] = [
       </p>
     ),
     visual: (
-      <div className="grid h-full place-items-center bg-[radial-gradient(circle,color-mix(in_srgb,var(--tone-accent)_28%,transparent),transparent_65%)] px-8 text-center">
-        <Tagline size="lg" />
-      </div>
+      <>
+        <div data-beat-photo className="absolute inset-0">
+          <Image
+            src="/images/concepts/glass-phones.jpg"
+            alt="Two phones, one blurred behind frosted glass and one sharp in front of it."
+            fill
+            sizes="(min-width: 1024px) 58vw, 100vw"
+            className="object-cover"
+          />
+        </div>
+        <div className="absolute inset-x-0 bottom-0 grid place-items-center bg-gradient-to-t from-black/80 via-black/45 to-transparent px-8 pb-10 pt-24 text-center">
+          <Tagline size="lg" />
+        </div>
+      </>
     ),
   },
   {
@@ -186,8 +205,9 @@ const beats: Beat[] = [
       </>
     ),
     visual: photo(
-      "/images/storefront-night.jpg",
-      "A small storefront at night, its windows the only lit thing on the street."
+      "/images/concepts/study-carpentry.jpg",
+      "A phone showing a polished website for Northwood Carpentry, a fictional business.",
+      "Concept study · not a client"
     ),
   },
   {
@@ -212,7 +232,10 @@ const beats: Beat[] = [
         </p>
       </>
     ),
-    visual: photo("/images/studio-workspace.jpg", "A quiet workspace lit by a single screen."),
+    visual: photo(
+      "/images/concepts/food-truck.jpg",
+      "A food truck at night in the middle of service, its neon sign lit over the counter."
+    ),
   },
   {
     id: "what-we-do",
@@ -241,7 +264,10 @@ const beats: Beat[] = [
         </TransitionLink>
       </>
     ),
-    visual: photo("/images/service-social-phone.jpg", "A phone screen glowing in a dark room."),
+    visual: photo(
+      "/images/concepts/phone-in-hand.jpg",
+      "A hand holding a phone with a restaurant website open, analytics on the screen behind it."
+    ),
   },
   {
     id: "the-shift",
@@ -354,27 +380,34 @@ export default function HomeConceptTwoPage() {
       <BeatFeed
         beats={beats}
         intro={
-          <section className="relative flex min-h-[92svh] items-center px-4 py-24 sm:px-6">
+          <section className="relative flex min-h-[100svh] items-end overflow-hidden px-4 pb-16 pt-32 sm:px-6 lg:items-center lg:py-28">
+            {/* Top image: phone cut on phones, laptop cut above. The scrim sits under the copy
+                (left on desktop, bottom on phones) so the device in the centre stays clear. */}
+            <ConceptHeroPicture className="object-cover object-center" />
             <div
-              className="tone-glow pointer-events-none absolute -top-1/4 right-[-15%] h-[70vw] max-h-[800px] w-[70vw] max-w-[800px] rounded-full opacity-70 blur-3xl"
               aria-hidden="true"
+              className="absolute inset-0 bg-[linear-gradient(0deg,var(--tone-bg)_10%,color-mix(in_srgb,var(--tone-bg)_80%,transparent)_45%,transparent_72%)] lg:bg-[linear-gradient(90deg,var(--tone-bg)_0%,var(--tone-bg)_18%,color-mix(in_srgb,var(--tone-bg)_85%,transparent)_34%,transparent_50%)]"
             />
+            <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[var(--tone-bg)] to-transparent" />
             <HeroEntrance className="relative mx-auto w-full max-w-7xl">
               <p data-hero-line className="eyebrow tone-text mb-6">
                 + <BuildText text={DESCRIPTOR} delay={500} />
               </p>
-              <h1 className="text-[clamp(3rem,10vw,9rem)] leading-[0.9] text-[var(--color-white)]">
+              <h1 className="text-[clamp(2.75rem,4.4vw,4rem)] leading-[0.92] text-[var(--color-white)]">
                 <span data-hero-line className="block">
                   You built a
                 </span>
                 <span data-hero-line className="block">
-                  great business.
+                  great
                 </span>
-                <span data-hero-line className="tone-text mt-4 block text-[clamp(1.75rem,4.5vw,3.75rem)] leading-[1.05]">
+                <span data-hero-line className="block">
+                  business.
+                </span>
+                <span data-hero-line className="tone-text mt-4 block max-w-[34rem] text-[clamp(1.6rem,3vw,2.6rem)] leading-[1.05]">
                   Does your marketing show it?
                 </span>
               </h1>
-              <p data-hero-line className="mt-10 max-w-xl text-[clamp(1.1rem,2.2vw,1.45rem)] leading-snug">
+              <p data-hero-line className="mt-8 max-w-md text-[clamp(1.05rem,1.8vw,1.3rem)] leading-snug">
                 A great business can still look forgettable online. We fix the part people see
                 first.
               </p>
