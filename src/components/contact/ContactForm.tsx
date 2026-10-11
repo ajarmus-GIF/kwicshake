@@ -124,7 +124,7 @@ export function ContactForm() {
                   required
                   className="peer sr-only"
                 />
-                <span className="inline-block border border-[var(--color-form-border)] bg-[var(--color-form-bg)] px-4 py-2 text-sm text-[var(--color-fg)] transition-colors hover:border-[var(--color-form-border-focus)] peer-checked:border-[var(--color-cherry)] peer-checked:text-[var(--color-cherry)] peer-focus-visible:border-[var(--color-form-border-focus)]">
+                <span className="inline-block rounded-full border border-[var(--color-form-border)] bg-[var(--color-form-bg)] px-4 py-2 text-sm text-[var(--color-fg)] transition-colors hover:border-[var(--color-form-border-focus)] peer-checked:border-[var(--color-cherry)] peer-checked:text-[var(--color-cherry)] peer-focus-visible:border-[var(--color-form-border-focus)]">
                   {option}
                 </span>
               </label>

@@ -278,8 +278,10 @@ body {
 }
 
 /* Primary CTA: solid action chartreuse with dark type; a step lighter with a chartreuse glow on
-   hover. No animation — add .action-shine to the few that should shine. */
+   hover. No animation — add .action-shine to the few that should shine. Always a pill, like the
+   homepage's ActionButton, so no button on the site can come out square-cornered. */
 .btn-primary {
+  border-radius: 9999px;
   background-color: var(--color-action);
 }
 
@@ -293,6 +295,7 @@ body {
    the busy photo instead of blending into it. A separate class rather than reusing `.btn-primary`
    itself since that button's rest-state gradient shouldn't change. */
 .btn-hero-white {
+  border-radius: 9999px;
   background-color: var(--color-white);
   color: var(--color-raised);
   transition:
