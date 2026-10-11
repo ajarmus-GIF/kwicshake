@@ -3,6 +3,17 @@
 /* Wordmark face — see .brand-wordmark below. */
 @import "@fontsource/michroma";
 
+/* The homepage hero's laptop layout (photo behind the page, copy on the left): every screen
+   1280px and wider, plus landscape tablets from 1024px (any iPad turned sideways). */
+@custom-variant hero-wide {
+  @media (min-width: 80rem) {
+    @slot;
+  }
+  @media (min-width: 64rem) and (orientation: landscape) {
+    @slot;
+  }
+}
+
 /*
  * Design tokens — "Nova" palette. Raw colors live in :root ONLY; every rule in this file and
  * every component references the tokens below, never a raw hex, so swapping the palette stays
