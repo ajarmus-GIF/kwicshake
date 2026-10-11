@@ -166,7 +166,7 @@ export function ContactForm() {
         as="button"
         type="submit"
         radius={90}
-        className="btn-primary mt-8 inline-flex items-center gap-2 px-6 py-3 text-sm text-[var(--color-button-primary-text)]"
+        className="btn-primary action-shine mt-8 inline-flex items-center gap-2 px-6 py-3 text-sm text-[var(--color-button-primary-text)]"
       >
         {status === "sending" ? "Sending…" : "Start the Conversation"}
       </MagneticButton>

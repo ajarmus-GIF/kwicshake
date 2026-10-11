@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { worlds, worldFaces, type World } from "@/lib/worlds";
 import { BrowserFrame, MiniSite, PhoneFrame } from "@/components/reveal/MiniSite";
 import { StatGuess } from "./StatGuess";
-import { FactCard, Onward, sources } from "./parts";
+import { FactCard, Onward, sources, RunCta } from "./parts";
 
 /**
  * The moments of the Concept 3 run. Each one is something the visitor DOES, and each finishes by
@@ -178,13 +178,11 @@ export function GlanceMoment({
             )}
           </h2>
           <p className="section-lede mx-auto">It&apos;ll be on screen for 50 milliseconds. Don&apos;t blink.</p>
-          <button
-            type="button"
-            onClick={flash}
-            className="mt-10 rounded-full border border-[var(--color-cherry)] px-10 py-4 text-xs font-bold uppercase tracking-widest text-[var(--color-cherry)] transition-colors hover:bg-[var(--color-cherry)] hover:text-[var(--color-paper)]"
-          >
-            {round === 0 ? "Load it" : "Load it again"}
-          </button>
+          <div className="mt-12">
+            <RunCta onClick={flash}>
+              {round === 0 ? "Load it" : "Load it again"}
+            </RunCta>
+          </div>
         </div>
       )}
 
@@ -334,13 +332,11 @@ export function WaitMoment({
       </div>
 
       {phase === "ready" && (
-        <button
-          type="button"
-          onClick={start}
-          className="mt-10 rounded-full bg-[var(--color-white)] px-10 py-4 text-xs font-bold uppercase tracking-widest text-[var(--color-paper)]"
-        >
-          Tap &ldquo;{world.cta}&rdquo;
-        </button>
+        <div className="mt-12 w-full">
+          <RunCta onClick={start}>
+            Tap &ldquo;{world.cta}&rdquo;
+          </RunCta>
+        </div>
       )}
       {phase === "loading" && (
         <button
@@ -431,13 +427,11 @@ export function HuntMoment({
             )}
           </h2>
           <p className="section-lede mx-auto">A timer starts the moment the page appears.</p>
-          <button
-            type="button"
-            onClick={go}
-            className="mt-10 rounded-full bg-[var(--color-cherry)] px-10 py-4 text-xs font-bold uppercase tracking-widest text-[var(--color-paper)]"
-          >
-            Go
-          </button>
+          <div className="mt-12">
+            <RunCta onClick={go}>
+              Go
+            </RunCta>
+          </div>
         </div>
       )}
 

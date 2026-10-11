@@ -1,6 +1,7 @@
 import { MagneticButton } from "@/components/interactive/MagneticButton";
 import { TransitionLink } from "@/components/transition/TransitionProvider";
 import { ConceptHeroPicture } from "@/components/concepts/ConceptHeroPicture";
+import { HomepageSwitch } from "@/components/concepts/HomepageSwitch";
 import { DESCRIPTOR } from "@/lib/site";
 
 /**
@@ -13,7 +14,8 @@ import { DESCRIPTOR } from "@/lib/site";
  * column) and leaves the phone in the centre clear; phones fade from the bottom, where the copy
  * is anchored, so the device stays visible above it.
  */
-export function RevealHero() {
+/** `switchToInteractive` adds the top-left pill back to the interactive homepage at `/`. */
+export function RevealHero({ switchToInteractive = false }: { switchToInteractive?: boolean }) {
   return (
     <section className="relative flex min-h-[100svh] items-end overflow-hidden bg-[var(--color-raised)] text-[var(--color-on-dark)] lg:items-center">
       <ConceptHeroPicture className="object-cover object-center" />
@@ -22,6 +24,7 @@ export function RevealHero() {
         className="absolute inset-0 bg-[linear-gradient(0deg,var(--color-raised)_8%,color-mix(in_srgb,var(--color-raised)_80%,transparent)_42%,transparent_70%)] lg:bg-[linear-gradient(90deg,var(--color-raised)_0%,var(--color-raised)_18%,color-mix(in_srgb,var(--color-raised)_85%,transparent)_34%,transparent_50%)]"
       />
       <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[var(--color-raised)] to-transparent" />
+      {switchToInteractive && <HomepageSwitch to="interactive" />}
 
       <div className="relative mx-auto w-full max-w-7xl px-6 pb-16 pt-32 lg:py-28">
         <div className="max-w-[30rem]">

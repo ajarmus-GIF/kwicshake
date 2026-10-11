@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { TextReveal } from "@/components/text/TextReveal";
 import { BuildText } from "@/components/text/BuildText";
 import { HeroEntrance } from "@/components/text/HeroEntrance";
@@ -164,6 +165,22 @@ export default function ServicesPage() {
               way, none of these are things you have to learn — they&apos;re things that get
               handled.
             </TextReveal>
+            {/* What the six add up to: a business that looks finished on the screen people
+                actually use. A concept site, captioned as one. */}
+            <figure className="mt-10">
+              <div className="relative aspect-[3/5] w-44 overflow-hidden rounded-[1.25rem] border border-[color-mix(in_srgb,var(--color-cherry)_30%,transparent)]">
+                <Image
+                  src="/images/pages/services-concept-phone.jpg"
+                  alt="A concept website for a fictional restaurant on a phone, with other concept sites floating behind it."
+                  fill
+                  sizes="11rem"
+                  className="object-cover"
+                />
+              </div>
+              <figcaption className="mt-3 font-mono text-[0.6rem] uppercase tracking-[0.25em] text-[var(--color-muted)]">
+                Concept study · not a client
+              </figcaption>
+            </figure>
           </div>
 
           <ServiceIndex />

@@ -1,3 +1,4 @@
+import { BlockCta } from "@/components/interactive/BlockCta";
 import type { ReactNode } from "react";
 
 /**
@@ -84,6 +85,9 @@ export function Stage({
   children,
   onSkip,
   done,
+  active = true,
+  onBack,
+  onNext,
 }: {
   id: string;
   look: StageLook;
@@ -92,13 +96,31 @@ export function Stage({
   children: ReactNode;
   onSkip?: () => void;
   done?: boolean;
+  /** The run shows one moment at a time; the others stay mounted (keeping their state) but hidden.
+   *  Un-hiding replays .stage-enter, so every page turn gets the entrance. */
+  active?: boolean;
+  /** Phones have no rail, so each moment gets its own small "Back". */
+  onBack?: () => void;
+  /** A way forward for a moment that was skipped, then revisited: its own "next" never appeared. */
+  onNext?: () => void;
 }) {
   return (
     <section
       id={id}
-      className={`stage-enter relative flex min-h-[100svh] scroll-mt-16 items-center overflow-hidden px-6 py-24 text-[var(--color-ink)] ${looks[look]}`}
+      className={`${active ? "flex" : "hidden"} stage-enter relative min-h-[100svh] items-center overflow-hidden px-6 py-24 text-[var(--color-ink)] ${looks[look]}`}
     >
       <div className="relative mx-auto w-full max-w-5xl">
+        {onBack && (
+          <p className="mb-6 text-center lg:hidden">
+            <button
+              type="button"
+              onClick={onBack}
+              className="font-mono text-[0.65rem] uppercase tracking-[0.25em] text-[var(--color-muted)] hover:text-[var(--color-cherry)]"
+            >
+              ← Back
+            </button>
+          </p>
+        )}
         {name && (
           <p className="eyebrow mb-8 text-center">
             Moment {String(index).padStart(2, "0")} <span className="mx-2 opacity-50">/</span> {name}
@@ -116,22 +138,42 @@ export function Stage({
             </button>
           </p>
         )}
+        {done && onNext && <Onward onClick={onNext} />}
       </div>
     </section>
   );
 }
 
-/** The quiet "next" that appears once a moment is finished. */
+/** The run's call to action: the big solid pill (see interactive/BlockCta). */
+export function RunCta({
+  onClick,
+  children,
+  sub,
+  align,
+  className,
+  compact,
+}: {
+  onClick: () => void;
+  children: ReactNode;
+  sub?: ReactNode;
+  align?: "center" | "start";
+  className?: string;
+  compact?: boolean;
+}) {
+  return (
+    <BlockCta onClick={onClick} sub={sub} align={align} className={className} compact={compact}>
+      {children}
+    </BlockCta>
+  );
+}
+
+/** The "next" that appears once a moment is finished. */
 export function Onward({ onClick, children = "Keep going" }: { onClick: () => void; children?: ReactNode }) {
   return (
-    <div className="fact-pop mt-10 text-center">
-      <button
-        type="button"
-        onClick={onClick}
-        className="inline-flex items-center gap-3 rounded-full bg-[var(--color-cherry)] px-8 py-4 text-xs font-bold uppercase tracking-widest text-[var(--color-paper)] transition-shadow hover:shadow-[0_0_32px_var(--color-glow)]"
-      >
-        {children} <span aria-hidden="true">↓</span>
-      </button>
+    <div className="fact-pop mt-12">
+      <RunCta onClick={onClick}>
+        {children}
+      </RunCta>
     </div>
   );
 }

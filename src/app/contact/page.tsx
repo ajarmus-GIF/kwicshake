@@ -4,7 +4,8 @@ import { HeroEntrance } from "@/components/text/HeroEntrance";
 import { ContactForm } from "@/components/contact/ContactForm";
 import { MonologuePull } from "@/components/marketing/MonologuePull";
 import { Tagline } from "@/components/marketing/Tagline";
-import { CONTACT_EMAIL } from "@/lib/site";
+import Image from "next/image";
+import { CONTACT_EMAIL, LOCATIONS } from "@/lib/site";
 import { SiteHeader } from "@/components/SiteHeader";
 
 export const metadata = {
@@ -130,16 +131,32 @@ export default function ContactPage() {
               </span>
             </TextReveal>
 
-            <p className="mt-10 text-sm text-[var(--color-muted)]">
-              Prefer email? Reach us directly at{" "}
-              <a
-                href={`mailto:${CONTACT_EMAIL}`}
-                className="text-[var(--color-fg)] underline decoration-[var(--color-cherry)] underline-offset-4 hover:text-[var(--color-cherry)]"
-              >
-                {CONTACT_EMAIL}
-              </a>
-              .
-            </p>
+            <div className="mt-10 grid items-center gap-8 sm:grid-cols-[1fr_1.1fr]">
+              <div>
+                <p className="text-sm text-[var(--color-muted)]">
+                  Prefer email? Reach us directly at{" "}
+                  <a
+                    href={`mailto:${CONTACT_EMAIL}`}
+                    className="text-[var(--color-fg)] underline decoration-[var(--color-cherry)] underline-offset-4 hover:text-[var(--color-cherry)]"
+                  >
+                    {CONTACT_EMAIL}
+                  </a>
+                  .
+                </p>
+                <p className="eyebrow mt-6">{LOCATIONS.join(" · ")}</p>
+              </div>
+              {/* The site's own two-pin map, one pin per city above (stylised, not to scale). Its
+                  dots are drawn near-black purple, so they're lifted here to read on a dark page. */}
+              <div className="relative aspect-[651/384] w-full">
+                <Image
+                  src="/images/cta-usa-map-v2.png"
+                  alt="A dotted map of the United States with two location pins."
+                  fill
+                  sizes="(min-width: 640px) 24rem, 100vw"
+                  className="object-contain [filter:brightness(2.2)_saturate(1.15)]"
+                />
+              </div>
+            </div>
           </div>
         </div>
       </section>

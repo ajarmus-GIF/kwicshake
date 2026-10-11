@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { TextReveal } from "@/components/text/TextReveal";
 import { BuildText } from "@/components/text/BuildText";
 import { HeroEntrance } from "@/components/text/HeroEntrance";
@@ -54,31 +55,48 @@ export default function ProcessPage() {
           />
         </ScrollDrift>
 
-        <HeroEntrance className="relative mx-auto w-full max-w-5xl">
-          <div data-hero-line>
-            <SystemLine label="Loading Sequence" settled="SIX STAGES" className="mb-5" />
+        <HeroEntrance className="relative mx-auto grid w-full max-w-6xl items-center gap-12 lg:grid-cols-[1.25fr_0.75fr] lg:gap-16">
+          <div>
+            <div data-hero-line>
+              <SystemLine label="Loading Sequence" settled="SIX STAGES" className="mb-5" />
+            </div>
+            <p
+              data-hero-line
+              className="eyebrow mb-6"
+            >
+              + <BuildText text="Process" delay={700} />
+            </p>
+            <h1 className="max-w-4xl text-[clamp(2.25rem,6vw,4.75rem)] font-medium leading-[1.04] tracking-tight lg:text-[clamp(2.25rem,4.4vw,4rem)]">
+              <span data-hero-line className="block text-[var(--color-white)]">
+                First, we figure out
+              </span>
+              <span data-hero-line className="block text-[var(--color-cherry)]">
+                what isn&apos;t working.
+              </span>
+            </h1>
+            <p
+              data-hero-line
+              className="mt-8 max-w-xl text-base leading-relaxed text-[var(--color-on-dark)]/65 sm:text-lg"
+            >
+              Not what you think isn&apos;t working. What&apos;s actually getting in the way — which
+              is often somewhere nobody was looking.
+            </p>
           </div>
-          <p
-            data-hero-line
-            className="eyebrow mb-6"
-          >
-            + <BuildText text="Process" delay={700} />
-          </p>
-          <h1 className="max-w-4xl text-[clamp(2.25rem,6vw,4.75rem)] font-medium leading-[1.04] tracking-tight">
-            <span data-hero-line className="block text-[var(--color-white)]">
-              First, we figure out
-            </span>
-            <span data-hero-line className="block text-[var(--color-cherry)]">
-              what isn&apos;t working.
-            </span>
-          </h1>
-          <p
-            data-hero-line
-            className="mt-8 max-w-xl text-base leading-relaxed text-[var(--color-on-dark)]/65 sm:text-lg"
-          >
-            Not what you think isn&apos;t working. What&apos;s actually getting in the way — which
-            is often somewhere nobody was looking.
-          </p>
+
+          {/* The same phone twice: one blurred behind frosted glass, one clear. That's the
+              job this page describes, so it sits beside the headline rather than under it. */}
+          <div data-hero-line>
+            <div className="relative aspect-[4/3] overflow-hidden rounded-[1.5rem] border border-[color-mix(in_srgb,var(--color-cherry)_30%,transparent)] lg:aspect-square">
+              <Image
+                src="/images/concepts/glass-phones.jpg"
+                alt="Two phones side by side, one blurred behind frosted glass and one in sharp focus."
+                fill
+                priority
+                sizes="(min-width: 1024px) 36vw, 100vw"
+                className="object-cover"
+              />
+            </div>
+          </div>
         </HeroEntrance>
       </section>
 

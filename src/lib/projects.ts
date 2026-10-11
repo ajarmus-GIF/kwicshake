@@ -150,6 +150,8 @@ export const projects: Project[] = [
     cover: "/images/revolt-cover.jpg",
     coverVideo: "/video/revolt-home.mp4",
     coverCaption: "Revolt Lacrosse — the live home page, recorded from the browser. Not a mockup.",
+    // Revolt's own redesigned home page, shown on a laptop. The device is staged; the page is theirs.
+    hero: "/images/hero-bg-desktop.jpg",
 
     redesign: {
       eyebrow: "Revolt Lacrosse — Website Redesign",

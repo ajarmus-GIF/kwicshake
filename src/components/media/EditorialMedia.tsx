@@ -85,6 +85,8 @@ export function EditorialMedia({
   sizes = "(max-width: 768px) 100vw, 50vw",
   priority = false,
   className,
+  /** Where the photo sits inside a cropped slot, e.g. "object-[75%_50%]". Centred by default. */
+  objectPosition = "",
 }: {
   src?: string;
   video?: string;
@@ -97,6 +99,7 @@ export function EditorialMedia({
   sizes?: string;
   priority?: boolean;
   className?: string;
+  objectPosition?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -204,7 +207,7 @@ export function EditorialMedia({
             // to lazy already; stating it keeps the intent visible at the one place someone
             // would go looking after a Lighthouse complaint.
             loading={priority ? undefined : "lazy"}
-            className="object-cover"
+            className={`object-cover ${objectPosition}`}
           />
         </div>
       ) : (

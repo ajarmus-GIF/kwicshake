@@ -103,8 +103,8 @@ export const wins: Win[] = [
     hook: "For a lot of people, your Google listing is the first thing they see, not your website. Here's how to make it count in one afternoon.",
     format: "Checklist",
     minutes: 45,
-    image: "/images/storefront-night.jpg",
-    imageAlt: "A lit storefront at night",
+    image: "/images/pages/wins-food-truck.jpg",
+    imageAlt: "A food truck's neon sign lit up at night",
     tone: "dusk",
     body: [
       {
@@ -191,8 +191,8 @@ export const wins: Win[] = [
     hook: "Happy customers rarely leave reviews unless someone asks. Here's exactly what to say, and when.",
     format: "Script",
     minutes: 15,
-    image: "/images/studio-workspace.jpg",
-    imageAlt: "A desk in a bright studio workspace",
+    image: "/images/concepts/phone-in-hand.jpg",
+    imageAlt: "A hand holding a phone open to a restaurant's website",
     tone: "cherry",
     body: [
       {

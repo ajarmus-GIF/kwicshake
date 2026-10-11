@@ -5,6 +5,7 @@ import { SmoothScroll } from "@/components/scroll/SmoothScroll";
 import { TransitionProvider } from "@/components/transition/TransitionProvider";
 import { SiteFooter } from "@/components/SiteFooter";
 import { FooterGate } from "@/components/FooterGate";
+import { TimeOnSite } from "@/components/atmosphere/TimeOnSite";
 import { TAGLINE } from "@/lib/site";
 
 // The site's official typefaces:
@@ -92,6 +93,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             </FooterGate>
           </SmoothScroll>
         </TransitionProvider>
+        <TimeOnSite />
       </body>
     </html>
   );

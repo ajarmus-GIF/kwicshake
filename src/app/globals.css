@@ -38,6 +38,11 @@
     directions (text-on-paper and --color-paper-on-fill share the same pair, so the ratio is
     identical either way). */
   --color-orange: #ff8a3d;
+  /* Action chartreuse — the colour of "do this" buttons. Purple's complement (hue ~80° against
+    Nova's ~275°), so on a page that's purple everywhere the action is the one thing that isn't.
+    --color-paper text on it is ~16:1. Fill/background use. */
+  --color-action: #c8ff3d;
+  --color-on-action: var(--color-paper);
 
   /* derived ash alpha values */
   --color-ash-22: color-mix(in srgb, var(--color-ash) 22%, transparent); /* hairlines, card border, nav bottom border */
@@ -67,10 +72,11 @@
   --color-accent-hover: color-mix(in srgb, var(--color-mint) 78%, var(--color-paper) 22%);
   --color-on-accent: var(--color-paper);
 
-  /* buttons */
+  /* buttons. Every primary button is the action chartreuse (.btn-primary, BlockCta, ActionButton);
+     --color-button-primary-bg stays the purple gradient because the guess sliders still fill with it. */
   --color-button-primary-bg: linear-gradient(90deg, var(--color-cherry-dark), var(--color-nova-secondary));
-  --color-button-primary-text: var(--color-white);
-  --color-button-primary-hover: var(--color-cherry-dark);
+  --color-button-primary-text: var(--color-on-action);
+  --color-button-primary-hover: #d9ff70; /* --color-action, a step lighter */
 
   /* forms */
   --color-form-bg: var(--color-surface);
@@ -260,17 +266,15 @@ body {
   }
 }
 
-/* Primary CTA: the Nova accent gradient. Needs a real class (not a Tailwind bg-[var(...)]
-   utility) because --color-button-primary-bg is a background-image, and Tailwind's arbitrary
-   bg-[...] syntax emits background-color for a bare var() — which silently drops a gradient. */
+/* Primary CTA: solid action chartreuse with dark type; a step lighter with a chartreuse glow on
+   hover. No animation — add .action-shine to the few that should shine. */
 .btn-primary {
-  background-image: var(--color-button-primary-bg);
+  background-color: var(--color-action);
 }
 
 .btn-primary:hover {
-  background-image: none;
   background-color: var(--color-button-primary-hover);
-  box-shadow: 0 0 24px var(--color-glow);
+  box-shadow: 0 0 24px color-mix(in srgb, var(--color-action) 45%, transparent);
 }
 
 /* HomeHero's CTA: the same interaction as `.btn-primary` below (solid fill at rest, swaps to a
@@ -767,5 +771,44 @@ body {
   .stage-enter,
   .fact-pop {
     animation: none;
+  }
+}
+
+/* Action button (interactive/ActionButtons). An idle loop, and on hover a one-shot copy of the
+   same sweep under another name — changing animation-name restarts it, so the shine always plays
+   from the start the moment the pointer arrives. Transform/opacity only. */
+
+/* shine: a light band sweeps across (~0.9s), once every 5s; straight away on hover. Opt-in: only
+   the CTAs that should shine carry .action-shine (ActionButton's `shine`, the contact form submit,
+   the phone menu's Let's Talk). */
+.action-shine {
+  position: relative;
+  overflow: hidden;
+}
+.action-shine::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 30%, rgba(255, 255, 255, 0.75) 50%, transparent 70%);
+  transform: translateX(-110%);
+  animation: action-shine 5s ease-in-out infinite;
+  pointer-events: none;
+}
+.action-shine:hover::after {
+  animation: action-shine-once 0.75s ease-out 1;
+}
+@keyframes action-shine {
+  0% { transform: translateX(-110%); }
+  18%, 100% { transform: translateX(110%); }
+}
+@keyframes action-shine-once {
+  from { transform: translateX(-110%); }
+  to { transform: translateX(110%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .action-shine::after {
+    animation: none;
+    opacity: 0;
   }
 }

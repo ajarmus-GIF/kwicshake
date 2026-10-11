@@ -99,6 +99,8 @@ export default async function ProjectPage({ params }: PageProps<"/work/[slug]">)
           label={`${project.title} — hero, 16:9`}
           aspect="aspect-auto"
           className="h-full"
+          // Keeps the device in frame when a narrow screen crops the 16:9 band.
+          objectPosition="object-[75%_50%]"
           sizes="100vw"
         />
       </ParallaxMedia>

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { TextReveal } from "@/components/text/TextReveal";
 import { BuildText } from "@/components/text/BuildText";
 import { HeroEntrance } from "@/components/text/HeroEntrance";
@@ -122,35 +123,53 @@ export default function WorkPage() {
       <MonologuePull where="work" />
 
       {/* The honest state of the portfolio, stated rather than disguised. */}
-      <section className="section-y relative overflow-hidden px-6 text-center">
+      <section className="section-y relative overflow-hidden px-6 text-center md:text-left">
         <div
           className="pointer-events-none absolute left-1/2 top-1/2 h-[55vw] max-h-[640px] w-[55vw] max-w-[640px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-[0.18] blur-3xl"
           style={{ background: "radial-gradient(circle, var(--color-glow), transparent 70%)" }}
           aria-hidden="true"
         />
-        <div className="relative mx-auto max-w-3xl">
-          <TextReveal
-            as="h2"
-            className="section-title"
-          >
-            Your business could be{" "}
-            <span className="text-[var(--color-cherry)]">next.</span>
-          </TextReveal>
-          <TextReveal
-            as="p"
-            className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-[var(--color-muted)] sm:text-lg"
-          >
-            We&apos;re building Kwic Shake one project at a time. That means the businesses we
-            take on now get more of us than they would in a year.
-          </TextReveal>
-          <MagneticButton
-            as={TransitionLink}
-            href="/contact"
-            radius={100}
-            className="btn-primary mt-10 inline-flex items-center gap-2 px-8 py-4 text-sm uppercase tracking-widest text-[var(--color-button-primary-text)]"
-          >
-            Start a Project
-          </MagneticButton>
+        <div className="relative mx-auto grid max-w-5xl items-center gap-12 md:grid-cols-[0.8fr_1.2fr] md:gap-16">
+          {/* A concept, not a client: what "next" could look like, labelled as exactly that so
+              it never reads as work we've shipped. */}
+          <figure className="order-last md:order-first">
+            <div className="relative mx-auto aspect-[2/3] max-w-xs overflow-hidden rounded-[1.5rem] border border-[color-mix(in_srgb,var(--color-cherry)_30%,transparent)] md:max-w-none">
+              <Image
+                src="/images/pages/work-concept-laptop.jpg"
+                alt="A concept website for a fictional home builder on a laptop, with other concept sites floating behind it."
+                fill
+                sizes="(min-width: 768px) 38vw, 20rem"
+                className="object-cover"
+              />
+            </div>
+            <figcaption className="mt-3 font-mono text-[0.65rem] uppercase tracking-[0.25em] text-[var(--color-muted)]">
+              Concept study · fictional business, not a client
+            </figcaption>
+          </figure>
+          <div>
+            <TextReveal
+              as="h2"
+              className="section-title"
+            >
+              Your business could be{" "}
+              <span className="text-[var(--color-cherry)]">next.</span>
+            </TextReveal>
+            <TextReveal
+              as="p"
+              className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-[var(--color-muted)] sm:text-lg md:mx-0"
+            >
+              We&apos;re building Kwic Shake one project at a time. That means the businesses we
+              take on now get more of us than they would in a year.
+            </TextReveal>
+            <MagneticButton
+              as={TransitionLink}
+              href="/contact"
+              radius={100}
+              className="btn-primary mt-10 inline-flex items-center gap-2 px-8 py-4 text-sm uppercase tracking-widest text-[var(--color-button-primary-text)]"
+            >
+              Start a Project
+            </MagneticButton>
+          </div>
         </div>
       </section>
 

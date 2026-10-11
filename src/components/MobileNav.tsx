@@ -221,7 +221,7 @@ export function MobileNav({
           <TransitionLink
             href="/contact"
             onClickCapture={() => close(false)}
-            className="btn-primary block rounded-full px-5 py-4 text-center text-xs font-bold uppercase tracking-widest text-[var(--color-button-primary-text)]"
+            className="btn-primary action-shine block rounded-full px-5 py-4 text-center text-xs font-bold uppercase tracking-widest text-[var(--color-button-primary-text)]"
           >
             Let&apos;s Talk
           </TransitionLink>

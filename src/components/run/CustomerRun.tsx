@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { ActionButton, ActionNote } from "@/components/interactive/ActionButtons";
 import { MagneticButton } from "@/components/interactive/MagneticButton";
 import { TransitionLink } from "@/components/transition/TransitionProvider";
-import { ConceptHeroPicture } from "@/components/concepts/ConceptHeroPicture";
 import { ConceptStudies } from "@/components/concepts/ConceptStudies";
-import { useReducedMotion } from "@/hooks/useMediaQuery";
+import { HomepageSwitch } from "@/components/concepts/HomepageSwitch";
+import { useLenis } from "@/components/scroll/SmoothScroll";
 import type { World } from "@/lib/worlds";
 import { StatGuess } from "./StatGuess";
 import { Onward, Stage, sources } from "./parts";
@@ -23,12 +24,25 @@ import { GlanceMoment, HuntMoment, MemoryMoment, SearchMoment, WaitMoment, picka
  *
  * Every moment is a different room (Stage `look`), so the run is broken up visually without ever
  * being "sections"; the rail on the left fills as they go. Every moment can be skipped, so nobody
- * is trapped. Reduced motion: unlocking jumps instead of gliding.
+ * is trapped. It runs as pages, one moment on screen at a time: buttons go forward, the rail
+ * (and a small "Back" on phones) only goes back.
  */
+/** Edge fades for the hero photos, so their dark borders melt into the page. */
+const fadeSides = "radial-gradient(ellipse 62% 64% at 50% 50%, #000 68%, transparent 100%)";
+/** Stacked photo: fades its sides and top, never its bottom edge (that's the phone's base). */
+const fadeEdges = {
+  maskImage:
+    "linear-gradient(to right, transparent, #000 14%, #000 86%, transparent), linear-gradient(to bottom, transparent, #000 16%)",
+  maskComposite: "intersect",
+  WebkitMaskImage:
+    "linear-gradient(to right, transparent, #000 14%, #000 86%, transparent), linear-gradient(to bottom, transparent, #000 16%)",
+  WebkitMaskComposite: "source-in",
+};
+
 const moments = ["The search", "The glance", "The gut check", "The wait", "The hunt", "The memory", "Your turn"];
 
-export function CustomerRun() {
-  const reduced = useReducedMotion();
+/** `switchToTraditional` adds the top-left pill to /traditional (the real homepage only). */
+export function CustomerRun({ switchToTraditional = false }: { switchToTraditional?: boolean }) {
   const [unlocked, setUnlocked] = useState(0); // highest stage index shown (0 = the door)
   const [done, setDone] = useState<Set<number>>(new Set());
   const [world, setWorld] = useState<World | null>(null);
@@ -36,28 +50,41 @@ export function CustomerRun() {
   const [hunt, setHunt] = useState<[number, number] | null>(null);
   const [name, setName] = useState("");
 
+  // One moment on screen at a time. `page` is the one showing; `unlocked` is the furthest
+  // reached. Buttons inside a moment move forward; the rail (and the phone "Back") only go back.
+  const [page, setPage] = useState(0);
+  const [skipped, setSkipped] = useState<Set<number>>(new Set());
+
   const finish = (i: number) => setDone((d) => new Set(d).add(i));
-  const open = (i: number) => setUnlocked((u) => Math.max(u, i));
+  const open = (i: number) => {
+    setUnlocked((u) => Math.max(u, i));
+    setPage(i);
+  };
   const finishAndOpen = (i: number) => {
     finish(i);
     open(i + 1);
   };
+  const back = (i: number) => setPage((p) => (i < p ? i : p));
 
-  // Glide to whatever just unlocked.
+  // Each new page starts at the top, instantly: it's a page turn, not a scroll. Goes through
+  // Lenis when it's running so its idea of the scroll position stays in step with the page's.
+  const lenis = useLenis();
+  const firstPage = useRef(true);
   useEffect(() => {
-    if (unlocked === 0) return;
-    const id = window.setTimeout(() => {
-      document.getElementById(`moment-${unlocked}`)?.scrollIntoView({
-        behavior: reduced ? "auto" : "smooth",
-        block: "start",
-      });
-    }, 80);
-    return () => window.clearTimeout(id);
-  }, [unlocked, reduced]);
+    if (firstPage.current) {
+      firstPage.current = false;
+      return;
+    }
+    if (lenis) lenis.scrollTo(0, { immediate: true, force: true });
+    else window.scrollTo(0, 0);
+    // Only on a page change.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page]);
 
   // If someone skips the very first choice, give them a business to carry through the run.
   const skip = (i: number) => {
     if (!world) setWorld(pickable[4]);
+    setSkipped((k) => new Set(k).add(i));
     finishAndOpen(i);
   };
 
@@ -66,46 +93,76 @@ export function CustomerRun() {
 
   return (
     <div className="relative">
-      <Rail unlocked={unlocked} done={done} />
+      <Rail unlocked={unlocked} done={done} current={page} onPick={back} />
 
       {/* ── The door ───────────────────────────────────────────────────────────────────── */}
-      {/* Top image behind the door. Copy on a scrim (left on desktop, bottom on phones) so the
-          phone at the centre of the photo stays clear. */}
+      {/* Fills the screen under the sticky header (about 4.8rem tall on phones, 4.05rem wide).
+          Two layouts, both built so the button sits right under the phone in the photo without
+          guessing where the photo lands:
+          · below xl, a stack: copy, then a cropped portrait photo whose bottom edge IS the phone's
+            base, sized to whatever height is left, then the button;
+          · xl and up, the landscape photo behind the page with the copy on the left. Its height is
+            set from the section's, so the phone always ends exactly HERO_GAP above the bottom
+            (the phone's base is 84.5% down that 1672×941 photo), and the button fills that gap. */}
       <section
         id="moment-0"
-        className="relative flex min-h-[100svh] items-end overflow-hidden bg-[var(--color-paper)] text-[var(--color-ink)] lg:items-center"
+        className={`${page === 0 ? "flex" : "hidden"} stage-enter relative min-h-[calc(100svh_-_4.8rem)] flex-col overflow-hidden bg-[var(--color-paper)] text-[var(--color-ink)] xl:min-h-[max(calc(100svh_-_4.05rem),40rem)]`}
       >
-        <ConceptHeroPicture className="object-cover object-center" />
         <div
           aria-hidden="true"
-          className="absolute inset-0 bg-[linear-gradient(0deg,var(--color-paper)_10%,color-mix(in_srgb,var(--color-paper)_80%,transparent)_45%,transparent_72%)] lg:bg-[linear-gradient(90deg,var(--color-paper)_0%,var(--color-paper)_18%,color-mix(in_srgb,var(--color-paper)_85%,transparent)_34%,transparent_50%)]"
+          className="absolute left-1/2 top-14 hidden aspect-[1672/941] h-[calc((100%_-_3.5rem_-_9.5rem)/0.845)] -translate-x-1/2 xl:block"
+          style={{ maskImage: fadeSides, WebkitMaskImage: fadeSides }}
+        >
+          <Image src="/images/concepts/hero-laptop.jpg" alt="" fill priority sizes="100vw" className="object-cover" />
+        </div>
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 hidden bg-[linear-gradient(90deg,var(--color-paper)_0%,var(--color-paper)_12%,color-mix(in_srgb,var(--color-paper)_80%,transparent)_28%,transparent_44%)] xl:block"
         />
-        <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[var(--color-paper)] to-transparent" />
-        <div className="relative mx-auto w-full max-w-7xl px-6 pb-16 pt-32 lg:py-28">
-          <div className="max-w-[30rem]">
-            <p className="eyebrow mb-6">+ A one-minute experiment</p>
-            <h1 className="text-[clamp(2.6rem,4.6vw,4.25rem)] leading-[0.95] text-[var(--color-white)]">
+        <div aria-hidden="true" className="absolute inset-x-0 bottom-0 hidden h-40 bg-gradient-to-t from-[var(--color-paper)] to-transparent xl:block" />
+        {/* A soft glow behind the stacked photo, so its faded edges melt into the page. */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 bg-[radial-gradient(ellipse_70%_45%_at_50%_70%,var(--color-glow),transparent_70%)] opacity-50 xl:hidden"
+        />
+        {switchToTraditional && <HomepageSwitch to="traditional" />}
+
+        <div className="relative mx-auto flex w-full max-w-7xl flex-1 flex-col px-6 pb-6 pt-28 xl:justify-center xl:pb-40 xl:pt-24">
+          <div className="mx-auto max-w-xl text-center xl:mx-0 xl:max-w-[28rem] xl:text-left">
+            <p className="eyebrow mb-4 xl:mb-6">+ A one-minute experiment</p>
+            <h1 className="text-balance text-[clamp(2.3rem,8vw,3.4rem)] leading-[0.95] text-[var(--color-white)] xl:text-[clamp(2.6rem,4.2vw,3.75rem)]">
               Don&apos;t read this website. <span className="text-[var(--color-cherry)]">Use it.</span>
             </h1>
-            <p className="mt-6 max-w-md text-[clamp(1.05rem,1.8vw,1.3rem)] leading-snug text-[var(--color-ink)]/85">
-              For the next minute you&apos;re a customer looking for a business. Every choice you
-              make is one your customers are already making about you.
+            <p className="mx-auto mt-4 max-w-md text-[clamp(1rem,1.6vw,1.25rem)] leading-snug text-[var(--color-ink)]/80 xl:mx-0 xl:mt-6">
+              For the next minute you&apos;re a customer looking for a business.{" "}
+              <span className="hidden sm:inline">
+                Every choice you make is one your customers are already making about you.
+              </span>
             </p>
-            {unlocked === 0 && (
-              <button
-                type="button"
-                onClick={() => open(1)}
-                className="mt-10 inline-flex items-center gap-3 rounded-full bg-[var(--color-cherry)] px-10 py-5 text-sm font-bold uppercase tracking-widest text-[var(--color-paper)] transition-shadow hover:shadow-[0_0_40px_var(--color-glow)]"
-              >
-                I&apos;m the customer <span aria-hidden="true">→</span>
-              </button>
-            )}
           </div>
+
+          <div className="relative mt-4 min-h-[15rem] flex-1 xl:hidden">
+            <Image
+              src="/images/concepts/hero-phone-stage.jpg"
+              alt=""
+              width={731}
+              height={885}
+              priority
+              sizes="(min-width: 768px) 731px, 100vw"
+              className="absolute bottom-0 left-1/2 h-auto max-h-full w-auto max-w-full -translate-x-1/2"
+              style={fadeEdges}
+            />
+          </div>
+          <HeroCta className="mt-5 xl:hidden" onClick={() => open(1)} />
+        </div>
+
+        <div className="absolute inset-x-0 top-[calc(100%_-_9.5rem)] hidden justify-center pt-4 xl:flex">
+          <HeroCta onClick={() => open(1)} />
         </div>
       </section>
 
       {shown(1) && (
-        <Stage id="moment-1" look="glass" index={1} name={moments[0]} done={done.has(1)} onSkip={() => skip(1)}>
+        <Stage id="moment-1" active={page === 1} onBack={() => back(0)} look="glass" index={1} name={moments[0]} done={done.has(1)} onSkip={() => skip(1)} onNext={done.has(1) ? () => open(2) : undefined}>
           <SearchMoment
             done={done.has(1)}
             onDone={(w) => {
@@ -117,13 +174,13 @@ export function CustomerRun() {
       )}
 
       {shown(2) && world && (
-        <Stage id="moment-2" look="void" index={2} name={moments[1]} done={done.has(2)} onSkip={() => finishAndOpen(2)}>
+        <Stage id="moment-2" active={page === 2} onBack={() => back(1)} look="void" index={2} name={moments[1]} done={done.has(2)} onSkip={() => finishAndOpen(2)} onNext={skipped.has(2) ? () => open(3) : undefined}>
           <GlanceMoment world={world} done={done.has(2)} onDone={() => finish(2)} onNext={() => open(3)} />
         </Stage>
       )}
 
       {shown(3) && (
-        <Stage id="moment-3" look="tone" index={3} name={moments[2]} done={done.has(3)} onSkip={() => finishAndOpen(3)}>
+        <Stage id="moment-3" active={page === 3} onBack={() => back(2)} look="tone" index={3} name={moments[2]} done={done.has(3)} onSkip={() => finishAndOpen(3)} onNext={skipped.has(3) ? () => open(4) : undefined}>
           <h2 className="section-title mx-auto mb-12 max-w-3xl text-center">
             Be honest. <span className="text-[var(--color-cherry)]">Did the design change your answer?</span>
           </h2>
@@ -145,7 +202,7 @@ export function CustomerRun() {
       )}
 
       {shown(4) && world && (
-        <Stage id="moment-4" look="alarm" index={4} name={moments[3]} done={done.has(4)} onSkip={() => finishAndOpen(4)}>
+        <Stage id="moment-4" active={page === 4} onBack={() => back(3)} look="alarm" index={4} name={moments[3]} done={done.has(4)} onSkip={() => finishAndOpen(4)} onNext={skipped.has(4) ? () => open(5) : undefined}>
           <WaitMoment
             world={world}
             done={done.has(4)}
@@ -159,7 +216,7 @@ export function CustomerRun() {
       )}
 
       {shown(5) && world && (
-        <Stage id="moment-5" look="paper" index={5} name={moments[4]} done={done.has(5)} onSkip={() => finishAndOpen(5)}>
+        <Stage id="moment-5" active={page === 5} onBack={() => back(4)} look="paper" index={5} name={moments[4]} done={done.has(5)} onSkip={() => finishAndOpen(5)} onNext={skipped.has(5) ? () => open(6) : undefined}>
           <HuntMoment
             world={world}
             done={done.has(5)}
@@ -173,13 +230,13 @@ export function CustomerRun() {
       )}
 
       {shown(6) && world && (
-        <Stage id="moment-6" look="night" index={6} name={moments[5]} done={done.has(6)} onSkip={() => finishAndOpen(6)}>
+        <Stage id="moment-6" active={page === 6} onBack={() => back(5)} look="night" index={6} name={moments[5]} done={done.has(6)} onSkip={() => finishAndOpen(6)} onNext={skipped.has(6) ? () => open(7) : undefined}>
           <MemoryMoment world={world} done={done.has(6)} onDone={() => finish(6)} onNext={() => open(7)} />
         </Stage>
       )}
 
       {shown(7) && (
-        <Stage id="moment-7" look="glow" index={7} name={moments[6]}>
+        <Stage id="moment-7" active={page === 7} onBack={() => back(6)} look="glow" index={7} name={moments[6]}>
           <div className="text-center">
             <h2 className="section-title mx-auto max-w-3xl">
               Now flip it. <span className="text-[var(--color-cherry)]">What&apos;s your business called?</span>
@@ -276,6 +333,16 @@ export function CustomerRun() {
   );
 }
 
+/** The hero's start button: the site's action button (interactive/ActionButtons) and its note. */
+function HeroCta({ onClick, className = "" }: { onClick: () => void; className?: string }) {
+  return (
+    <div className={`flex flex-col items-center ${className}`}>
+      <ActionButton shine onClick={onClick}>I&apos;m the customer</ActionButton>
+      <ActionNote>One minute · no sign-up</ActionNote>
+    </div>
+  );
+}
+
 function RunStat({ label, value }: { label: string; value: string }) {
   return (
     <div className="bg-[var(--color-paper)] p-5">
@@ -286,8 +353,20 @@ function RunStat({ label, value }: { label: string; value: string }) {
 }
 
 /** Progress: a rail on the left on desktop, a thin bar along the top on phones. */
-function Rail({ unlocked, done }: { unlocked: number; done: Set<number> }) {
-  if (unlocked === 0) return null;
+/** The rail's steps go back, never forward: the ones above the moment on screen are buttons
+ *  that turn back to that page; the current one and everything after stay plain text. */
+function Rail({
+  unlocked,
+  done,
+  current,
+  onPick,
+}: {
+  unlocked: number;
+  done: Set<number>;
+  current: number;
+  onPick: (i: number) => void;
+}) {
+  if (current === 0) return null;
   const progress = done.size / moments.length;
   return (
     <>
@@ -305,15 +384,37 @@ function Rail({ unlocked, done }: { unlocked: number; done: Set<number> }) {
             const n = i + 1;
             const isDone = done.has(n);
             const isOpen = unlocked >= n;
-            return (
-              <li
-                key={m}
-                className={`flex items-center gap-3 font-mono text-[0.6rem] uppercase tracking-[0.2em] transition-colors ${
-                  isDone ? "text-[var(--color-cherry)]" : isOpen ? "text-[var(--color-white)]" : "text-white/25"
+            const isHere = current === n;
+            const canGoBack = isOpen && n < current;
+            const tone = isDone ? "text-[var(--color-cherry)]" : isOpen ? "text-[var(--color-white)]" : "text-white/25";
+            const dot = (
+              <span
+                className={`h-1.5 w-1.5 shrink-0 rounded-full transition-transform ${isHere ? "scale-[1.8]" : ""} ${
+                  isDone ? "bg-[var(--color-cherry)]" : isOpen ? "bg-white" : "bg-white/25"
                 }`}
-              >
-                <span className={`h-1.5 w-1.5 rounded-full ${isDone ? "bg-[var(--color-cherry)]" : isOpen ? "bg-white" : "bg-white/25"}`} />
-                {m}
+              />
+            );
+            const text = "flex items-center gap-3 font-mono text-[0.6rem] uppercase tracking-[0.2em] transition-colors";
+            return (
+              <li key={m} aria-current={isHere ? "step" : undefined}>
+                {canGoBack ? (
+                  <button
+                    type="button"
+                    onClick={() => onPick(n)}
+                    className={`${text} ${tone} group cursor-pointer text-left hover:text-[var(--color-white)]`}
+                  >
+                    {dot}
+                    <span className="underline-offset-4 group-hover:underline">{m}</span>
+                    <span aria-hidden="true" className="opacity-0 transition-opacity group-hover:opacity-100">
+                      ↑
+                    </span>
+                  </button>
+                ) : (
+                  <span className={`${text} ${tone} ${isHere ? "font-bold" : ""}`}>
+                    {dot}
+                    {m}
+                  </span>
+                )}
               </li>
             );
           })}
