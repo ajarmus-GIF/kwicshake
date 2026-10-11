@@ -44,7 +44,15 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
     gsap.ticker.add(update);
     instance.on("scroll", ScrollTrigger.update);
 
+    // Lenis re-measures the scroll limit when its content element (<html>) resizes, but <html>
+    // is `h-full` — always exactly one screen tall — so that never fires, and after a client-side
+    // navigation Lenis keeps the previous page's limit: a long page stops scrolling where the
+    // last (shorter) one ended. <body> grows with the page, so watch that instead.
+    const resizeObserver = new ResizeObserver(() => instance.resize());
+    resizeObserver.observe(document.body);
+
     return () => {
+      resizeObserver.disconnect();
       gsap.ticker.remove(update);
       instance.destroy();
       setLenis(null);
