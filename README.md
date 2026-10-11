@@ -37,4 +37,5 @@ Cloudflare Workers as static assets (see `wrangler.jsonc`; cache headers live in
 Cloudflare Workers Builds is connected to this repository:
 
 - Pushes to `main` deploy to production with `npx wrangler deploy`.
-- Every other branch gets a preview URL with `npx wrangler versions upload`, linked from the pull request.
+- Every other branch gets a preview URL with `npx wrangler preview` (needs the `previews` block in
+  `wrangler.jsonc`), linked from the pull request.
