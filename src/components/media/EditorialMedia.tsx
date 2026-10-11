@@ -57,6 +57,14 @@ import { useReducedMotion } from "@/hooks/useMediaQuery";
  *
  * 400px, not 0: the fetch wants a head start so the clip is moving by the time the frame is
  * actually on screen, and that is about one flick of a trackpad at reading speed.
+ *
+ * ── Pre-sized sets (`widths`) ───────────────────────────────────────────────────────────────
+ * The site is a static export, so next/image can't resize anything: it serves the one file it is
+ * given. For a photo that matters (the founders' headshots), pass `widths` and export the set by
+ * hand: `src` "/images/x.jpg" with widths [240, 480] means /images/x-240.avif, x-240.webp,
+ * x-240.jpg, x-480.avif and so on. The slot then renders a <picture> and each browser takes the
+ * smallest format it can decode at the width it actually paints. `placeholder` (a tiny inlined
+ * image) sits blurred underneath, so the frame shows the photo's colours before the file lands.
  */
 
 export type MediaFrame = "editorial" | "soft";
@@ -87,6 +95,10 @@ export function EditorialMedia({
   className,
   /** Where the photo sits inside a cropped slot, e.g. "object-[75%_50%]". Centred by default. */
   objectPosition = "",
+  /** Widths a pre-sized AVIF/WebP/JPEG set of `src` was exported at. See the note above. */
+  widths,
+  /** Tiny inlined image shown blurred under a pre-sized set until it loads. */
+  placeholder,
 }: {
   src?: string;
   video?: string;
@@ -100,6 +112,8 @@ export function EditorialMedia({
   priority?: boolean;
   className?: string;
   objectPosition?: string;
+  widths?: number[];
+  placeholder?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -171,9 +185,13 @@ export function EditorialMedia({
   const radius = frame === "soft" ? "rounded-2xl" : "rounded-none";
 
   return (
+    // The observers watch this outer box, not the frame: the frame starts fully clipped (that is
+    // the closed state of the wipe), and Chrome counts a target's own clip-path, so a closed
+    // frame never reads as intersecting and would never open. This box carries the slot's size
+    // and isn't clipped; the frame fills it exactly, so layout is the same either way.
+    <div ref={ref} className={`relative ${aspect} ${className ?? ""}`}>
     <div
-      ref={ref}
-      className={`media-frame ${revealed ? "is-revealed" : ""} relative overflow-hidden ${radius} ${aspect} ${className ?? ""}`}
+      className={`media-frame ${revealed ? "is-revealed" : ""} absolute inset-0 overflow-hidden ${radius}`}
       data-from={from}
     >
       {video && !prefersReducedMotion ? (
@@ -193,6 +211,24 @@ export function EditorialMedia({
             role="img"
             aria-label={alt}
             className="h-full w-full object-cover"
+          />
+        </div>
+      ) : src && widths?.length ? (
+        <div className="media-inner absolute inset-0">
+          {placeholder && (
+            <span
+              aria-hidden="true"
+              className="absolute inset-0 scale-110 bg-cover bg-center blur-xl"
+              style={{ backgroundImage: `url(${placeholder})` }}
+            />
+          )}
+          <PresizedPicture
+            src={src}
+            widths={widths}
+            alt={alt ?? ""}
+            sizes={sizes}
+            priority={priority}
+            className={`relative h-full w-full object-cover ${objectPosition}`}
           />
         </div>
       ) : src ? (
@@ -243,5 +279,46 @@ export function EditorialMedia({
         className={`pointer-events-none absolute inset-0 ${radius} border border-[var(--color-border)]`}
       />
     </div>
+    </div>
+  );
+}
+
+/** The <picture> for a pre-sized set: AVIF, then WebP, then JPEG as the fallback <img>. */
+function PresizedPicture({
+  src,
+  widths,
+  alt,
+  sizes,
+  priority,
+  className,
+}: {
+  src: string;
+  widths: number[];
+  alt: string;
+  sizes: string;
+  priority: boolean;
+  className: string;
+}) {
+  const base = src.replace(/\.[a-z0-9]+$/i, "");
+  const set = (ext: string) => widths.map((w) => `${base}-${w}.${ext} ${w}w`).join(", ");
+  const smallest = Math.min(...widths);
+
+  return (
+    <picture>
+      <source type="image/avif" srcSet={set("avif")} sizes={sizes} />
+      <source type="image/webp" srcSet={set("webp")} sizes={sizes} />
+      {/* next/image can't produce a srcset in a static export, so this is a plain <img>. No
+          width/height: the frame's aspect class already reserves the space, so nothing shifts. */}
+      <img
+        src={`${base}-${smallest}.jpg`}
+        srcSet={set("jpg")}
+        sizes={sizes}
+        alt={alt}
+        loading={priority ? "eager" : "lazy"}
+        fetchPriority={priority ? "high" : "auto"}
+        decoding="async"
+        className={className}
+      />
+    </picture>
   );
 }
