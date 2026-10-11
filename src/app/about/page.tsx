@@ -112,23 +112,22 @@ export default function AboutPage() {
               aria-hidden="true"
               className="pointer-events-none absolute -bottom-4 -left-4 -z-10 h-full w-full border border-[var(--color-cherry)]/40"
             />
-            <ParallaxMedia rate={0.15} className="aspect-[4/3] md:aspect-[3/4]">
+            {/* 4:3 at every size: it is a landscape photo of both founders side by side, and the
+                old 3:4 desktop slot would crop one of them out. */}
+            <ParallaxMedia rate={0.15} className="aspect-[4/3]">
               {/* aspect-auto + h-full: the ParallaxMedia wrapper above already owns the
-                  ratio, and a second aspect rule here would fight it. */}
-              {/* The asset is cropped to the left half of its source frame on purpose. The
-                  right half carried a wall slogan — "INNOVATE. SCALE. IMPACT. TEAM SOLUTIONS."
-                  — which is precisely the interchangeable agency language the copy on this site
-                  argues against; lib/services.ts opens by naming what it is NOT. Letting it sit
-                  on the studio's own wall would have the picture contradict the writing. Re-crop
-                  from the source before swapping this file, or the slogan comes back. */}
+                  ratio, and a second aspect rule here would fight it. ParallaxMedia also draws
+                  its child 30% taller than the slot (rate 0.15 × 2) so it can travel, which is
+                  why `sizes` asks for 130% of the slot's width. */}
               <EditorialMedia
-                src="/images/studio-workspace.jpg"
-                alt="A desk mid-project: two monitors of work in progress, a laptop, a lamp still on."
-                label="Studio — workspace, 3:4"
+                src="/images/about/founders-studio.jpg"
+                widths={[640, 960, 1280, 1448]}
+                placeholder="data:image/webp;base64,UklGRloAAABXRUJQVlA4IE4AAADwAQCdASoMAAkAAsBMJQBOgCHhoS6XYuAA/vGM70slAA1DMB/pDJLM/lPBKTBlDXv0AhPB9zvQIfidrN6Jv/1lzqZ4oDobUwzhgVYAAAA="
+                alt="Jonah (left) and Aidan Jarmus at the studio desk among printed website layouts, with a moodboard pinned up behind them."
                 aspect="aspect-auto"
                 className="h-full"
                 from="bottom"
-                sizes="(max-width: 768px) 100vw, 40vw"
+                sizes="(max-width: 768px) 130vw, 572px"
               />
             </ParallaxMedia>
           </div>
