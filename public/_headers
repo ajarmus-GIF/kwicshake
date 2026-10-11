@@ -1,4 +1,4 @@
-# Cloudflare cache headers (the same rules netlify.toml sets for Netlify).
+# Cloudflare cache headers.
 #
 # A week rather than a year with `immutable`, because these paths are stable names, not
 # content-hashed ones: replacing revolt-home.mp4 with a new cut keeps the same URL.
