@@ -29,8 +29,12 @@ To learn more about Next.js, take a look at the following resources:
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
+## Deploy
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The site builds as a static export (`npm run build` writes it to `/out`) and is hosted on
+Cloudflare Workers as static assets (see `wrangler.jsonc`; cache headers live in `public/_headers`).
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Cloudflare Workers Builds is connected to this repository:
+
+- Pushes to `main` deploy to production with `npx wrangler deploy`.
+- Every other branch gets a preview URL with `npx wrangler versions upload`, linked from the pull request.
