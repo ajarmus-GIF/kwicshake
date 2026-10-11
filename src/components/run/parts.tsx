@@ -1,4 +1,4 @@
-import { BlockCta } from "@/components/interactive/BlockCta";
+import { ActionButton, ActionNote } from "@/components/interactive/ActionButtons";
 import type { ReactNode } from "react";
 
 /**
@@ -6,9 +6,9 @@ import type { ReactNode } from "react";
  * wrapper that gives every moment its own visual world while keeping one rhythm.
  */
 export const sources = {
-  nearMe: {
-    label: "Think with Google, local search conversion statistics",
-    href: "https://www.thinkwithgoogle.com/data/local-search-conversion-statistics/",
+  phoneSearch: {
+    label: "BrightLocal, Consumer Search Behavior (July 2026, 1,227 US consumers)",
+    href: "https://www.brightlocal.com/research/consumer-search-behavior-channels/",
   },
   fiftyMs: {
     label: "Lindgaard et al., Behaviour & Information Technology (2006)",
@@ -144,26 +144,30 @@ export function Stage({
   );
 }
 
-/** The run's call to action: the big solid pill (see interactive/BlockCta). */
+/**
+ * The run's call to action: the same action button as the hero's "I'm the customer"
+ * (interactive/ActionButtons), so every button in the run is one size and one style. It used to
+ * be the oversized BlockCta, which made long labels like "Tap “Schedule a consultation”" huge.
+ * No shine: that is reserved for the CTAs that ask for it (the hero's included).
+ */
 export function RunCta({
   onClick,
   children,
   sub,
-  align,
-  className,
-  compact,
+  align = "center",
+  className = "",
 }: {
   onClick: () => void;
   children: ReactNode;
   sub?: ReactNode;
   align?: "center" | "start";
   className?: string;
-  compact?: boolean;
 }) {
   return (
-    <BlockCta onClick={onClick} sub={sub} align={align} className={className} compact={compact}>
-      {children}
-    </BlockCta>
+    <div className={`flex flex-col ${align === "center" ? "items-center" : "items-start"} ${className}`}>
+      <ActionButton onClick={onClick}>{children}</ActionButton>
+      {sub && <ActionNote>{sub}</ActionNote>}
+    </div>
   );
 }
 

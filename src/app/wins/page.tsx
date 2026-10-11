@@ -2,12 +2,12 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { HeroEntrance } from "@/components/text/HeroEntrance";
 import { BuildText } from "@/components/text/BuildText";
 import { TextReveal } from "@/components/text/TextReveal";
-import { MagneticButton } from "@/components/interactive/MagneticButton";
-import { TransitionLink } from "@/components/transition/TransitionProvider";
+import { ActionLink } from "@/components/interactive/ActionButtons";
 import { WinsFeed } from "@/components/wins/WinsFeed";
 import { wins } from "@/lib/wins";
 
 export const metadata = {
+  alternates: { canonical: "/wins" },
   title: "Kwic Wins — Free Marketing Resources from Kwic Shake",
   description:
     "Free, one-sitting marketing wins for small businesses: checklists, scripts and templates you can use today. No email wall.",
@@ -104,20 +104,12 @@ export default function WinsPage() {
                 search presence that make people remember you.
               </TextReveal>
               <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-                <MagneticButton
-                  as={TransitionLink}
-                  href="/contact"
-                  radius={100}
-                  className="btn-primary inline-flex items-center gap-2 rounded-full px-8 py-4 text-sm uppercase tracking-widest text-[var(--color-button-primary-text)]"
-                >
+                <ActionLink href="/contact">
                   Start a Project
-                </MagneticButton>
-                <TransitionLink
-                  href="/services"
-                  className="inline-flex items-center gap-2 rounded-full border border-[var(--color-white)]/25 px-8 py-4 text-sm uppercase tracking-widest text-[var(--color-white)] transition-colors hover:border-[var(--color-white)]/60"
-                >
+                </ActionLink>
+                <ActionLink href="/services" variant="ghost">
                   See What We Do
-                </TransitionLink>
+                </ActionLink>
               </div>
             </div>
           </section>

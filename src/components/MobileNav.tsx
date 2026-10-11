@@ -4,6 +4,7 @@ import { useCallback, useEffect, useId, useRef, useState, type KeyboardEvent } f
 import { createPortal } from "react-dom";
 import { usePathname } from "next/navigation";
 import { TransitionLink } from "@/components/transition/TransitionProvider";
+import { ActionLink } from "@/components/interactive/ActionButtons";
 import { useLenis } from "@/components/scroll/SmoothScroll";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 
@@ -218,13 +219,9 @@ export function MobileNav({
         </nav>
 
         <div className="mt-auto pb-2">
-          <TransitionLink
-            href="/contact"
-            onClickCapture={() => close(false)}
-            className="btn-primary action-shine block rounded-full px-5 py-4 text-center text-xs font-bold uppercase tracking-widest text-[var(--color-button-primary-text)]"
-          >
-            Let&apos;s Talk
-          </TransitionLink>
+          <ActionLink href="/contact" shine onClickCapture={() => close(false)} className="w-full">
+            Start a Project
+          </ActionLink>
         </div>
       </div>
     </div>

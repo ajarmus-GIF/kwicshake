@@ -2,8 +2,7 @@ import Image from "next/image";
 import { TextReveal } from "@/components/text/TextReveal";
 import { BuildText } from "@/components/text/BuildText";
 import { HeroEntrance } from "@/components/text/HeroEntrance";
-import { MagneticButton } from "@/components/interactive/MagneticButton";
-import { TransitionLink } from "@/components/transition/TransitionProvider";
+import { ActionLink } from "@/components/interactive/ActionButtons";
 import { Marquee } from "@/components/scroll/Marquee";
 import { SiteHeader } from "@/components/SiteHeader";
 import { serviceIcons } from "@/components/services/serviceIcons";
@@ -17,6 +16,7 @@ import { services } from "@/lib/services";
 import { SparkField } from "@/components/atmosphere/SparkField";
 
 export const metadata = {
+  alternates: { canonical: "/services" },
   title: "Services — Kwic Shake",
   description:
     "Web design, brand consulting, social strategy, digital advertising, real-world marketing, and SEO — built as one connected system rather than six separate line items.",
@@ -87,21 +87,13 @@ export default function ServicesPage() {
                 We build the pieces of your marketing so they work together. Six disciplines, one
                 system — not six invoices that never speak to each other.
               </p>
-              <div data-hero-line className="flex flex-wrap gap-4">
-                <MagneticButton
-                  as={TransitionLink}
-                  href="/work"
-                  className="inline-flex items-center gap-2 border border-[var(--color-on-dark)] px-6 py-3 text-sm"
-                >
+              <div data-hero-line className="flex flex-col gap-3">
+                <ActionLink href="/work" variant="ghost">
                   Explore the Work
-                </MagneticButton>
-                <MagneticButton
-                  as={TransitionLink}
-                  href="/contact"
-                  className="btn-primary inline-flex items-center gap-2 px-6 py-3 text-sm text-[var(--color-button-primary-text)]"
-                >
-                  Start a Conversation
-                </MagneticButton>
+                </ActionLink>
+                <ActionLink href="/contact">
+                  Start a Project
+                </ActionLink>
               </div>
             </div>
           </HeroEntrance>
@@ -244,14 +236,9 @@ export default function ServicesPage() {
         </ScrollDrift>
         <div className="relative mx-auto max-w-3xl">
           <Tagline size="lg" className="mb-10" />
-          <MagneticButton
-            as={TransitionLink}
-            href="/contact"
-            radius={100}
-            className="btn-primary inline-flex items-center gap-2 px-8 py-4 text-sm uppercase tracking-widest text-[var(--color-button-primary-text)]"
-          >
-            Let&apos;s Figure It Out
-          </MagneticButton>
+          <ActionLink href="/contact">
+            Start a Project
+          </ActionLink>
         </div>
       </section>
     </>

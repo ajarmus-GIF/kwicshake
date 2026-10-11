@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { ActionButton } from "@/components/interactive/ActionButtons";
 import { worlds } from "@/lib/worlds";
 import { BrowserFrame, MiniSite } from "./MiniSite";
 
@@ -16,6 +17,8 @@ import { BrowserFrame, MiniSite } from "./MiniSite";
  * the 50ms clock runs; on a 60Hz screen that's three frames, which is enough to register.
  */
 const FLASH_MS = 50;
+/** Each number of the 3-2-1 countdown before a flash: 60% of a second. */
+const COUNT_MS = 600;
 const business = worlds.find((w) => w.id === "carpentry")!;
 
 type Stage = "intro" | "count" | "flash" | "ask" | "reveal";
@@ -38,14 +41,14 @@ export function PerceptionTest() {
     setRound(r);
     setStage("count");
     setCount(3);
-    later(() => setCount(2), 550);
-    later(() => setCount(1), 1100);
+    later(() => setCount(2), COUNT_MS);
+    later(() => setCount(1), COUNT_MS * 2);
     later(() => {
       setStage("flash");
       requestAnimationFrame(() =>
         requestAnimationFrame(() => later(() => setStage("ask"), FLASH_MS))
       );
-    }, 1650);
+    }, COUNT_MS * 3);
   };
 
   const answer = (a: Answer) => {
@@ -73,13 +76,9 @@ export function PerceptionTest() {
               We&apos;ll flash two websites, each for 50ms. Don&apos;t read. Just tell us if
               you&apos;d trust the business.
             </p>
-            <button
-              type="button"
-              onClick={() => runRound(0)}
-              className="mt-10 rounded-full bg-[var(--color-cherry)] px-9 py-4 text-xs font-bold uppercase tracking-widest text-[var(--color-paper)] transition-shadow hover:shadow-[0_0_32px_var(--color-glow)]"
-            >
+            <ActionButton onClick={() => runRound(0)} className="mt-10">
               Show me
-            </button>
+            </ActionButton>
           </div>
         )}
 

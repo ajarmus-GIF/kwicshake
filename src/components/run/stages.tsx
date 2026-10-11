@@ -5,6 +5,7 @@ import { worlds, worldFaces, type World } from "@/lib/worlds";
 import { BrowserFrame, MiniSite, PhoneFrame } from "@/components/reveal/MiniSite";
 import { StatGuess } from "./StatGuess";
 import { FactCard, Onward, sources, RunCta } from "./parts";
+import { ActionButton } from "@/components/interactive/ActionButtons";
 
 /**
  * The moments of the Concept 3 run. Each one is something the visitor DOES, and each finishes by
@@ -78,8 +79,8 @@ export function SearchMoment({ onDone, done }: { onDone: (w: World) => void; don
           ))}
         </div>
         {finishedTyping && (
-          <FactCard stat="76%" source={sources.nearMe}>
-            of people who search for something nearby on their phone visit a business within a day.
+          <FactCard stat="73%" source={sources.phoneSearch}>
+            of people started their latest search for a local business on their phone.
           </FactCard>
         )}
       </div>
@@ -121,6 +122,10 @@ export function SearchMoment({ onDone, done }: { onDone: (w: World) => void; don
 }
 
 /* ── 02 · The glance (the 50ms flash) ─────────────────────────────────────────────────── */
+// "Load it" starts a 3-2-1 countdown (COUNT_MS per number, 60% of a second) inside the same
+// browser frame the site then flashes in, so the eye is already in the right place and the 50ms
+// doesn't arrive before the visitor is ready for it.
+const COUNT_MS = 600;
 type Verdict = "stay" | "leave";
 export function GlanceMoment({
   world,
@@ -134,18 +139,26 @@ export function GlanceMoment({
   onNext: () => void;
 }) {
   const [round, setRound] = useState<0 | 1>(0);
-  const [phase, setPhase] = useState<"ready" | "flash" | "ask" | "result">("ready");
+  const [phase, setPhase] = useState<"ready" | "count" | "flash" | "ask" | "result">("ready");
+  const [count, setCount] = useState(3);
   const [verdicts, setVerdicts] = useState<Verdict[]>([]);
-  const timer = useRef<number | undefined>(undefined);
-  useEffect(() => () => window.clearTimeout(timer.current), []);
+  const timers = useRef<number[]>([]);
+  useEffect(() => () => timers.current.forEach((t) => window.clearTimeout(t)), []);
+  const later = (fn: () => void, ms: number) => {
+    timers.current.push(window.setTimeout(fn, ms));
+  };
 
   const flash = () => {
     setPhase("flash");
-    requestAnimationFrame(() =>
-      requestAnimationFrame(() => {
-        timer.current = window.setTimeout(() => setPhase("ask"), 50);
-      })
-    );
+    requestAnimationFrame(() => requestAnimationFrame(() => later(() => setPhase("ask"), 50)));
+  };
+
+  const countdown = () => {
+    setCount(3);
+    setPhase("count");
+    later(() => setCount(2), COUNT_MS);
+    later(() => setCount(1), COUNT_MS * 2);
+    later(flash, COUNT_MS * 3);
   };
 
   const decide = (v: Verdict) => {
@@ -179,14 +192,25 @@ export function GlanceMoment({
           </h2>
           <p className="section-lede mx-auto">It&apos;ll be on screen for 50 milliseconds. Don&apos;t blink.</p>
           <div className="mt-12">
-            <RunCta onClick={flash}>
+            <RunCta onClick={countdown}>
               {round === 0 ? "Load it" : "Load it again"}
             </RunCta>
           </div>
         </div>
       )}
 
-      {/* Fixed-size box during the flash so the page doesn't jump. */}
+      {/* The countdown and the flash share one fixed-size frame, so nothing moves between them. */}
+      {phase === "count" && (
+        <BrowserFrame url={`${world.id}.example`} className="mx-auto max-w-3xl">
+          <div className="absolute inset-0 flex flex-col items-center justify-center" aria-live="assertive">
+            <p className="eyebrow mb-3 text-[2.4cqw] sm:text-xs">Get ready</p>
+            <p key={count} className="fact-pop display-face text-[22cqw] leading-none text-[var(--color-cherry)]">
+              {count}
+            </p>
+          </div>
+        </BrowserFrame>
+      )}
+
       {phase === "flash" && (
         <BrowserFrame url={`${world.id}.example`} className="mx-auto max-w-3xl">
           <MiniSite world={world} generic={round === 0} layout="desktop" />
@@ -339,13 +363,9 @@ export function WaitMoment({
         </div>
       )}
       {phase === "loading" && (
-        <button
-          type="button"
-          onClick={() => stop((now() - started.current) / 1000)}
-          className="mt-10 rounded-full border-2 border-[var(--color-white)] px-10 py-4 text-xs font-bold uppercase tracking-widest text-[var(--color-white)] transition-colors hover:bg-[var(--color-white)] hover:text-[var(--color-paper)]"
-        >
+        <ActionButton variant="ghost" onClick={() => stop((now() - started.current) / 1000)} className="mt-10">
           I&apos;m out
-        </button>
+        </ActionButton>
       )}
       {phase === "result" && (
         <>

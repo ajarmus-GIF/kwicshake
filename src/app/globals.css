@@ -780,7 +780,7 @@ body {
 
 /* shine: a light band sweeps across (~0.9s), once every 5s; straight away on hover. Opt-in: only
    the CTAs that should shine carry .action-shine (ActionButton's `shine`, the contact form submit,
-   the phone menu's Let's Talk). */
+   the phone menu's Start a Project). */
 .action-shine {
   position: relative;
   overflow: hidden;

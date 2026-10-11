@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { SiteHeader } from "@/components/SiteHeader";
 import { HeroEntrance } from "@/components/text/HeroEntrance";
 import { TextReveal } from "@/components/text/TextReveal";
-import { MagneticButton } from "@/components/interactive/MagneticButton";
+import { ActionLink } from "@/components/interactive/ActionButtons";
 import { TransitionLink } from "@/components/transition/TransitionProvider";
 import { getNextWin, getWin, wins, type WinBlock } from "@/lib/wins";
 
@@ -18,6 +18,7 @@ export async function generateMetadata({ params }: PageProps<"/wins/[slug]">) {
   return {
     title: `${win.title} — Kwic Wins`,
     description: win.hook,
+    alternates: { canonical: `/wins/${win.slug}` },
     // These pages are shared from social more than any other page on the site, so the link
     // preview carries the post's own image rather than the site default.
     openGraph: {
@@ -123,20 +124,12 @@ export default async function WinPage({ params }: PageProps<"/wins/[slug]">) {
             search presence that make people stop, remember you, and take the next step.
           </TextReveal>
           <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-            <MagneticButton
-              as={TransitionLink}
-              href="/contact"
-              radius={100}
-              className="btn-primary inline-flex items-center gap-2 rounded-full px-8 py-4 text-sm uppercase tracking-widest text-[var(--color-button-primary-text)]"
-            >
+            <ActionLink href="/contact">
               Start a Project
-            </MagneticButton>
-            <TransitionLink
-              href="/"
-              className="inline-flex items-center gap-2 rounded-full border border-[var(--color-white)]/25 px-8 py-4 text-sm uppercase tracking-widest text-[var(--color-white)] transition-colors hover:border-[var(--color-white)]/60"
-            >
+            </ActionLink>
+            <ActionLink href="/" variant="ghost">
               Meet Kwic Shake
-            </TransitionLink>
+            </ActionLink>
           </div>
         </div>
       </section>

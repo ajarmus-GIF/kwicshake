@@ -1,10 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import Image from "next/image";
-import { ActionButton, ActionNote } from "@/components/interactive/ActionButtons";
-import { MagneticButton } from "@/components/interactive/MagneticButton";
-import { TransitionLink } from "@/components/transition/TransitionProvider";
+import { ActionButton, ActionNote, ActionLink } from "@/components/interactive/ActionButtons";
 import { ConceptStudies } from "@/components/concepts/ConceptStudies";
 import { HomepageSwitch } from "@/components/concepts/HomepageSwitch";
 import { useLenis } from "@/components/scroll/SmoothScroll";
@@ -29,15 +27,37 @@ import { GlanceMoment, HuntMoment, MemoryMoment, SearchMoment, WaitMoment, picka
  */
 /** Edge fades for the hero photos, so their dark borders melt into the page. */
 const fadeSides = "radial-gradient(ellipse 62% 64% at 50% 50%, #000 68%, transparent 100%)";
-/** Stacked photo: fades its sides and top, never its bottom edge (that's the phone's base). */
-const fadeEdges = {
+/**
+ * Stacked (below xl) photo geometry, in fractions of hero-phone.jpg (731×1300): the phone's base
+ * sits PHONE_BASE of the way down, its top PHONE_TOP. The photo is sized to the space between the
+ * copy and the button, then pulled down so the phone's base lands exactly on that space's bottom
+ * edge, i.e. right above the button. Its width is the smaller of "a bit wider than the screen"
+ * (so the side cards bleed off the edges) and "as wide as lets the phone fit the space".
+ */
+const PHONE_TOP = 0.307;
+const PHONE_BASE = 0.769;
+const PHOTO_RATIO = 1300 / 731;
+/**
+ * The space's height comes in as --phone-space, measured by useSpaceHeight (container-query
+ * height units would be the CSS way, but Chrome resolves cqh to 0 inside a flex-grown container).
+ * Until that runs, an estimate from the viewport stands in: the screen minus the header, copy and
+ * button.
+ */
+const stackedPhotoBox = {
+  width: `min(118vw, calc(var(--phone-space, calc(100svh - 31rem)) / ${((PHONE_BASE - PHONE_TOP) * PHOTO_RATIO).toFixed(4)}))`,
+} as CSSProperties;
+const stackedPhoto = {
+  // Pulls the photo down until its phone's base meets the bottom of the space.
+  transform: `translateY(${((1 - PHONE_BASE) * 100).toFixed(1)}%)`,
+  // Sides fade for the widths where the photo is narrower than the screen (tablets); the bottom
+  // fades out under the button so the floor reflection doesn't fight the note.
   maskImage:
-    "linear-gradient(to right, transparent, #000 14%, #000 86%, transparent), linear-gradient(to bottom, transparent, #000 16%)",
+    "linear-gradient(to right, transparent, #000 10%, #000 90%, transparent), linear-gradient(to bottom, #000 78%, transparent 96%)",
   maskComposite: "intersect",
   WebkitMaskImage:
-    "linear-gradient(to right, transparent, #000 14%, #000 86%, transparent), linear-gradient(to bottom, transparent, #000 16%)",
+    "linear-gradient(to right, transparent, #000 10%, #000 90%, transparent), linear-gradient(to bottom, #000 78%, transparent 96%)",
   WebkitMaskComposite: "source-in",
-};
+} as CSSProperties;
 
 const moments = ["The search", "The glance", "The gut check", "The wait", "The hunt", "The memory", "Your turn"];
 
@@ -88,6 +108,8 @@ export function CustomerRun({ switchToTraditional = false }: { switchToTradition
     finishAndOpen(i);
   };
 
+  const phoneSpace = useSpaceHeight();
+
   const shown = (i: number) => unlocked >= i && (i <= 1 || world);
   const business = name.trim() || "your business";
 
@@ -99,8 +121,9 @@ export function CustomerRun({ switchToTraditional = false }: { switchToTradition
       {/* Fills the screen under the sticky header (about 4.8rem tall on phones, 4.05rem wide).
           Two layouts, both built so the button sits right under the phone in the photo without
           guessing where the photo lands:
-          · below xl, a stack: copy, then a cropped portrait photo whose bottom edge IS the phone's
-            base, sized to whatever height is left, then the button;
+          · below xl, a stack: copy, then the space for the phone, then the button. The full
+            portrait photo runs edge to edge behind all of it (see stackedPhoto), its phone filling
+            that middle space and its dark top sitting behind the copy under a fade;
           · xl and up, the landscape photo behind the page with the copy on the left. Its height is
             set from the section's, so the phone always ends exactly HERO_GAP above the bottom
             (the phone's base is 84.5% down that 1672×941 photo), and the button fills that gap. */}
@@ -128,7 +151,12 @@ export function CustomerRun({ switchToTraditional = false }: { switchToTradition
         {switchToTraditional && <HomepageSwitch to="traditional" />}
 
         <div className="relative mx-auto flex w-full max-w-7xl flex-1 flex-col px-6 pb-6 pt-28 xl:justify-center xl:pb-40 xl:pt-24">
-          <div className="mx-auto max-w-xl text-center xl:mx-0 xl:max-w-[28rem] xl:text-left">
+          {/* Dims the top of the stacked photo (its upper cards) behind the copy. */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-x-0 top-0 z-[1] h-[19rem] bg-[linear-gradient(to_bottom,var(--color-paper)_0%,color-mix(in_srgb,var(--color-paper)_82%,transparent)_55%,transparent_100%)] sm:h-[22rem] xl:hidden"
+          />
+          <div className="relative z-10 mx-auto max-w-xl text-center xl:mx-0 xl:max-w-[28rem] xl:text-left">
             <p className="eyebrow mb-4 xl:mb-6">+ A one-minute experiment</p>
             <h1 className="text-balance text-[clamp(2.3rem,8vw,3.4rem)] leading-[0.95] text-[var(--color-white)] xl:text-[clamp(2.6rem,4.2vw,3.75rem)]">
               Don&apos;t read this website. <span className="text-[var(--color-cherry)]">Use it.</span>
@@ -141,19 +169,22 @@ export function CustomerRun({ switchToTraditional = false }: { switchToTradition
             </p>
           </div>
 
-          <div className="relative mt-4 min-h-[15rem] flex-1 xl:hidden">
-            <Image
-              src="/images/concepts/hero-phone-stage.jpg"
-              alt=""
-              width={731}
-              height={885}
-              priority
-              sizes="(min-width: 768px) 731px, 100vw"
-              className="absolute bottom-0 left-1/2 h-auto max-h-full w-auto max-w-full -translate-x-1/2"
-              style={fadeEdges}
-            />
+          {/* The phone's space. Its measured height sizes the photo (see stackedPhotoBox). */}
+          <div ref={phoneSpace} className="relative mt-4 min-h-[11rem] flex-1 xl:hidden">
+            <div className="absolute inset-y-0 left-1/2 -translate-x-1/2" style={stackedPhotoBox}>
+              <Image
+                src="/images/concepts/hero-phone.jpg"
+                alt=""
+                width={731}
+                height={1300}
+                priority
+                sizes="(min-width: 640px) 731px, 118vw"
+                className="absolute bottom-0 left-0 h-auto w-full max-w-none"
+                style={stackedPhoto}
+              />
+            </div>
           </div>
-          <HeroCta className="mt-5 xl:hidden" onClick={() => open(1)} />
+          <HeroCta className="relative z-10 mt-4 xl:hidden" onClick={() => open(1)} />
         </div>
 
         <div className="absolute inset-x-0 top-[calc(100%_-_9.5rem)] hidden justify-center pt-4 xl:flex">
@@ -291,20 +322,12 @@ export function CustomerRun({ switchToTraditional = false }: { switchToTradition
             </div>
 
             <div className="mt-14 flex flex-wrap items-center justify-center gap-4">
-              <MagneticButton
-                as={TransitionLink}
-                href="/contact"
-                radius={100}
-                className="btn-primary inline-flex items-center gap-2 rounded-full px-9 py-4 text-sm uppercase tracking-widest text-[var(--color-button-primary-text)]"
-              >
+              <ActionLink href="/contact">
                 Make them remember {name.trim() ? "us" : "you"}
-              </MagneticButton>
-              <TransitionLink
-                href="/work/revolt-lacrosse"
-                className="inline-flex items-center gap-2 rounded-full border border-[var(--color-white)]/25 px-8 py-4 text-sm uppercase tracking-widest text-[var(--color-white)] transition-colors hover:border-[var(--color-white)]/60"
-              >
+              </ActionLink>
+              <ActionLink href="/work/revolt-lacrosse" variant="ghost">
                 See a real one
-              </TransitionLink>
+              </ActionLink>
             </div>
 
             <p className="mx-auto mt-14 max-w-md font-mono text-[0.7rem] uppercase tracking-[0.25em] text-[var(--color-muted)]">
@@ -331,6 +354,21 @@ export function CustomerRun({ switchToTraditional = false }: { switchToTradition
       )}
     </div>
   );
+}
+
+/** Keeps --phone-space on the element equal to its own height, as it resizes. */
+function useSpaceHeight() {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const ro = new ResizeObserver(([entry]) => {
+      el.style.setProperty("--phone-space", `${entry.contentRect.height}px`);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+  return ref;
 }
 
 /** The hero's start button: the site's action button (interactive/ActionButtons) and its note. */

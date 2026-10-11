@@ -1,5 +1,5 @@
 import { TextReveal } from "@/components/text/TextReveal";
-import { MagneticButton } from "@/components/interactive/MagneticButton";
+import { ActionLink } from "@/components/interactive/ActionButtons";
 import { TransitionLink } from "@/components/transition/TransitionProvider";
 import { ParallaxMedia } from "@/components/media/ParallaxMedia";
 import { EditorialMedia } from "@/components/media/EditorialMedia";
@@ -137,14 +137,9 @@ export function FeaturedCaseStudy({ project }: { project: Project }) {
 
       {/* CTA below everything rather than tucked beside the copy: in a stacked layout it is the
           one thing the reader is being asked to do, and it should be the last thing they pass. */}
-      <MagneticButton
-        as={TransitionLink}
-        href={`/work/${project.slug}`}
-        radius={100}
-        className="btn-primary mt-12 inline-flex items-center gap-2 px-7 py-3.5 text-sm uppercase tracking-widest text-[var(--color-button-primary-text)]"
-      >
+      <ActionLink href={`/work/${project.slug}`} className="mt-12">
         View Case Study
-      </MagneticButton>
+      </ActionLink>
     </article>
   );
 }

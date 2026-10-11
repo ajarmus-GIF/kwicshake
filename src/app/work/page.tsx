@@ -2,8 +2,7 @@ import Image from "next/image";
 import { TextReveal } from "@/components/text/TextReveal";
 import { BuildText } from "@/components/text/BuildText";
 import { HeroEntrance } from "@/components/text/HeroEntrance";
-import { MagneticButton } from "@/components/interactive/MagneticButton";
-import { TransitionLink } from "@/components/transition/TransitionProvider";
+import { ActionLink } from "@/components/interactive/ActionButtons";
 import { SiteHeader } from "@/components/SiteHeader";
 import { FeaturedCaseStudy } from "@/components/work/FeaturedCaseStudy";
 import { MonologuePull } from "@/components/marketing/MonologuePull";
@@ -13,6 +12,7 @@ import { SparkField } from "@/components/atmosphere/SparkField";
 import { SystemLine } from "@/components/atmosphere/SystemLine";
 
 export const metadata = {
+  alternates: { canonical: "/work" },
   title: "Work — Kwic Shake",
   description:
     "Case studies built around what changed and why we chose it — not a gallery of screenshots.",
@@ -161,14 +161,9 @@ export default function WorkPage() {
               We&apos;re building Kwic Shake one project at a time. That means the businesses we
               take on now get more of us than they would in a year.
             </TextReveal>
-            <MagneticButton
-              as={TransitionLink}
-              href="/contact"
-              radius={100}
-              className="btn-primary mt-10 inline-flex items-center gap-2 px-8 py-4 text-sm uppercase tracking-widest text-[var(--color-button-primary-text)]"
-            >
+            <ActionLink href="/contact" className="mt-10">
               Start a Project
-            </MagneticButton>
+            </ActionLink>
           </div>
         </div>
       </section>

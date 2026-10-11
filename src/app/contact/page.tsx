@@ -9,6 +9,7 @@ import { CONTACT_EMAIL, LOCATIONS } from "@/lib/site";
 import { SiteHeader } from "@/components/SiteHeader";
 
 export const metadata = {
+  alternates: { canonical: "/contact" },
   title: "Contact — Kwic Shake",
   description:
     "You don't need to have everything figured out. Tell us what's happening and we'll help you work out what happens next.",

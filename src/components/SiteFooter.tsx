@@ -1,13 +1,16 @@
 import { ServiceIcon } from "@/components/services/ServiceIcon";
-import { MagneticButton } from "@/components/interactive/MagneticButton";
+import { ActionLink } from "@/components/interactive/ActionButtons";
 import { TransitionLink } from "@/components/transition/TransitionProvider";
-import { CONTACT_EMAIL, LOCATIONS, TAGLINE, DESCRIPTOR } from "@/lib/site";
+import { navLinks } from "@/components/SiteHeader";
+import { CONTACT_EMAIL, LOCATIONS, SOCIALS, TAGLINE, DESCRIPTOR } from "@/lib/site";
 
 /**
  * Compact two-row footer:
  *
  *   row 1 — the four capability pillars, hairline-ruled underneath
  *   row 2 — the wordmark on the left, the email between, the ask on the right, one baseline
+ *   row 3 — the site's pages (the header's navLinks plus Contact) and the social icons
+ *   row 4 — the copyright line and the privacy link, the quietest type on the page
  *
  * Kept deliberately short: small type, tight padding, no oversized closing mark. The wordmark
  * and the CTA balance each other across the row instead of stacking, which is what keeps the
@@ -151,16 +154,92 @@ export function SiteFooter() {
               Let&apos;s build{" "}
               <span className="text-[var(--color-cherry)]">something great.</span>
             </h2>
-            <MagneticButton
-              as={TransitionLink}
-              href="/contact"
-              className="btn-primary mt-4 inline-flex items-center rounded-full px-6 py-3 text-xs font-semibold uppercase tracking-widest text-[var(--color-button-primary-text)] transition-shadow"
-            >
-              Start a Conversation
-            </MagneticButton>
+            <ActionLink href="/contact" className="mt-4">
+              Start a Project
+            </ActionLink>
           </div>
+        </div>
+
+        {/* Pages and socials */}
+        <div className="mt-10 flex flex-col gap-6 border-t border-[var(--color-on-dark)]/10 pt-7 md:flex-row md:items-center md:justify-between">
+          <nav aria-label="Footer">
+            <ul className="flex flex-wrap gap-x-6 gap-y-3 text-xs font-semibold uppercase tracking-[0.14em]">
+              {[...navLinks, { href: "/contact", label: "Contact" }].map((link) => (
+                <li key={link.href}>
+                  <TransitionLink
+                    href={link.href}
+                    className="text-[var(--color-on-dark)]/70 underline-offset-4 transition-colors hover:text-[var(--color-on-dark)] hover:underline"
+                  >
+                    {link.label}
+                  </TransitionLink>
+                </li>
+              ))}
+            </ul>
+          </nav>
+          <ul className="flex items-center gap-2" aria-label="Kwic Shake on social media">
+            {SOCIALS.map((social) => (
+              <li key={social.name}>
+                <a
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Kwic Shake on ${social.name} (opens in a new tab)`}
+                  className="grid h-10 w-10 place-items-center rounded-full border border-[var(--color-on-dark)]/15 text-[var(--color-on-dark)]/75 transition-colors hover:border-[var(--color-action)] hover:text-[var(--color-action)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                >
+                  <SocialIcon name={social.name} />
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Legal */}
+        <div className="mt-7 flex flex-col gap-2 text-[0.7rem] text-[var(--color-on-dark)]/45 sm:flex-row sm:items-center sm:justify-between">
+          <p>&copy; {new Date().getFullYear()} Kwic Shake. All rights reserved.</p>
+          <TransitionLink
+            href="/privacy"
+            className="underline-offset-4 transition-colors hover:text-[var(--color-on-dark)]/80 hover:underline"
+          >
+            Privacy Policy
+          </TransitionLink>
         </div>
       </div>
     </footer>
   );
+}
+
+/** Brand marks for the footer, drawn at 24×24 and sized by the parent link's colour. */
+function SocialIcon({ name }: { name: (typeof SOCIALS)[number]["name"] }) {
+  const common = { viewBox: "0 0 24 24", "aria-hidden": true, className: "h-[1.05rem] w-[1.05rem]" } as const;
+  switch (name) {
+    case "Instagram":
+      return (
+        <svg {...common} fill="none" stroke="currentColor" strokeWidth="2">
+          <rect x="3" y="3" width="18" height="18" rx="5" />
+          <circle cx="12" cy="12" r="4.2" />
+          <circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none" />
+        </svg>
+      );
+    case "X":
+      return (
+        <svg {...common} fill="currentColor">
+          <path d="M18.24 2.25h3.31l-7.23 8.26 8.5 11.24h-6.65l-5.21-6.82-5.97 6.82H1.68l7.73-8.84L1.25 2.25h6.83l4.71 6.23zm-1.16 17.52h1.83L7.08 4.13H5.12z" />
+        </svg>
+      );
+    case "Facebook":
+      return (
+        <svg {...common} fill="currentColor">
+          <path d="M13.5 22v-8.2h2.8l.4-3.3h-3.2V8.4c0-.95.27-1.6 1.63-1.6h1.72V3.86A23 23 0 0 0 14.33 3.7c-2.5 0-4.2 1.52-4.2 4.32v2.48H7.3v3.3h2.83V22z" />
+        </svg>
+      );
+    case "YouTube":
+      return (
+        <svg {...common} fill="currentColor">
+          <path
+            fillRule="evenodd"
+            d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8zM9.6 15.6V8.4l6.2 3.6z"
+          />
+        </svg>
+      );
+  }
 }

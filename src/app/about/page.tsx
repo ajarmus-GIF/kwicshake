@@ -1,8 +1,7 @@
 import { TextReveal } from "@/components/text/TextReveal";
 import { BuildText } from "@/components/text/BuildText";
 import { HeroEntrance } from "@/components/text/HeroEntrance";
-import { MagneticButton } from "@/components/interactive/MagneticButton";
-import { TransitionLink } from "@/components/transition/TransitionProvider";
+import { ActionLink } from "@/components/interactive/ActionButtons";
 import { ParallaxMedia } from "@/components/media/ParallaxMedia";
 import { EditorialMedia } from "@/components/media/EditorialMedia";
 import { TeamMemberFlow } from "@/components/about/TeamMemberFlow";
@@ -13,9 +12,10 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { SparkField } from "@/components/atmosphere/SparkField";
 
 export const metadata = {
+  alternates: { canonical: "/about" },
   title: "About — Kwic Shake",
   description:
-    "Two brothers who build the marketing for businesses that are better than they look online. You talk to the people doing the work.",
+    "Two of three brothers, running a studio that builds the marketing for businesses that are better than they look online. You talk to the people doing the work.",
 };
 
 /**
@@ -80,6 +80,12 @@ export default function AboutPage() {
               Making good businesses look impossible to ignore.
             </span>
           </h1>
+          <p
+            data-hero-line
+            className="mt-8 max-w-2xl text-base leading-relaxed text-[var(--color-muted)] sm:text-lg"
+          >
+            We&apos;re the oldest and youngest of three brothers, and the two of us run Kwic Shake.
+          </p>
         </HeroEntrance>
       </section>
 
@@ -212,6 +218,7 @@ export default function AboutPage() {
           <div className="mt-20">
             <Tagline size="sm" />
           </div>
+
         </div>
       </section>
 
@@ -334,13 +341,14 @@ export default function AboutPage() {
           >
             And because we&apos;re the ones building Kwic Shake, we&apos;re invested in getting it
             right. No giant agency hierarchy. No disappearing account manager. No three-week wait
-            for a simple change. Just two brothers who care deeply about the businesses we get to
-            work with.
+            for a simple change. Just two of three brothers who care deeply about the businesses we
+            get to work with.
           </TextReveal>
 
           <div className="mt-20">
             <Tagline size="lg" />
           </div>
+
         </div>
       </section>
 
@@ -357,14 +365,9 @@ export default function AboutPage() {
           >
             Curious what we&apos;d build for you?
           </TextReveal>
-          <MagneticButton
-            as={TransitionLink}
-            href="/contact"
-            radius={100}
-            className="btn-primary inline-flex items-center gap-2 px-8 py-4 text-sm uppercase tracking-widest text-[var(--color-button-primary-text)]"
-          >
-            Start a Conversation
-          </MagneticButton>
+          <ActionLink href="/contact">
+            Start a Project
+          </ActionLink>
         </div>
       </section>
     </>

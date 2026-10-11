@@ -239,7 +239,7 @@ export function HomeHero() {
             radius={100}
             className="btn-hero-white inline-flex items-center gap-2 px-8 py-4 text-sm uppercase tracking-widest"
           >
-            Start a Conversation
+            Start a Project
           </MagneticButton>
           <TransitionLink
             href="/work"

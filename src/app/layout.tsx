@@ -6,6 +6,7 @@ import { TransitionProvider } from "@/components/transition/TransitionProvider";
 import { SiteFooter } from "@/components/SiteFooter";
 import { FooterGate } from "@/components/FooterGate";
 import { TimeOnSite } from "@/components/atmosphere/TimeOnSite";
+import { GoogleAnalytics } from "@/components/GoogleAnalytics";
 import { TAGLINE } from "@/lib/site";
 
 // The site's official typefaces:
@@ -94,6 +95,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           </SmoothScroll>
         </TransitionProvider>
         <TimeOnSite />
+        <GoogleAnalytics />
       </body>
     </html>
   );

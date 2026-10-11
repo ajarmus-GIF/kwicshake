@@ -1,8 +1,7 @@
-import { MagneticButton } from "@/components/interactive/MagneticButton";
-import { TransitionLink } from "@/components/transition/TransitionProvider";
 import { ConceptHeroPicture } from "@/components/concepts/ConceptHeroPicture";
 import { HomepageSwitch } from "@/components/concepts/HomepageSwitch";
 import { DESCRIPTOR } from "@/lib/site";
+import { ActionLink } from "@/components/interactive/ActionButtons";
 
 /**
  * "One device, many worlds" — now as the photograph itself (concepts/ConceptHeroPicture): one
@@ -36,21 +35,11 @@ export function RevealHero({ switchToInteractive = false }: { switchToInteractiv
           <p className="mt-6 max-w-md text-lg leading-snug text-[var(--color-on-dark)]/85">
             A great business can still look forgettable online. We fix the part people see first.
           </p>
-          <div className="mt-9 flex flex-wrap items-center gap-x-8 gap-y-4">
-            <MagneticButton
-              as={TransitionLink}
-              href="/contact"
-              radius={100}
-              className="btn-hero-white inline-flex items-center gap-2 px-8 py-4 text-sm uppercase tracking-widest"
-            >
-              Start a Conversation
-            </MagneticButton>
-            <TransitionLink
-              href="/work"
-              className="text-sm font-semibold uppercase tracking-widest text-[var(--color-on-dark)] underline decoration-[var(--color-cherry)] underline-offset-4 transition-colors hover:text-[var(--color-cherry)]"
-            >
-              See What We&apos;ve Built →
-            </TransitionLink>
+          <div className="mt-9 flex flex-wrap items-center gap-4">
+            <ActionLink href="/contact">Start a Project</ActionLink>
+            <ActionLink href="/work" variant="ghost">
+              Explore the Work
+            </ActionLink>
           </div>
         </div>
       </div>

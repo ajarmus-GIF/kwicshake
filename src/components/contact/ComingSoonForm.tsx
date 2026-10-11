@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type FormEvent, type InputHTMLAttributes } from "react";
-import { MagneticButton } from "@/components/interactive/MagneticButton";
+import { ActionButton } from "@/components/interactive/ActionButtons";
 import { CONTACT_EMAIL, COMING_SOON_WEB3FORMS_ACCESS_KEY } from "@/lib/site";
 
 /**
@@ -146,14 +146,15 @@ export function ComingSoonForm() {
         </p>
       )}
 
-      <MagneticButton
-        as="button"
-        type="submit"
-        radius={90}
-        className="btn-primary mt-5 inline-flex w-full items-center justify-center gap-2 px-6 py-3.5 text-sm uppercase tracking-widest text-[var(--color-button-primary-text)] sm:mt-6"
-      >
-        {status === "sending" ? "Sending…" : "Let's Make a Deal →"}
-      </MagneticButton>
+      <ActionButton type="submit" disabled={status === "sending"} className="mt-5 w-full sm:mt-6">
+        {status === "sending" ? "Sending…" : "Let's Make a Deal"}
+      </ActionButton>
+      <p className="mt-3 text-center text-[0.7rem] leading-relaxed text-[var(--color-muted)]">
+        We only use this to reply to you. Never sold.{" "}
+        <a href="/privacy" className="underline underline-offset-4">
+          Privacy Policy
+        </a>
+      </p>
     </form>
   );
 }

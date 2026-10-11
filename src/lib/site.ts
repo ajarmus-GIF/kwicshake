@@ -8,6 +8,21 @@
  */
 export const CONTACT_EMAIL = "info@kwicshake.com";
 
+/** Google Analytics 4 measurement ID (components/GoogleAnalytics). Public by design. */
+export const GA_MEASUREMENT_ID = "G-E7X11P60CD";
+
+/**
+ * The studio's social accounts, in footer order. Tracking parameters (utm_*, ?s=, ?si=) from the
+ * share sheets they were copied out of are stripped. Facebook is a share link because that is
+ * what the app hands out; swap in the page's facebook.com/<name> address if it gets one.
+ */
+export const SOCIALS = [
+  { name: "Instagram", href: "https://www.instagram.com/kwicshake/" },
+  { name: "X", href: "https://x.com/kwicshake" },
+  { name: "Facebook", href: "https://www.facebook.com/share/1BFKes7Nus/" },
+  { name: "YouTube", href: "https://www.youtube.com/@kwicshake" },
+] as const;
+
 /** Where the studio works from. Shown under the email in the footer. */
 export const LOCATIONS = ["Minneapolis, MN", "St. Louis, MO"];
 

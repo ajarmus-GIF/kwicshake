@@ -37,7 +37,7 @@ export const navLinks = [
   { href: "/work", label: "Work" },
   { href: "/process", label: "Process" },
   { href: "/about", label: "About" },
-  { href: "/wins", label: "Free Wins" },
+  { href: "/wins", label: "Kwic Wins" },
 ];
 
 export function NavLinks({ linkClassName = "" }: { linkClassName?: string }) {
@@ -62,7 +62,7 @@ export function SiteHeader() {
       <div className="flex items-center justify-between gap-4">
         <TransitionLink
           href="/"
-          className="brand-wordmark tracking-tight hover:underline hover:underline-offset-4"
+          className="brand-wordmark whitespace-nowrap tracking-tight hover:underline hover:underline-offset-4"
         >
           <span className="text-[var(--color-white)]">Kwic </span>
           <span className="brand-shake">Shake</span>
@@ -74,9 +74,9 @@ export function SiteHeader() {
           </nav>
           <TransitionLink
             href="/contact"
-            className="btn-primary shrink-0 rounded-full px-5 py-2 text-xs uppercase tracking-widest text-[var(--color-button-primary-text)] transition-shadow"
+            className="btn-primary shrink-0 whitespace-nowrap rounded-full px-4 py-2 text-xs uppercase tracking-wider sm:px-5 sm:tracking-widest text-[var(--color-button-primary-text)] transition-shadow"
           >
-            Let&apos;s Talk
+            Start a Project
           </TransitionLink>
           <MobileNav links={navLinks} />
         </div>

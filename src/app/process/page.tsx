@@ -2,8 +2,7 @@ import Image from "next/image";
 import { TextReveal } from "@/components/text/TextReveal";
 import { BuildText } from "@/components/text/BuildText";
 import { HeroEntrance } from "@/components/text/HeroEntrance";
-import { MagneticButton } from "@/components/interactive/MagneticButton";
-import { TransitionLink } from "@/components/transition/TransitionProvider";
+import { ActionLink } from "@/components/interactive/ActionButtons";
 import { SiteHeader } from "@/components/SiteHeader";
 import { ProcessSteps } from "@/components/process/ProcessSteps";
 import { ScrollDrift } from "@/components/scroll/ScrollDrift";
@@ -11,6 +10,7 @@ import { SparkField } from "@/components/atmosphere/SparkField";
 import { SystemLine } from "@/components/atmosphere/SystemLine";
 
 export const metadata = {
+  alternates: { canonical: "/process" },
   title: "Process — Kwic Shake",
   description:
     "How the work actually runs: understand, strategize, create, launch, learn, improve. Six steps, and none of them are yours to manage.",
@@ -146,14 +146,9 @@ export default function ProcessPage() {
           >
             You don&apos;t have to know which step you&apos;re on.
           </TextReveal>
-          <MagneticButton
-            as={TransitionLink}
-            href="/contact"
-            radius={100}
-            className="btn-primary inline-flex items-center gap-2 px-8 py-4 text-sm uppercase tracking-widest text-[var(--color-button-primary-text)]"
-          >
-            Let&apos;s Talk
-          </MagneticButton>
+          <ActionLink href="/contact">
+            Start a Project
+          </ActionLink>
         </div>
       </section>
     </>

@@ -59,7 +59,7 @@ export function HeroHeader() {
             href="/contact"
             className="btn-primary shrink-0 rounded-full px-5 py-2 text-xs uppercase tracking-widest text-[var(--color-button-primary-text)] transition-shadow"
           >
-            Let&apos;s Talk
+            Start a Project
           </TransitionLink>
           <MobileNav links={navLinks} />
         </div>

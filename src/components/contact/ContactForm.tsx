@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { MagneticButton } from "@/components/interactive/MagneticButton";
+import { ActionButton } from "@/components/interactive/ActionButtons";
 import { CONTACT_EMAIL, WEB3FORMS_ACCESS_KEY } from "@/lib/site";
 
 /**
@@ -162,14 +162,15 @@ export function ContactForm() {
         </p>
       )}
 
-      <MagneticButton
-        as="button"
-        type="submit"
-        radius={90}
-        className="btn-primary action-shine mt-8 inline-flex items-center gap-2 px-6 py-3 text-sm text-[var(--color-button-primary-text)]"
-      >
-        {status === "sending" ? "Sending…" : "Start the Conversation"}
-      </MagneticButton>
+      <ActionButton type="submit" shine disabled={status === "sending"} className="mt-8">
+        {status === "sending" ? "Sending…" : "Start a Project"}
+      </ActionButton>
+      <p className="mt-4 text-xs leading-relaxed text-[var(--color-muted)]">
+        We only use this to reply to you. Never sold.{" "}
+        <a href="/privacy" className="underline underline-offset-4 hover:text-[var(--color-fg)]">
+          Privacy Policy
+        </a>
+      </p>
     </form>
   );
 }

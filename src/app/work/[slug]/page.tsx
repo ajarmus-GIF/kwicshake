@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import { HeroEntrance } from "@/components/text/HeroEntrance";
-import { MagneticButton } from "@/components/interactive/MagneticButton";
-import { TransitionLink } from "@/components/transition/TransitionProvider";
+import { ActionLink } from "@/components/interactive/ActionButtons";
 import { ParallaxMedia } from "@/components/media/ParallaxMedia";
 import { EditorialMedia } from "@/components/media/EditorialMedia";
 import { CaseStudyNarrative } from "@/components/work/CaseStudyNarrative";
@@ -21,6 +20,7 @@ export async function generateMetadata({ params }: PageProps<"/work/[slug]">) {
   return {
     title: `${project.title} — Kwic Shake`,
     description: project.summary,
+    alternates: { canonical: `/work/${project.slug}` },
   };
 }
 
@@ -147,14 +147,9 @@ export default async function ProjectPage({ params }: PageProps<"/work/[slug]">)
         />
         <div className="relative mx-auto max-w-3xl">
           <Tagline size="lg" className="mb-10" />
-          <MagneticButton
-            as={TransitionLink}
-            href="/contact"
-            radius={100}
-            className="btn-primary inline-flex items-center gap-2 px-8 py-4 text-sm uppercase tracking-widest text-[var(--color-button-primary-text)]"
-          >
+          <ActionLink href="/contact">
             Start a Project
-          </MagneticButton>
+          </ActionLink>
         </div>
       </section>
     </article>

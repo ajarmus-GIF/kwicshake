@@ -186,10 +186,10 @@ export function WinsFeed({
                   </span>
 
                   <div data-win-tilt className="relative z-10">
-                    <TransitionLink
-                      href={href}
+                    {/* Not a link: each card has exactly one, the "Get it free" button below, so
+                        keyboard and screen-reader users meet each win once instead of three times. */}
+                    <div
                       data-win-frame
-                      tabIndex={-1}
                       aria-hidden="true"
                       className="tone-frame relative block aspect-[4/5] w-full overflow-hidden rounded-[1.75rem] lg:aspect-auto lg:h-[78svh]"
                     >
@@ -210,7 +210,7 @@ export function WinsFeed({
                       <span className="absolute bottom-5 left-5 rounded-full bg-black/45 px-3 py-1.5 font-mono text-[0.65rem] uppercase tracking-[0.2em] text-[var(--color-white)] backdrop-blur-sm">
                         Free · {win.format}
                       </span>
-                    </TransitionLink>
+                    </div>
                   </div>
                 </div>
 
@@ -225,9 +225,7 @@ export function WinsFeed({
                     data-win-line
                     className="mt-5 text-balance text-[clamp(2.1rem,4.8vw,4.25rem)] leading-[1.02] text-[var(--color-white)]"
                   >
-                    <TransitionLink href={href} className="hover:underline hover:underline-offset-8">
-                      {win.title}
-                    </TransitionLink>
+                    {win.title}
                   </h2>
                   <p
                     data-win-line
