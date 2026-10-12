@@ -58,15 +58,15 @@ const GONE_AT = DISSOLVE_AT + HOLE_STEPS * HOLE_STEP_MS + TILE_OUT + 60;
 type Tiles = { size: number; cols: number; rows: number; delays: number[]; looks: number[] };
 
 /**
- * The squares the background breaks into (about a fourteenth of the layer's short side,
- * 36–80px), and the round each one drops out in. The break-up is holes, not a wave: every round
+ * The squares the background breaks into (about a 28th of the layer's short side,
+ * 18–40px), and the round each one drops out in. The break-up is holes, not a wave: every round
  * a few new squares go at random anywhere on screen (a few at first, more each round), and every
  * existing hole eats some of its neighbours, so holes keep appearing in new places while the old
  * ones widen raggedly and merge, until nothing is left. Nothing travels across the screen.
  * Each square also gets one of three glitch looks so they don't all break the same way.
  */
 function makeTiles(width: number, height: number): Tiles {
-  const size = Math.max(36, Math.min(80, Math.round(Math.min(width, height) / 14)));
+  const size = Math.max(18, Math.min(40, Math.round(Math.min(width, height) / 28)));
   const cols = Math.ceil(width / size);
   const rows = Math.ceil(height / size);
   const total = cols * rows;
