@@ -37,54 +37,77 @@ const GLYPHS = "01<>/\\[]{}=+*#%&$@!?_-";
 
 // Timeline, in ms from when this component starts. The wordmark and the tagline decode together,
 // both resolving by ~520ms; then "Shake" shakes (0.52s in, for 0.8s, set in globals.css), its
-// swings shrinking and slowing as it settles. Partway through that settle the background glitches
-// away square by square, bursting open in several random spots at once, and the text glitches
-// out with the last squares. Gone in about 1.5s.
+// swings shrinking and slowing as it settles. Partway through that settle the background breaks
+// into holes: random squares glitch out all over the screen, the holes widen and new ones keep
+// appearing, until the page shows through everywhere. Gone in about 1.6s.
 const MARK_START = 40;
 const MARK_DECODE = 460;
 const TAG_START = 40; // with the wordmark, not after it
 const TAG_DECODE = 480;
 const DISSOLVE_AT = 900; // while the shake is in its slow tail
-/** Squares nearest a burst point go first; the farthest go this much later… */
-const DISSOLVE_SPREAD = 260;
-/** …plus up to this much random scatter, so the bursts have ragged, glitchy edges. */
-const DISSOLVE_JITTER = 70;
+/** The break-up runs as this many stepped rounds… */
+const HOLE_STEPS = 12;
+/** …this far apart, so it reads as a digital process (rounds), not a smooth fade. */
+const HOLE_STEP_MS = 38;
 /** Each square's own glitch-out, matching the `intro-tile-out-*` keyframes in globals.css. */
 const TILE_OUT = 160;
-/** When the text glitches out, relative to DISSOLVE_AT: as the last squares go. */
-const TEXT_OUT = 230;
-const GONE_AT = DISSOLVE_AT + DISSOLVE_SPREAD + DISSOLVE_JITTER + TILE_OUT + 40;
+/** When the text glitches out, relative to DISSOLVE_AT: in the last few rounds. */
+const TEXT_OUT = HOLE_STEPS * HOLE_STEP_MS * 0.75;
+const GONE_AT = DISSOLVE_AT + HOLE_STEPS * HOLE_STEP_MS + TILE_OUT + 60;
 
 type Tiles = { size: number; cols: number; rows: number; delays: number[]; looks: number[] };
 
 /**
- * The squares the background breaks into, sized to the layer (about a fourteenth of its short
- * side, 36–80px). A handful of random burst points open at once and each spreads outward, so the
- * page shows through in several places at the same time rather than in one sweep; every
- * square's delay is its distance to the nearest burst. Each square also gets one of three
- * glitch looks so they don't all break the same way.
+ * The squares the background breaks into (about a fourteenth of the layer's short side,
+ * 36–80px), and the round each one drops out in. The break-up is holes, not a wave: every round
+ * a few new squares go at random anywhere on screen (a few at first, more each round), and every
+ * existing hole eats some of its neighbours, so holes keep appearing in new places while the old
+ * ones widen raggedly and merge, until nothing is left. Nothing travels across the screen.
+ * Each square also gets one of three glitch looks so they don't all break the same way.
  */
 function makeTiles(width: number, height: number): Tiles {
   const size = Math.max(36, Math.min(80, Math.round(Math.min(width, height) / 14)));
   const cols = Math.ceil(width / size);
   const rows = Math.ceil(height / size);
-  const bursts = Array.from({ length: 5 + Math.floor(Math.random() * 3) }, () => [
-    Math.random() * cols,
-    Math.random() * rows,
-  ]);
-  const nearest: number[] = [];
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < cols; c++) {
-      nearest.push(Math.min(...bursts.map(([bx, by]) => Math.hypot(c - bx, r - by))));
+  const total = cols * rows;
+  const round = new Array<number>(total).fill(-1); // the round each square goes in
+  let alive = total;
+  const kill = (i: number, r: number) => {
+    if (round[i] === -1) {
+      round[i] = r;
+      alive--;
+    }
+  };
+  for (let r = 0; r < HOLE_STEPS && alive > 0; r++) {
+    if (r === HOLE_STEPS - 1) {
+      // Last round: whatever is left goes.
+      for (let i = 0; i < total; i++) kill(i, r);
+      break;
+    }
+    // Existing holes widen: each square that went in an earlier round takes some of its
+    // still-standing neighbours with it.
+    for (let i = 0; i < total; i++) {
+      if (round[i] === -1 || round[i] >= r) continue;
+      const c = i % cols;
+      const neighbours = [i - cols, i + cols, c > 0 ? i - 1 : -1, c < cols - 1 ? i + 1 : -1];
+      for (const n of neighbours) {
+        if (n >= 0 && n < total && round[n] === -1 && Math.random() < 0.3) kill(n, r);
+      }
+    }
+    // New holes open at random spots: 2% of the screen in the first round, rising each round.
+    let fresh = Math.ceil(total * (0.02 + r * 0.012));
+    while (fresh-- > 0 && alive > 0) {
+      const i = Math.floor(Math.random() * total);
+      if (round[i] === -1) kill(i, r);
     }
   }
-  const farthest = Math.max(...nearest) || 1;
   return {
     size,
     cols,
     rows,
-    delays: nearest.map((d) => Math.round((d / farthest) * DISSOLVE_SPREAD + Math.random() * DISSOLVE_JITTER)),
-    looks: nearest.map(() => Math.floor(Math.random() * 3)),
+    // A few ms of scatter inside each round, so a round's squares don't all blink in unison.
+    delays: round.map((r) => r * HOLE_STEP_MS + Math.floor(Math.random() * 16)),
+    looks: round.map(() => Math.floor(Math.random() * 3)),
   };
 }
 

@@ -847,8 +847,8 @@ body {
   animation: intro-safety 0s linear 5s forwards;
 }
 /* The dissolve. Once the squares exist they carry the background, so the layer itself goes
-   clear; each square glitches out in hard steps after its own delay, bursting open from several
-   random spots at once; the text glitches out with the last squares; and the layer stops taking
+   clear; each square glitches out in hard steps after its own delay, as holes open at random
+   spots and widen; the text glitches out in the last rounds; and the layer stops taking
    clicks the moment it starts breaking up, so the page underneath is usable straight away. */
 .intro-loader.has-tiles {
   background: transparent;
@@ -875,7 +875,7 @@ body {
   animation-name: intro-tile-out-2;
 }
 .intro-loader.is-dissolving .intro-inner {
-  animation: intro-text-out 0.18s steps(4, end) var(--text-out, 230ms) forwards;
+  animation: intro-text-out 0.18s steps(4, end) var(--text-out, 340ms) forwards;
 }
 /* Three glitch-outs, picked at random per square: each jumps sideways a few pixels and flashes a
    brand colour (purple, chartreuse, or a dim scanline) in hard steps before it's gone, so the
