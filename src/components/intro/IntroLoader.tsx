@@ -37,46 +37,55 @@ const GLYPHS = "01<>/\\[]{}=+*#%&$@!?_-";
 
 // Timeline, in ms from when this component starts. The wordmark and the tagline decode together,
 // both resolving by ~520ms; then "Shake" shakes (0.52s in, for 0.8s, set in globals.css), its
-// swings shrinking and slowing as it settles. Partway through that settle the background
-// dissolves into the page square by square, from the edges in, and the text flickers out with
-// the last squares around it. Gone in about 1.8s.
+// swings shrinking and slowing as it settles. Partway through that settle the background glitches
+// away square by square, bursting open in several random spots at once, and the text glitches
+// out with the last squares. Gone in about 1.5s.
 const MARK_START = 40;
 const MARK_DECODE = 460;
 const TAG_START = 40; // with the wordmark, not after it
 const TAG_DECODE = 480;
 const DISSOLVE_AT = 900; // while the shake is in its slow tail
-/** Edge squares go first, the centre ones last, spread over this long… */
-const DISSOLVE_SPREAD = 460;
-/** …plus up to this much random scatter, so it breaks up rather than wiping. */
-const DISSOLVE_JITTER = 140;
-/** Each square's own flicker-out, matching `intro-tile-out` in globals.css. */
-const TILE_OUT = 220;
-/** When the text flickers out, relative to DISSOLVE_AT: as the centre squares go. */
-const TEXT_OUT = 420;
+/** Squares nearest a burst point go first; the farthest go this much later… */
+const DISSOLVE_SPREAD = 260;
+/** …plus up to this much random scatter, so the bursts have ragged, glitchy edges. */
+const DISSOLVE_JITTER = 70;
+/** Each square's own glitch-out, matching the `intro-tile-out-*` keyframes in globals.css. */
+const TILE_OUT = 160;
+/** When the text glitches out, relative to DISSOLVE_AT: as the last squares go. */
+const TEXT_OUT = 230;
 const GONE_AT = DISSOLVE_AT + DISSOLVE_SPREAD + DISSOLVE_JITTER + TILE_OUT + 40;
 
-type Tiles = { size: number; cols: number; rows: number; delays: number[] };
+type Tiles = { size: number; cols: number; rows: number; delays: number[]; looks: number[] };
 
 /**
- * The squares the background breaks into, sized to the layer: about a twelfth of its short
- * side (40–90px), each with a delay that grows toward the centre so the page appears around the
- * edges first and the wordmark is the last thing standing.
+ * The squares the background breaks into, sized to the layer (about a fourteenth of its short
+ * side, 36–80px). A handful of random burst points open at once and each spreads outward, so the
+ * page shows through in several places at the same time rather than in one sweep; every
+ * square's delay is its distance to the nearest burst. Each square also gets one of three
+ * glitch looks so they don't all break the same way.
  */
 function makeTiles(width: number, height: number): Tiles {
-  const size = Math.max(40, Math.min(90, Math.round(Math.min(width, height) / 12)));
+  const size = Math.max(36, Math.min(80, Math.round(Math.min(width, height) / 14)));
   const cols = Math.ceil(width / size);
   const rows = Math.ceil(height / size);
-  const cx = (cols - 1) / 2;
-  const cy = (rows - 1) / 2;
-  const far = Math.hypot(cx, cy) || 1;
-  const delays: number[] = [];
+  const bursts = Array.from({ length: 5 + Math.floor(Math.random() * 3) }, () => [
+    Math.random() * cols,
+    Math.random() * rows,
+  ]);
+  const nearest: number[] = [];
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < cols; c++) {
-      const fromCentre = Math.hypot(c - cx, r - cy) / far; // 0 at the centre, 1 at a corner
-      delays.push(Math.round((1 - fromCentre) * DISSOLVE_SPREAD + Math.random() * DISSOLVE_JITTER));
+      nearest.push(Math.min(...bursts.map(([bx, by]) => Math.hypot(c - bx, r - by))));
     }
   }
-  return { size, cols, rows, delays };
+  const farthest = Math.max(...nearest) || 1;
+  return {
+    size,
+    cols,
+    rows,
+    delays: nearest.map((d) => Math.round((d / farthest) * DISSOLVE_SPREAD + Math.random() * DISSOLVE_JITTER)),
+    looks: nearest.map(() => Math.floor(Math.random() * 3)),
+  };
 }
 
 export function IntroLoader({ replayKey }: { replayKey?: number } = {}) {
@@ -164,7 +173,11 @@ export function IntroLoader({ replayKey }: { replayKey?: number } = {}) {
           }}
         >
           {tiles.delays.map((d, i) => (
-            <span key={i} className="intro-tile" style={{ animationDelay: `${d}ms` }} />
+            <span
+              key={i}
+              className={`intro-tile intro-tile-${tiles.looks[i]}`}
+              style={{ animationDelay: `${d}ms` }}
+            />
           ))}
         </div>
       )}
