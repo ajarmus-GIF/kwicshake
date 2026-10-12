@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { worlds, worldFaces, type World } from "@/lib/worlds";
 import { BrowserFrame, MiniSite, PhoneFrame } from "@/components/reveal/MiniSite";
 import { StatGuess } from "./StatGuess";
+import { FlashRunner } from "@/components/reveal/FlashRunner";
 import { FactCard, Onward, sources, RunCta } from "./parts";
 
 /**
@@ -136,17 +137,8 @@ export function GlanceMoment({
   const [round, setRound] = useState<0 | 1>(0);
   const [phase, setPhase] = useState<"ready" | "flash" | "ask" | "result">("ready");
   const [verdicts, setVerdicts] = useState<Verdict[]>([]);
-  const timer = useRef<number | undefined>(undefined);
-  useEffect(() => () => window.clearTimeout(timer.current), []);
 
-  const flash = () => {
-    setPhase("flash");
-    requestAnimationFrame(() =>
-      requestAnimationFrame(() => {
-        timer.current = window.setTimeout(() => setPhase("ask"), 50);
-      })
-    );
-  };
+  const flash = () => setPhase("flash");
 
   const decide = (v: Verdict) => {
     const next = [...verdicts, v];
@@ -186,11 +178,16 @@ export function GlanceMoment({
         </div>
       )}
 
-      {/* Fixed-size box during the flash so the page doesn't jump. */}
+      {/* Countdown, then the 50ms flash, in one fixed box (see FlashRunner). */}
       {phase === "flash" && (
-        <BrowserFrame url={`${world.id}.example`} className="mx-auto max-w-3xl">
-          <MiniSite world={world} generic={round === 0} layout="desktop" />
-        </BrowserFrame>
+        <FlashRunner
+          key={round}
+          world={world}
+          generic={round === 0}
+          url={`${world.id}.example`}
+          eyebrow={round === 0 ? "Their site, loading" : "The rebuilt site, loading"}
+          onDone={() => setPhase("ask")}
+        />
       )}
 
       {phase === "ask" && (
