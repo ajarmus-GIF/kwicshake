@@ -5,7 +5,7 @@ import { useGSAP } from "@gsap/react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { useReducedMotion } from "@/hooks/useMediaQuery";
 import { EditorialMedia } from "@/components/media/EditorialMedia";
-import type { TeamMember } from "@/lib/team";
+import { PORTRAIT_WIDTHS, type TeamMember } from "@/lib/team";
 
 /**
  * One founder, presented as a scroll rather than a bio block: a sticky identity panel holds his
@@ -135,7 +135,10 @@ export function TeamMemberFlow({
           {/* Narrow slot (15rem cap), so the responsive hint is small at every
               breakpoint — this never needs a half-viewport file. */}
           <EditorialMedia
-            label={`${member.firstName} — portrait, 4:5`}
+            src={member.photo.src}
+            widths={PORTRAIT_WIDTHS}
+            placeholder={member.photo.placeholder}
+            alt={`${member.firstName} ${member.lastName}, ${member.role} at Kwic Shake`}
             aspect="aspect-[4/5]"
             className="mt-8 max-w-[15rem]"
             sizes="240px"

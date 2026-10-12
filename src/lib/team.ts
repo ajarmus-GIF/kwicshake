@@ -17,7 +17,17 @@ export interface TeamMember {
   /** The same paragraph compressed to one line. The part people actually remember. */
   inOtherWords: string;
   beats: TeamBeat[];
+  /**
+   * Headshot, cropped to the panel's 4:5 slot. `src` names the set: public/images/team holds it
+   * at each width in PORTRAIT_WIDTHS as AVIF, WebP and JPEG (`<name>-240.avif` and so on), made
+   * from the original with metadata stripped. `placeholder` is an 8×10 WebP of the same photo,
+   * inlined so the slot shows a blurred preview before the real file arrives.
+   */
+  photo: { src: string; placeholder: string };
 }
+
+/** The widths every headshot is exported at: the 240px slot at 1×, 2× and 3× density. */
+export const PORTRAIT_WIDTHS = [240, 480, 720];
 
 /**
  * The two founders, written as beats rather than bios: each one a short headline with a single
@@ -34,6 +44,11 @@ export const team: TeamMember[] = [
     firstName: "Jonah",
     lastName: "Jarmus",
     role: "Creative Director",
+    photo: {
+      src: "/images/team/jonah-jarmus.jpg",
+      placeholder:
+        "data:image/webp;base64,UklGRlIAAABXRUJQVlA4IEYAAADQAQCdASoIAAoAAsBMJQBOgBu1mg7tgAD+82Nh2uyZlwrq2Y1DLEcmN/vq0zqc80R/o+v60HejB9gktY7FKr+GbVCGAAAA",
+    },
     intro:
       "Jonah brings the operational side of the business to the creative side. His background is in project management, business operations, leadership, and getting complicated things moving in the same direction. He's the person making sure the big idea actually becomes something real.",
     inOtherWords: "He makes the machine work.",
@@ -80,6 +95,11 @@ export const team: TeamMember[] = [
     firstName: "Aidan",
     lastName: "Jarmus",
     role: "Lead Digital Marketer",
+    photo: {
+      src: "/images/team/aidan-jarmus.jpg",
+      placeholder:
+        "data:image/webp;base64,UklGRmIAAABXRUJQVlA4IFYAAADwAQCdASoIAAoAAsBMJZACdADdKXiD3YAA/u+i9hftJZX3hJ/EIn+5fa3OjpNA51vuSW3R+70USNhil7Q3vNvDIL5WhKFB6zTuVcEbuq29GxYPzgAAAA==",
+    },
     intro:
       "Aidan has spent roughly a decade building websites and working on digital experiences. His focus sits where strategy and creativity overlap — figuring out what a business needs to say, how it should look, and how to turn attention into action. He also has a background in entrepreneurship and a passion for creative work outside of client projects.",
     inOtherWords: "He makes people care.",

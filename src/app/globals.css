@@ -3,6 +3,17 @@
 /* Wordmark face — see .brand-wordmark below. */
 @import "@fontsource/michroma";
 
+/* The homepage hero's laptop layout (photo behind the page, copy on the left): every screen
+   1280px and wider, plus landscape tablets from 1024px (any iPad turned sideways). */
+@custom-variant hero-wide {
+  @media (min-width: 80rem) {
+    @slot;
+  }
+  @media (min-width: 64rem) and (orientation: landscape) {
+    @slot;
+  }
+}
+
 /*
  * Design tokens — "Nova" palette. Raw colors live in :root ONLY; every rule in this file and
  * every component references the tokens below, never a raw hex, so swapping the palette stays
@@ -267,8 +278,10 @@ body {
 }
 
 /* Primary CTA: solid action chartreuse with dark type; a step lighter with a chartreuse glow on
-   hover. No animation — add .action-shine to the few that should shine. */
+   hover. No animation — add .action-shine to the few that should shine. Always a pill, like the
+   homepage's ActionButton, so no button on the site can come out square-cornered. */
 .btn-primary {
+  border-radius: 9999px;
   background-color: var(--color-action);
 }
 
@@ -282,6 +295,7 @@ body {
    the busy photo instead of blending into it. A separate class rather than reusing `.btn-primary`
    itself since that button's rest-state gradient shouldn't change. */
 .btn-hero-white {
+  border-radius: 9999px;
   background-color: var(--color-white);
   color: var(--color-raised);
   transition:
@@ -811,4 +825,135 @@ body {
     animation: none;
     opacity: 0;
   }
+}
+
+/* ── First-visit intro (components/intro/IntroLoader.tsx) ──────────────────────────────────────
+   Three ways out, so it can never trap anyone: with JS, the component dissolves the background
+   into the page square by square (.is-dissolving) and then unmounts; without JS (no .intro-js
+   on <html>), the layer lifts by CSS alone after 0.9s;
+   and .intro-safety hides it at 5s whatever happened. `intro-seen` (set before paint by the
+   layout's boot script) means it never paints at all. */
+.intro-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  background: var(--color-paper);
+  animation: intro-lift 0.55s cubic-bezier(0.76, 0, 0.24, 1) 0.9s forwards,
+    intro-safety 0s linear 5s forwards;
+}
+.intro-js .intro-loader {
+  animation: intro-safety 0s linear 5s forwards;
+}
+/* The dissolve. Once the canvas has painted it carries the background, so the layer itself goes
+   clear; the component punches square holes in the canvas round by round, opening at random
+   spots and widening; the text glitches out in the last rounds; and the layer stops taking
+   clicks the moment it starts breaking up, so the page underneath is usable straight away. */
+.intro-loader.has-tiles {
+  background: transparent;
+}
+.intro-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.intro-loader.is-dissolving {
+  pointer-events: none;
+}
+.intro-loader.is-dissolving .intro-inner {
+  animation: intro-text-out 0.18s steps(4, end) var(--text-out, 525ms) forwards;
+}
+@keyframes intro-text-out {
+  0% { opacity: 1; }
+  25% { opacity: 0.2; transform: translateX(4px); }
+  50% { opacity: 0.9; transform: translateX(-3px); }
+  75% { opacity: 0.3; transform: none; }
+  100% { opacity: 0; }
+}
+.intro-seen .intro-loader:not(.is-replay) {
+  display: none;
+}
+/* In the /loaders gallery it plays inside its preview frame instead of over the viewport. */
+.intro-loader.is-replay {
+  position: absolute;
+  z-index: 2;
+}
+.intro-inner {
+  position: relative;
+  text-align: center;
+  padding-inline: 1.5rem;
+}
+.intro-js .intro-loader:not(.is-live) .intro-inner {
+  visibility: hidden;
+}
+.intro-mark {
+  font-size: clamp(1.6rem, 6vw, 3.4rem);
+  letter-spacing: -0.01em;
+  white-space: pre;
+}
+.intro-loader.is-replay .intro-mark {
+  font-size: clamp(1.4rem, 4.5vw, 2.6rem);
+}
+.intro-shake {
+  display: inline-block;
+}
+/* Starts at 0.52s, once both lines have decoded (see the timeline in IntroLoader.tsx). */
+.intro-loader.is-live .intro-shake {
+  animation: intro-shake 0.8s 0.52s;
+}
+.intro-tag {
+  margin-top: 1.1rem;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: clamp(0.68rem, 1.7vw, 1rem);
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--color-cherry);
+  white-space: pre;
+}
+.intro-cursor {
+  display: inline-block;
+  width: 0.6em;
+  height: 1em;
+  margin-left: 0.35em;
+  vertical-align: -0.12em;
+  background: var(--color-cherry);
+  box-shadow: 0 0 10px var(--color-cherry);
+  animation: intro-blink 0.9s steps(1) infinite;
+}
+/* A damped shake: each swing is smaller than the last and takes longer (the gaps between
+   keyframes grow from 9% to 22% of the run), so it starts as a quick rattle and slows as it
+   settles, like a spring coming to rest. ease-in-out per segment rounds off each turn. */
+@keyframes intro-shake {
+  0% { transform: none; animation-timing-function: ease-out; }
+  9% { transform: translateX(-6px) rotate(-3.5deg); animation-timing-function: ease-in-out; }
+  21% { transform: translateX(5px) rotate(3deg); animation-timing-function: ease-in-out; }
+  36% { transform: translateX(-3.5px) rotate(-2deg); animation-timing-function: ease-in-out; }
+  55% { transform: translateX(2px) rotate(1deg); animation-timing-function: ease-in-out; }
+  78% { transform: translateX(-0.8px) rotate(-0.4deg); animation-timing-function: ease-in-out; }
+  100% { transform: none; }
+}
+@keyframes intro-blink {
+  50% { opacity: 0; }
+}
+@keyframes intro-lift {
+  to { transform: translateY(-100%); }
+}
+@keyframes intro-safety {
+  to { visibility: hidden; }
+}
+
+/* The 3-2-1 before a 50ms flash (reveal/FlashRunner.tsx): each digit pops in. */
+.countdown-pop {
+  animation: countdown-pop 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes countdown-pop {
+  0% { opacity: 0; transform: scale(0.6); }
+  25% { opacity: 1; transform: scale(1); }
+  80% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0.15; transform: scale(0.94); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .countdown-pop { animation: none; }
 }

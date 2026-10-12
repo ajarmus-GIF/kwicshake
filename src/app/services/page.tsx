@@ -91,7 +91,7 @@ export default function ServicesPage() {
                 <MagneticButton
                   as={TransitionLink}
                   href="/work"
-                  className="inline-flex items-center gap-2 border border-[var(--color-on-dark)] px-6 py-3 text-sm"
+                  className="inline-flex items-center gap-2 rounded-full border border-[var(--color-on-dark)] px-6 py-3 text-sm"
                 >
                   Explore the Work
                 </MagneticButton>

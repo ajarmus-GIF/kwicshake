@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { worlds, worldFaces, type World } from "@/lib/worlds";
 import { BrowserFrame, MiniSite, PhoneFrame } from "@/components/reveal/MiniSite";
 import { StatGuess } from "./StatGuess";
+import { FlashRunner } from "@/components/reveal/FlashRunner";
 import { FactCard, Onward, sources, RunCta } from "./parts";
 
 /**
@@ -136,17 +137,8 @@ export function GlanceMoment({
   const [round, setRound] = useState<0 | 1>(0);
   const [phase, setPhase] = useState<"ready" | "flash" | "ask" | "result">("ready");
   const [verdicts, setVerdicts] = useState<Verdict[]>([]);
-  const timer = useRef<number | undefined>(undefined);
-  useEffect(() => () => window.clearTimeout(timer.current), []);
 
-  const flash = () => {
-    setPhase("flash");
-    requestAnimationFrame(() =>
-      requestAnimationFrame(() => {
-        timer.current = window.setTimeout(() => setPhase("ask"), 50);
-      })
-    );
-  };
+  const flash = () => setPhase("flash");
 
   const decide = (v: Verdict) => {
     const next = [...verdicts, v];
@@ -186,11 +178,16 @@ export function GlanceMoment({
         </div>
       )}
 
-      {/* Fixed-size box during the flash so the page doesn't jump. */}
+      {/* Countdown, then the 50ms flash, in one fixed box (see FlashRunner). */}
       {phase === "flash" && (
-        <BrowserFrame url={`${world.id}.example`} className="mx-auto max-w-3xl">
-          <MiniSite world={world} generic={round === 0} layout="desktop" />
-        </BrowserFrame>
+        <FlashRunner
+          key={round}
+          world={world}
+          generic={round === 0}
+          url={`${world.id}.example`}
+          eyebrow={round === 0 ? "Their site, loading" : "The rebuilt site, loading"}
+          onDone={() => setPhase("ask")}
+        />
       )}
 
       {phase === "ask" && (
@@ -247,6 +244,10 @@ export function GlanceMoment({
 
 /* ── 04 · The wait ─────────────────────────────────────────────────────────────────────── */
 const WAIT_MAX = 12;
+/** Where the 53% abandonment stat (sources.speed) kicks in. Marked on the bar. */
+const WAIT_MARK = 3;
+/** Stopwatch reading: truncated to tenths, never rounded, so "3.0" never shows before 3.0s. */
+const tenths = (t: number) => Math.floor(t * 10) / 10;
 export function WaitMoment({
   world,
   onDone,
@@ -267,14 +268,19 @@ export function WaitMoment({
 
   const stop = (t: number) => {
     cancelAnimationFrame(frame.current);
-    setElapsed(t);
+    // The recorded time is the stopwatch reading, so the headline, the clock and the summary
+    // card at the end of the run all show the same number.
+    const reading = tenths(Math.min(WAIT_MAX, t));
+    setElapsed(reading);
     setPhase("result");
-    onDone(t);
+    onDone(reading);
   };
 
   const start = () => {
     setPhase("loading");
     started.current = now();
+    // Time comes from the clock (performance.now), never from counting frames, so the reading
+    // stays true on a slow phone, a 120Hz screen, or after the tab was in the background.
     const tick = () => {
       const t = (now() - started.current) / 1000;
       if (t >= WAIT_MAX) return stop(WAIT_MAX);
@@ -284,8 +290,11 @@ export function WaitMoment({
     frame.current = requestAnimationFrame(tick);
   };
 
-  // A loading bar that never quite finishes — it eases toward 92% and stalls, like the real thing.
-  const fill = Math.min(92, 92 * (1 - Math.exp(-elapsed / 3.5)));
+  // The bar is the timer: its fill is elapsed / WAIT_MAX exactly, so the 3s mark sits at 25%,
+  // the fill crosses it at 3.0s on the clock below, and it reaches the end at 12.0s.
+  const fill = Math.min(1, elapsed / WAIT_MAX) * 100;
+  const markAt = (WAIT_MARK / WAIT_MAX) * 100;
+  const pastMark = phase !== "ready" && elapsed >= WAIT_MARK;
   const gaveUp = phase === "result" && elapsed < WAIT_MAX;
 
   return (
@@ -294,7 +303,7 @@ export function WaitMoment({
         {phase === "result" ? (
           gaveUp ? (
             <>
-              You gave up at <span className="text-[var(--color-cherry)]">{elapsed.toFixed(1)} seconds.</span>
+              You gave up at <span className="text-[var(--color-cherry)]">{tenths(elapsed).toFixed(1)} seconds.</span>
             </>
           ) : (
             <>
@@ -315,18 +324,74 @@ export function WaitMoment({
       </p>
 
       <div className="mx-auto mt-12 max-w-2xl">
-        <div className="relative h-2.5 overflow-hidden rounded-full bg-white/10">
-          <div className="absolute inset-y-0 left-0 rounded-full bg-[var(--color-white)]" style={{ width: `${phase === "ready" ? 0 : fill}%` }} />
+        {/* The track and its fill. role="progressbar" so the timer is announced, not just seen. */}
+        <div
+          role="progressbar"
+          aria-label="Time waited"
+          aria-valuemin={0}
+          aria-valuemax={WAIT_MAX}
+          aria-valuenow={tenths(elapsed)}
+          aria-valuetext={`${tenths(elapsed).toFixed(1)} of ${WAIT_MAX} seconds`}
+          className="relative h-2.5 rounded-full bg-white/10"
+        >
+          <div
+            className={`absolute inset-y-0 left-0 rounded-full transition-colors duration-300 ${
+              pastMark ? "bg-[var(--color-cherry)]" : "bg-[var(--color-white)]"
+            }`}
+            style={{ width: `${phase === "ready" ? 0 : fill}%` }}
+          />
+          {/* The 3s line, drawn through the track so the fill visibly crosses it. */}
+          <span
+            aria-hidden="true"
+            className={`absolute -inset-y-1.5 w-0.5 -translate-x-1/2 rounded-full transition-colors duration-300 ${
+              pastMark ? "bg-[var(--color-cherry)]" : "bg-[var(--color-white)]/70"
+            }`}
+            style={{ left: `${markAt}%` }}
+          />
         </div>
-        <div className="relative mt-3 h-5 font-mono text-[0.65rem] uppercase tracking-[0.2em] text-[var(--color-ink)]/60">
+
+        {/* One tick per second, so the bar reads as a measurement rather than a mood. */}
+        <div aria-hidden="true" className="relative mt-2 h-2">
+          {Array.from({ length: WAIT_MAX + 1 }, (_, i) => (
+            <span
+              key={i}
+              className={`absolute top-0 w-px -translate-x-1/2 ${
+                i % 3 === 0 ? "h-2 bg-[var(--color-ink)]/40" : "h-1 bg-[var(--color-ink)]/20"
+              }`}
+              style={{ left: `${(i / WAIT_MAX) * 100}%` }}
+            />
+          ))}
+        </div>
+
+        {/* Scale labels. The ends are pinned to the edges (not centred on them) so they never
+            hang off a narrow screen; 6s and 9s only appear where there is room for them. */}
+        <div aria-hidden="true" className="relative mt-1.5 h-9 font-mono text-[0.65rem] uppercase tracking-[0.2em] text-[var(--color-ink)]/60">
           <span className="absolute left-0">0s</span>
-          <span className="absolute -translate-x-1/2 text-[var(--color-white)]" style={{ left: `${(3 / WAIT_MAX) * 100}%` }}>
-            ▲ 3s
+          <span
+            className={`absolute -translate-x-1/2 whitespace-nowrap text-center transition-colors duration-300 ${
+              pastMark ? "text-[var(--color-cherry)]" : "text-[var(--color-white)]"
+            }`}
+            style={{ left: `${markAt}%` }}
+          >
+            {WAIT_MARK}s
+            <span
+              className={`mt-1 hidden text-[0.6rem] tracking-[0.15em] transition-opacity duration-300 sm:block ${
+                pastMark ? "opacity-100" : "opacity-0"
+              }`}
+            >
+              53% have left
+            </span>
           </span>
+          {[6, 9].map((sec) => (
+            <span key={sec} className="absolute hidden -translate-x-1/2 sm:block" style={{ left: `${(sec / WAIT_MAX) * 100}%` }}>
+              {sec}s
+            </span>
+          ))}
           <span className="absolute right-0">{WAIT_MAX}s</span>
         </div>
+
         <p className="display-face mt-8 text-[clamp(3.5rem,12vw,7rem)] leading-none tabular-nums text-[var(--color-white)]">
-          {elapsed.toFixed(1)}
+          {tenths(elapsed).toFixed(1)}
           <span className="text-[var(--color-cherry)]">s</span>
         </p>
       </div>

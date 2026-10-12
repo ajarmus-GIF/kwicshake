@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { PresizedPicture } from "@/components/media/EditorialMedia";
 import { ActionButton, ActionNote } from "@/components/interactive/ActionButtons";
 import { MagneticButton } from "@/components/interactive/MagneticButton";
 import { TransitionLink } from "@/components/transition/TransitionProvider";
@@ -29,13 +30,21 @@ import { GlanceMoment, HuntMoment, MemoryMoment, SearchMoment, WaitMoment, picka
  */
 /** Edge fades for the hero photos, so their dark borders melt into the page. */
 const fadeSides = "radial-gradient(ellipse 62% 64% at 50% 50%, #000 68%, transparent 100%)";
-/** Stacked photo: fades its sides and top, never its bottom edge (that's the phone's base). */
-const fadeEdges = {
+/** Phone background photo: fades its top into the page behind the copy, and its bottom into
+ *  the floor under the button, so it reads as the page rather than a picture on it. */
+const fadePhone = {
+  maskImage: "linear-gradient(to bottom, transparent, #000 26%, #000 82%, transparent)",
+  WebkitMaskImage: "linear-gradient(to bottom, transparent, #000 26%, #000 82%, transparent)",
+};
+
+/** Tablet photo: fades its top under the copy, its bottom under the button, and its sides
+ *  (which are usually off-screen). */
+const fadeTablet = {
   maskImage:
-    "linear-gradient(to right, transparent, #000 14%, #000 86%, transparent), linear-gradient(to bottom, transparent, #000 16%)",
+    "linear-gradient(to right, transparent, #000 8%, #000 92%, transparent), linear-gradient(to bottom, transparent, #000 22%, #000 86%, transparent)",
   maskComposite: "intersect",
   WebkitMaskImage:
-    "linear-gradient(to right, transparent, #000 14%, #000 86%, transparent), linear-gradient(to bottom, transparent, #000 16%)",
+    "linear-gradient(to right, transparent, #000 8%, #000 92%, transparent), linear-gradient(to bottom, transparent, #000 22%, #000 86%, transparent)",
   WebkitMaskComposite: "source-in",
 };
 
@@ -99,41 +108,42 @@ export function CustomerRun({ switchToTraditional = false }: { switchToTradition
       {/* Fills the screen under the sticky header (about 4.8rem tall on phones, 4.05rem wide).
           Two layouts, both built so the button sits right under the phone in the photo without
           guessing where the photo lands:
-          · below xl, a stack: copy, then a cropped portrait photo whose bottom edge IS the phone's
-            base, sized to whatever height is left, then the button;
-          · xl and up, the landscape photo behind the page with the copy on the left. Its height is
-            set from the section's, so the phone always ends exactly HERO_GAP above the bottom
-            (the phone's base is 84.5% down that 1672×941 photo), and the button fills that gap. */}
+          · a stack: copy, then the photo, then the button. The photo runs edge to edge as the
+            page's background, positioned so the phone in it ends right above the button: the
+            portrait photo on phones, the landscape one from 44rem (portrait tablets);
+          · hero-wide (xl, and landscape tablets), the landscape photo behind the page with the
+            copy on the left. Its height is set from the section's, so the phone always ends
+            exactly HERO_GAP above the bottom (the phone's base is 84.5% down that 1672×941 photo), and the button fills that gap. */}
       <section
         id="moment-0"
-        className={`${page === 0 ? "flex" : "hidden"} stage-enter relative min-h-[calc(100svh_-_4.8rem)] flex-col overflow-hidden bg-[var(--color-paper)] text-[var(--color-ink)] xl:min-h-[max(calc(100svh_-_4.05rem),40rem)]`}
+        className={`${page === 0 ? "flex" : "hidden"} stage-enter relative min-h-[calc(100svh_-_4.8rem)] flex-col overflow-hidden bg-[var(--color-paper)] text-[var(--color-ink)] hero-wide:min-h-[max(calc(100svh_-_4.05rem),40rem)]`}
       >
         <div
           aria-hidden="true"
-          className="absolute left-1/2 top-14 hidden aspect-[1672/941] h-[calc((100%_-_3.5rem_-_9.5rem)/0.845)] -translate-x-1/2 xl:block"
+          className="absolute left-1/2 top-14 hidden aspect-[1672/941] h-[calc((100%_-_3.5rem_-_9.5rem)/0.845)] -translate-x-1/2 hero-wide:block"
           style={{ maskImage: fadeSides, WebkitMaskImage: fadeSides }}
         >
           <Image src="/images/concepts/hero-laptop.jpg" alt="" fill priority sizes="100vw" className="object-cover" />
         </div>
         <div
           aria-hidden="true"
-          className="absolute inset-0 hidden bg-[linear-gradient(90deg,var(--color-paper)_0%,var(--color-paper)_12%,color-mix(in_srgb,var(--color-paper)_80%,transparent)_28%,transparent_44%)] xl:block"
+          className="absolute inset-0 hidden bg-[linear-gradient(90deg,var(--color-paper)_0%,var(--color-paper)_12%,color-mix(in_srgb,var(--color-paper)_80%,transparent)_28%,transparent_44%)] hero-wide:block"
         />
-        <div aria-hidden="true" className="absolute inset-x-0 bottom-0 hidden h-40 bg-gradient-to-t from-[var(--color-paper)] to-transparent xl:block" />
+        <div aria-hidden="true" className="absolute inset-x-0 bottom-0 hidden h-40 bg-gradient-to-t from-[var(--color-paper)] to-transparent hero-wide:block" />
         {/* A soft glow behind the stacked photo, so its faded edges melt into the page. */}
         <div
           aria-hidden="true"
-          className="absolute inset-0 bg-[radial-gradient(ellipse_70%_45%_at_50%_70%,var(--color-glow),transparent_70%)] opacity-50 xl:hidden"
+          className="absolute inset-0 bg-[radial-gradient(ellipse_70%_45%_at_50%_70%,var(--color-glow),transparent_70%)] opacity-50 hero-wide:hidden"
         />
         {switchToTraditional && <HomepageSwitch to="traditional" />}
 
-        <div className="relative mx-auto flex w-full max-w-7xl flex-1 flex-col px-6 pb-6 pt-28 xl:justify-center xl:pb-40 xl:pt-24">
-          <div className="mx-auto max-w-xl text-center xl:mx-0 xl:max-w-[28rem] xl:text-left">
-            <p className="eyebrow mb-4 xl:mb-6">+ A one-minute experiment</p>
-            <h1 className="text-balance text-[clamp(2.3rem,8vw,3.4rem)] leading-[0.95] text-[var(--color-white)] xl:text-[clamp(2.6rem,4.2vw,3.75rem)]">
+        <div className="relative mx-auto flex w-full max-w-7xl flex-1 flex-col px-6 pb-6 pt-28 hero-wide:justify-center hero-wide:pb-40 hero-wide:pt-24">
+          <div className="relative z-10 mx-auto max-w-xl text-center hero-wide:mx-0 hero-wide:max-w-[min(28rem,34vw)] hero-wide:text-left">
+            <p className="eyebrow mb-4 hero-wide:mb-6">+ A one-minute experiment</p>
+            <h1 className="hero-text-shadow text-balance text-[clamp(2.3rem,8vw,3.4rem)] leading-[0.95] text-[var(--color-white)] hero-wide:text-[clamp(2.6rem,4.2vw,3.75rem)]">
               Don&apos;t read this website. <span className="text-[var(--color-cherry)]">Use it.</span>
             </h1>
-            <p className="mx-auto mt-4 max-w-md text-[clamp(1rem,1.6vw,1.25rem)] leading-snug text-[var(--color-ink)]/80 xl:mx-0 xl:mt-6">
+            <p className="hero-text-shadow mx-auto mt-4 max-w-md text-[clamp(1rem,1.6vw,1.25rem)] leading-snug text-[var(--color-ink)]/80 hero-wide:mx-0 hero-wide:mt-6">
               For the next minute you&apos;re a customer looking for a business.{" "}
               <span className="hidden sm:inline">
                 Every choice you make is one your customers are already making about you.
@@ -141,22 +151,53 @@ export function CustomerRun({ switchToTraditional = false }: { switchToTradition
             </p>
           </div>
 
-          <div className="relative mt-4 min-h-[15rem] flex-1 xl:hidden">
-            <Image
-              src="/images/concepts/hero-phone-stage.jpg"
-              alt=""
-              width={731}
-              height={885}
-              priority
-              sizes="(min-width: 768px) 731px, 100vw"
-              className="absolute bottom-0 left-1/2 h-auto max-h-full w-auto max-w-full -translate-x-1/2"
-              style={fadeEdges}
+          <div className="relative mt-4 min-h-[15rem] flex-1 [@media(max-height:760px)]:min-h-[7rem] hero-wide:hidden">
+            {/* Phones: the full portrait photo as the page's background, edge to edge. Its
+                width is the screen's, so its height is 100vw × 1300/731, and the phone's base is
+                77% of the way down it (y≈1000 of 1300). Pulling the box down by the remaining 23%
+                of its height puts that base exactly on this area's bottom edge, right above the
+                "I'm the customer" button, whatever the screen size. Whatever extends above sits
+                behind the copy, where the photo is dark; the section clips the rest. */}
+            <div
+              aria-hidden="true"
+              className="absolute left-1/2 aspect-[731/1300] w-screen -translate-x-1/2 min-[44rem]:hidden"
+              style={{ bottom: "calc(100vw * -1300 / 731 * 0.23)", ...fadePhone }}
+            >
+              <PresizedPicture
+                src="/images/concepts/hero-phone.jpg"
+                widths={[480, 731]}
+                alt=""
+                sizes="100vw"
+                priority
+                className="h-full w-full object-cover"
+              />
+            </div>
+            {/* Phones: a scrim behind the copy. The photo is busiest exactly where the copy sits,
+                so the page colour holds solid down through the text and clears over the last
+                stretch above this area, leaving the phone and the cards around it untouched. */}
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute bottom-[calc(100%_-_2.5rem)] left-1/2 h-[100svh] w-screen -translate-x-1/2 min-[44rem]:hidden"
+              style={{
+                background:
+                  "linear-gradient(to top, transparent, color-mix(in srgb, var(--color-paper) 88%, transparent) 6rem, var(--color-paper) 11rem)",
+              }}
             />
+            {/* Tablets: the phone's base is 84.5% down the 1672×941 photo, so a photo
+                (area + 6rem) / 0.845 tall, starting 6rem up behind the copy, puts it on this
+                box's bottom edge. The 6rem tucks the photo's dark top under the copy. */}
+            <div
+              aria-hidden="true"
+              className="absolute -top-24 left-1/2 hidden aspect-[1672/941] h-[calc((100%_+_6rem)/0.845)] -translate-x-1/2 min-[44rem]:block"
+              style={fadeTablet}
+            >
+              <Image src="/images/concepts/hero-laptop.jpg" alt="" fill priority sizes="100vw" className="object-cover" />
+            </div>
           </div>
-          <HeroCta className="mt-5 xl:hidden" onClick={() => open(1)} />
+          <HeroCta className="relative z-10 mt-5 hero-wide:hidden" onClick={() => open(1)} />
         </div>
 
-        <div className="absolute inset-x-0 top-[calc(100%_-_9.5rem)] hidden justify-center pt-4 xl:flex">
+        <div className="absolute inset-x-0 top-[calc(100%_-_9.5rem)] hidden justify-center pt-4 hero-wide:flex">
           <HeroCta onClick={() => open(1)} />
         </div>
       </section>

@@ -10,5 +10,8 @@
     // anything that doesn't exist.
     "html_handling": "auto-trailing-slash",
     "not_found_handling": "404-page"
-  }
+  },
+  // Lets `npx wrangler preview` (the Workers Builds preview command) make a preview URL for
+  // each non-production branch. Empty on purpose: assets and settings above apply to previews too.
+  "previews": {}
 }

@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { worlds } from "@/lib/worlds";
 import { BrowserFrame, MiniSite } from "./MiniSite";
+import { FlashRunner } from "./FlashRunner";
 
 /**
  * The 50ms claim, run on the visitor instead of explained to them.
@@ -12,40 +13,21 @@ import { BrowserFrame, MiniSite } from "./MiniSite";
  * both side by side with their own answers under them. They didn't read anything either time;
  * they decided anyway. That's the point, proven on their own brain.
  *
- * The flash timer starts after two animation frames so the site has actually been painted before
- * the 50ms clock runs; on a 60Hz screen that's three frames, which is enough to register.
+ * The countdown and the 50ms flash itself live in FlashRunner, shared with the homepage run.
  */
-const FLASH_MS = 50;
 const business = worlds.find((w) => w.id === "carpentry")!;
 
-type Stage = "intro" | "count" | "flash" | "ask" | "reveal";
+type Stage = "intro" | "flash" | "ask" | "reveal";
 type Answer = "yes" | "no";
 
 export function PerceptionTest() {
   const [stage, setStage] = useState<Stage>("intro");
   const [round, setRound] = useState<0 | 1>(0);
-  const [count, setCount] = useState(3);
   const [answers, setAnswers] = useState<Answer[]>([]);
-  const timers = useRef<number[]>([]);
-
-  useEffect(() => () => timers.current.forEach((t) => window.clearTimeout(t)), []);
-
-  const later = (fn: () => void, ms: number) => {
-    timers.current.push(window.setTimeout(fn, ms));
-  };
 
   const runRound = (r: 0 | 1) => {
     setRound(r);
-    setStage("count");
-    setCount(3);
-    later(() => setCount(2), 550);
-    later(() => setCount(1), 1100);
-    later(() => {
-      setStage("flash");
-      requestAnimationFrame(() =>
-        requestAnimationFrame(() => later(() => setStage("ask"), FLASH_MS))
-      );
-    }, 1650);
+    setStage("flash");
   };
 
   const answer = (a: Answer) => {
@@ -83,20 +65,15 @@ export function PerceptionTest() {
           </div>
         )}
 
-        {stage === "count" && (
-          <div aria-live="polite">
-            <p className="eyebrow mb-6">Website {round + 1} of 2</p>
-            <p className="display-face text-[clamp(5rem,16vw,11rem)] leading-none text-[var(--color-cherry)]">
-              {count}
-            </p>
-          </div>
-        )}
-
-        {/* Same box size as the browser frame so the flash doesn't jump the layout. */}
         {stage === "flash" && (
-          <BrowserFrame url={`${business.id}.example`} className="mx-auto max-w-4xl">
-            <MiniSite world={business} generic={round === 0} layout="desktop" />
-          </BrowserFrame>
+          <FlashRunner
+            key={round}
+            world={business}
+            generic={round === 0}
+            url={`${business.id}.example`}
+            eyebrow={`Website ${round + 1} of 2`}
+            onDone={() => setStage("ask")}
+          />
         )}
 
         {stage === "ask" && (
