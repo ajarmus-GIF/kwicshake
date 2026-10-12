@@ -35,15 +35,15 @@ export const INTRO_BOOT_SCRIPT = `(function(){var d=document.documentElement;d.c
 
 const GLYPHS = "01<>/\\[]{}=+*#%&$@!?_-";
 
-// Timeline, in ms from when this component starts.
-// The tagline decodes during the shake (SHAKE_AT, set in globals.css as the shake's delay), so
-// the two beats land together and the whole thing is over in about 1.8s.
+// Timeline, in ms from when this component starts. The wordmark and the tagline decode together,
+// both resolving by ~520ms; then "Shake" shakes (0.52s in, for 0.8s, set in globals.css), its
+// swings shrinking and slowing as it settles; then the panel lifts. Gone in about 2s.
 const MARK_START = 40;
-const MARK_DECODE = 420;
-const TAG_START = 460; // = SHAKE_AT
-const TAG_DECODE = 500; // = the shake's length
-const LEAVE_AT = 1250; // a beat to read the finished line
-const GONE_AT = 1800;
+const MARK_DECODE = 460;
+const TAG_START = 40; // with the wordmark, not after it
+const TAG_DECODE = 480;
+const LEAVE_AT = 1450; // just after the shake settles
+const GONE_AT = 2000;
 
 export function IntroLoader({ replayKey }: { replayKey?: number } = {}) {
   const [phase, setPhase] = useState<"play" | "leave" | "gone">("play");

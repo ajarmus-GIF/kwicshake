@@ -874,9 +874,9 @@ body {
 .intro-shake {
   display: inline-block;
 }
-/* Starts at 0.46s (SHAKE_AT in IntroLoader.tsx), the moment the tagline starts decoding. */
+/* Starts at 0.52s, once both lines have decoded (see the timeline in IntroLoader.tsx). */
 .intro-loader.is-live .intro-shake {
-  animation: intro-shake 0.5s ease-in-out 0.46s;
+  animation: intro-shake 0.8s 0.52s;
 }
 .intro-tag {
   margin-top: 1.1rem;
@@ -897,12 +897,17 @@ body {
   box-shadow: 0 0 10px var(--color-action);
   animation: intro-blink 0.9s steps(1) infinite;
 }
+/* A damped shake: each swing is smaller than the last and takes longer (the gaps between
+   keyframes grow from 9% to 22% of the run), so it starts as a quick rattle and slows as it
+   settles, like a spring coming to rest. ease-in-out per segment rounds off each turn. */
 @keyframes intro-shake {
-  0%, 100% { transform: none; }
-  20% { transform: translateX(-5px) rotate(-3deg); }
-  40% { transform: translateX(5px) rotate(3deg); }
-  60% { transform: translateX(-3px) rotate(-2deg); }
-  80% { transform: translateX(2px) rotate(1deg); }
+  0% { transform: none; animation-timing-function: ease-out; }
+  9% { transform: translateX(-6px) rotate(-3.5deg); animation-timing-function: ease-in-out; }
+  21% { transform: translateX(5px) rotate(3deg); animation-timing-function: ease-in-out; }
+  36% { transform: translateX(-3.5px) rotate(-2deg); animation-timing-function: ease-in-out; }
+  55% { transform: translateX(2px) rotate(1deg); animation-timing-function: ease-in-out; }
+  78% { transform: translateX(-0.8px) rotate(-0.4deg); animation-timing-function: ease-in-out; }
+  100% { transform: none; }
 }
 @keyframes intro-blink {
   50% { opacity: 0; }

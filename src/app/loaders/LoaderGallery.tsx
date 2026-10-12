@@ -20,7 +20,7 @@ type Option = {
 const options: Option[] = [
   {
     name: "6 · The Shake, decoded (live on the site)",
-    note: "The pick: “Kwic Shake” decodes out of scrambled glyphs, then “Shake” shakes while “Make them remember you.” decodes under it at the same moment, and the panel lifts. About 1.8s, once per visit.",
+    note: "The pick: “Kwic Shake” and “Make them remember you.” decode out of scrambled glyphs together, then “Shake” shakes, slowing as it settles, and the panel lifts. About 2s, once per visit.",
     Loader: LiveIntro,
   },
   {
@@ -255,6 +255,6 @@ function ScanLoader({ onDone }: { onDone: () => void }) {
 
 /** The real site intro, played in replay mode (ignores the once-per-visit flag). */
 function LiveIntro({ onDone }: { onDone: () => void }) {
-  useDone(onDone, 2000);
+  useDone(onDone, 2200);
   return <IntroLoader replayKey={1} />;
 }
