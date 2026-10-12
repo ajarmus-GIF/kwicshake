@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import s from "./loaders.module.css";
+import { IntroLoader } from "@/components/intro/IntroLoader";
 
 /**
  * Side-by-side previews of five loading-screen candidates. Each plays over a mock of the real
@@ -17,6 +18,11 @@ type Option = {
 };
 
 const options: Option[] = [
+  {
+    name: "6 · The Shake, decoded (live on the site)",
+    note: "The pick: “Kwic Shake” decodes out of scrambled glyphs, “Shake” shakes, “Make them remember you.” types out under it behind a blinking cursor, then the panel lifts. Plays once per visit.",
+    Loader: LiveIntro,
+  },
   {
     name: "1 · The Shake",
     note: "The wordmark rises, “Shake” gives a quick shake, then the panel lifts away like the page transitions already do. The name as the animation.",
@@ -141,16 +147,16 @@ function Wordmark({ className = "", shakeClass = "" }: { className?: string; sha
 }
 
 /** Hides the layer once its animation has run, so it stops covering the page. */
-function useDone(onDone: () => void) {
+function useDone(onDone: () => void, ms = LOADER_MS) {
   // Held in a ref so a re-render (the counter re-renders every frame) never restarts the timer.
   const latest = useRef(onDone);
   useEffect(() => {
     latest.current = onDone;
   });
   useEffect(() => {
-    const t = window.setTimeout(() => latest.current(), LOADER_MS);
+    const t = window.setTimeout(() => latest.current(), ms);
     return () => window.clearTimeout(t);
-  }, []);
+  }, [ms]);
 }
 
 function ShakeLoader({ onDone }: { onDone: () => void }) {
@@ -245,4 +251,10 @@ function ScanLoader({ onDone }: { onDone: () => void }) {
       </span>
     </div>
   );
+}
+
+/** The real site intro, played in replay mode (ignores the once-per-visit flag). */
+function LiveIntro({ onDone }: { onDone: () => void }) {
+  useDone(onDone, 3400);
+  return <IntroLoader replayKey={1} />;
 }

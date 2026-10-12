@@ -7,6 +7,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { FooterGate } from "@/components/FooterGate";
 import { TimeOnSite } from "@/components/atmosphere/TimeOnSite";
 import { TAGLINE } from "@/lib/site";
+import { IntroLoader, INTRO_BOOT_SCRIPT } from "@/components/intro/IntroLoader";
 
 // The site's official typefaces:
 //   Archivo Black — display (headings and `.display-face`), --font-display
@@ -83,7 +84,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="en"
       className={`${geistMono.variable} ${archivoBlack.variable} ${karla.variable} h-full`}
+      // The boot script adds classes to <html> before React hydrates; that's expected.
+      suppressHydrationWarning
     >
+      <head>
+        {/* Before first paint: decides whether the first-visit intro shows (IntroLoader). */}
+        <script dangerouslySetInnerHTML={{ __html: INTRO_BOOT_SCRIPT }} />
+      </head>
       <body className="flex min-h-full flex-col bg-[var(--color-bg)] text-[var(--color-fg)] antialiased">
         <TransitionProvider>
           <SmoothScroll>
@@ -94,6 +101,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           </SmoothScroll>
         </TransitionProvider>
         <TimeOnSite />
+        <IntroLoader />
       </body>
     </html>
   );
