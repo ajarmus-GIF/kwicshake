@@ -918,8 +918,8 @@ body {
   height: 1em;
   margin-left: 0.35em;
   vertical-align: -0.12em;
-  background: var(--color-action);
-  box-shadow: 0 0 10px var(--color-action);
+  background: var(--color-cherry);
+  box-shadow: 0 0 10px var(--color-cherry);
   animation: intro-blink 0.9s steps(1) infinite;
 }
 /* A damped shake: each swing is smaller than the last and takes longer (the gaps between

@@ -54,7 +54,8 @@ const TEXT_OUT = HOLE_STEPS * HOLE_STEP_MS * 0.75;
 const GONE_AT = DISSOLVE_AT + (HOLE_STEPS + 1) * HOLE_STEP_MS + 60;
 
 /** Flash colours a square may show for one round before it drops out (or none). */
-const FLASHES = ["#5a2f86", "#4d5a1a", null] as const;
+// Two brand purples (a deep one and a brighter one), and none: no green in the intro.
+const FLASHES = ["#5a2f86", "#7a3fb0", null] as const;
 
 type Tiles = { size: number; cols: number; rows: number; round: number[]; flash: number[] };
 
