@@ -13,6 +13,7 @@ import {
 import { useRouter } from "next/navigation";
 import { gsap } from "@/lib/gsap";
 import { useReducedMotion } from "@/hooks/useMediaQuery";
+import { TAGLINE } from "@/lib/site";
 
 /**
  * PageTransition, part 1: the persistent overlay + the context that coordinates it.
@@ -54,6 +55,7 @@ export function useTransition() {
 
 export function TransitionProvider({ children }: { children: ReactNode }) {
   const overlayRef = useRef<HTMLDivElement>(null);
+  const tagRef = useRef<HTMLParagraphElement>(null);
   const isCoveredRef = useRef(false);
   const prefersReducedMotion = useReducedMotion();
 
@@ -61,21 +63,25 @@ export function TransitionProvider({ children }: { children: ReactNode }) {
     const el = overlayRef.current;
     if (!el) return Promise.resolve();
 
+    const tag = tagRef.current;
+
     if (prefersReducedMotion) {
       isCoveredRef.current = true;
-      gsap.set(el, { autoAlpha: 1, pointerEvents: "auto" });
+      gsap.set(el, { autoAlpha: 1, yPercent: 0, pointerEvents: "auto" });
+      if (tag) gsap.set(tag, { autoAlpha: 1 });
       return Promise.resolve();
     }
 
     return new Promise<void>((resolve) => {
-      gsap.killTweensOf(el);
+      gsap.killTweensOf([el, tag]);
       gsap.set(el, { autoAlpha: 1, pointerEvents: "auto" });
+      // The panel slides rather than scales, so the line on it isn't squashed in transit.
       gsap.fromTo(
         el,
-        { scaleY: 0, transformOrigin: "bottom" },
+        { yPercent: 100 },
         {
-          scaleY: 1,
-          duration: 0.5,
+          yPercent: 0,
+          duration: 0.42,
           ease: "power3.inOut",
           onStart: () => {
             isCoveredRef.current = true;
@@ -83,6 +89,15 @@ export function TransitionProvider({ children }: { children: ReactNode }) {
           onComplete: resolve,
         }
       );
+      // The tagline flashes on as the panel lands: a stepped ease reads as a digital flicker
+      // (on, off, on) rather than a fade, matching the first-visit intro's decode.
+      if (tag) {
+        gsap.fromTo(
+          tag,
+          { autoAlpha: 0 },
+          { autoAlpha: 1, duration: 0.16, delay: 0.26, ease: "steps(3)" }
+        );
+      }
     });
   }, [prefersReducedMotion]);
 
@@ -97,14 +112,15 @@ export function TransitionProvider({ children }: { children: ReactNode }) {
     }
 
     gsap.killTweensOf(el);
+    // A beat on the line before the panel lifts away, so the flash actually registers.
     gsap.fromTo(
       el,
-      { scaleY: 1, transformOrigin: "top" },
+      { yPercent: 0 },
       {
-        scaleY: 0,
-        duration: 0.5,
+        yPercent: -100,
+        duration: 0.45,
         ease: "power3.inOut",
-        delay: 0.05,
+        delay: 0.12,
         onComplete: () => {
           isCoveredRef.current = false;
           gsap.set(el, { autoAlpha: 0, pointerEvents: "none" });
@@ -116,12 +132,18 @@ export function TransitionProvider({ children }: { children: ReactNode }) {
   return (
     <TransitionContext.Provider value={{ overlayRef, cover, reveal, isCoveredRef }}>
       {children}
+      {/* The panel between pages: brand purple with the tagline flashing on it. */}
       <div
         ref={overlayRef}
         aria-hidden="true"
-        className="pointer-events-none fixed inset-0 z-[9999] bg-[var(--color-fg)] opacity-0"
+        className="pointer-events-none fixed inset-0 z-[9999] grid place-items-center bg-[var(--color-paper)] bg-[radial-gradient(ellipse_60%_45%_at_50%_50%,var(--color-glow),transparent_70%)] px-6 opacity-0"
         style={{ visibility: "hidden" }}
-      />
+      >
+        <p ref={tagRef} className="intro-tag text-center" style={{ visibility: "hidden" }}>
+          {TAGLINE}
+          <span className="intro-cursor" />
+        </p>
+      </div>
     </TransitionContext.Provider>
   );
 }
