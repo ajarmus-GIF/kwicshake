@@ -38,39 +38,40 @@ const GLYPHS = "01<>/\\[]{}=+*#%&$@!?_-";
 // Timeline, in ms from when this component starts. The wordmark and the tagline decode together,
 // both resolving by ~520ms; then "Shake" shakes (0.52s in, for 0.8s, set in globals.css), its
 // swings shrinking and slowing as it settles. Partway through that settle the background breaks
-// into holes: random squares glitch out all over the screen, the holes widen and new ones keep
-// appearing, until the page shows through everywhere. Gone in about 1.6s.
+// into holes: random squares blink out all over the screen, the holes widen and new ones keep
+// appearing, until the page shows through everywhere. Gone in about 1.7s.
 const MARK_START = 40;
 const MARK_DECODE = 460;
 const TAG_START = 40; // with the wordmark, not after it
 const TAG_DECODE = 480;
 const DISSOLVE_AT = 900; // while the shake is in its slow tail
 /** The break-up runs as this many stepped rounds… */
-const HOLE_STEPS = 12;
-/** …this far apart, so it reads as a digital process (rounds), not a smooth fade. */
-const HOLE_STEP_MS = 38;
-/** Each square's own glitch-out, matching the `intro-tile-out-*` keyframes in globals.css. */
-const TILE_OUT = 160;
+const HOLE_STEPS = 14;
+/** …this far apart: quick, but slow enough to watch the holes open, widen and merge. */
+const HOLE_STEP_MS = 50;
 /** When the text glitches out, relative to DISSOLVE_AT: in the last few rounds. */
 const TEXT_OUT = HOLE_STEPS * HOLE_STEP_MS * 0.75;
-const GONE_AT = DISSOLVE_AT + HOLE_STEPS * HOLE_STEP_MS + TILE_OUT + 60;
+const GONE_AT = DISSOLVE_AT + (HOLE_STEPS + 1) * HOLE_STEP_MS + 60;
 
-type Tiles = { size: number; cols: number; rows: number; delays: number[]; looks: number[] };
+/** Flash colours a square may show for one round before it drops out (or none). */
+const FLASHES = ["#5a2f86", "#4d5a1a", null] as const;
+
+type Tiles = { size: number; cols: number; rows: number; round: number[]; flash: number[] };
 
 /**
- * The squares the background breaks into (about a 28th of the layer's short side,
- * 18–40px), and the round each one drops out in. The break-up is holes, not a wave: every round
- * a few new squares go at random anywhere on screen (a few at first, more each round), and every
- * existing hole eats some of its neighbours, so holes keep appearing in new places while the old
- * ones widen raggedly and merge, until nothing is left. Nothing travels across the screen.
- * Each square also gets one of three glitch looks so they don't all break the same way.
+ * The squares the background breaks into (about a 28th of the layer's short side, 18–40px, in
+ * device pixels so edges stay crisp), and the round each one drops out in. The break-up is
+ * holes, not a wave: every round a few new squares go at random anywhere on screen (a few at
+ * first, more each round), and every existing hole eats some of its neighbours, so holes keep
+ * appearing in new places while the old ones widen raggedly and merge. Nothing travels across
+ * the screen and nothing slides: a square is either there or gone.
  */
 function makeTiles(width: number, height: number): Tiles {
   const size = Math.max(18, Math.min(40, Math.round(Math.min(width, height) / 28)));
   const cols = Math.ceil(width / size);
   const rows = Math.ceil(height / size);
   const total = cols * rows;
-  const round = new Array<number>(total).fill(-1); // the round each square goes in
+  const round = new Array<number>(total).fill(-1);
   let alive = total;
   const kill = (i: number, r: number) => {
     if (round[i] === -1) {
@@ -80,22 +81,20 @@ function makeTiles(width: number, height: number): Tiles {
   };
   for (let r = 0; r < HOLE_STEPS && alive > 0; r++) {
     if (r === HOLE_STEPS - 1) {
-      // Last round: whatever is left goes.
       for (let i = 0; i < total; i++) kill(i, r);
       break;
     }
-    // Existing holes widen: each square that went in an earlier round takes some of its
-    // still-standing neighbours with it.
+    // Existing holes widen into some of their still-standing neighbours.
     for (let i = 0; i < total; i++) {
       if (round[i] === -1 || round[i] >= r) continue;
       const c = i % cols;
       const neighbours = [i - cols, i + cols, c > 0 ? i - 1 : -1, c < cols - 1 ? i + 1 : -1];
       for (const n of neighbours) {
-        if (n >= 0 && n < total && round[n] === -1 && Math.random() < 0.3) kill(n, r);
+        if (n >= 0 && n < total && round[n] === -1 && Math.random() < 0.28) kill(n, r);
       }
     }
-    // New holes open at random spots: 2% of the screen in the first round, rising each round.
-    let fresh = Math.ceil(total * (0.02 + r * 0.012));
+    // New holes open at random spots: 1.5% of the screen in the first round, rising each round.
+    let fresh = Math.ceil(total * (0.015 + r * 0.01));
     while (fresh-- > 0 && alive > 0) {
       const i = Math.floor(Math.random() * total);
       if (round[i] === -1) kill(i, r);
@@ -105,9 +104,8 @@ function makeTiles(width: number, height: number): Tiles {
     size,
     cols,
     rows,
-    // A few ms of scatter inside each round, so a round's squares don't all blink in unison.
-    delays: round.map((r) => r * HOLE_STEP_MS + Math.floor(Math.random() * 16)),
-    looks: round.map(() => Math.floor(Math.random() * 3)),
+    round,
+    flash: round.map(() => Math.floor(Math.random() * FLASHES.length)),
   };
 }
 
@@ -115,7 +113,10 @@ export function IntroLoader({ replayKey }: { replayKey?: number } = {}) {
   const [phase, setPhase] = useState<"play" | "dissolve" | "gone">("play");
   // Held in state (not added to the element by hand) so a re-render can never strip it.
   const [live, setLive] = useState(false);
-  const [tiles, setTiles] = useState<Tiles | null>(null);
+  // True once the canvas below has painted the background, so the layer's own can go.
+  const [painted, setPainted] = useState(false);
+  const canvas = useRef<HTMLCanvasElement>(null);
+  const tiles = useRef<Tiles | null>(null);
   const layer = useRef<HTMLDivElement>(null);
   const kwic = useRef<HTMLSpanElement>(null);
   const shake = useRef<HTMLSpanElement>(null);
@@ -138,8 +139,20 @@ export function IntroLoader({ replayKey }: { replayKey?: number } = {}) {
     decode(kwic.current, "Kwic ", -1);
     decode(shake.current, "Shake", -1);
     decode(tag.current, TAGLINE, -1);
+    // Paint the background onto the canvas at device resolution, then hand it over.
+    const cv = canvas.current;
     const box = layer.current?.getBoundingClientRect();
-    if (box) setTiles(makeTiles(box.width, box.height));
+    const ctx = cv?.getContext("2d");
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const paper = getComputedStyle(document.documentElement).getPropertyValue("--color-paper").trim() || "#100a1f";
+    if (cv && box && ctx) {
+      cv.width = Math.ceil(box.width * dpr);
+      cv.height = Math.ceil(box.height * dpr);
+      ctx.fillStyle = paper;
+      ctx.fillRect(0, 0, cv.width, cv.height);
+      tiles.current = makeTiles(box.width, box.height);
+      setPainted(true);
+    }
     setLive(true);
 
     const start = performance.now();
@@ -157,10 +170,45 @@ export function IntroLoader({ replayKey }: { replayKey?: number } = {}) {
       if (t < TAG_START + TAG_DECODE + 80) raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
-    const dissolve = window.setTimeout(() => setPhase("dissolve"), DISSOLVE_AT);
+    // The break-up, drawn on the canvas: each frame works out which round it is; squares whose
+    // round has passed are cleared (a hole), and squares in the current round show their flash
+    // colour, if they have one, for that one round first.
+    let holesRaf = 0;
+    const dissolve = window.setTimeout(() => {
+      setPhase("dissolve");
+      const t = tiles.current;
+      if (!cv || !ctx || !t) return;
+      const px = t.size * dpr;
+      const cleared = new Uint8Array(t.round.length);
+      const flashed = new Uint8Array(t.round.length);
+      const holesStart = performance.now();
+      const draw = (now: number) => {
+        const k = Math.floor((now - holesStart) / HOLE_STEP_MS);
+        for (let i = 0; i < t.round.length; i++) {
+          if (cleared[i]) continue;
+          const x = Math.floor((i % t.cols) * px);
+          const y = Math.floor(Math.floor(i / t.cols) * px);
+          const w = Math.ceil(px) + 1;
+          if (t.round[i] < k) {
+            ctx.clearRect(x, y, w, w);
+            cleared[i] = 1;
+          } else if (t.round[i] === k && !flashed[i]) {
+            const colour = FLASHES[t.flash[i]];
+            if (colour) {
+              ctx.fillStyle = colour;
+              ctx.fillRect(x, y, w, w);
+            }
+            flashed[i] = 1;
+          }
+        }
+        if (k <= HOLE_STEPS) holesRaf = requestAnimationFrame(draw);
+      };
+      holesRaf = requestAnimationFrame(draw);
+    }, DISSOLVE_AT);
     const gone = window.setTimeout(() => setPhase("gone"), GONE_AT);
     return () => {
       cancelAnimationFrame(raf);
+      cancelAnimationFrame(holesRaf);
       window.clearTimeout(dissolve);
       window.clearTimeout(gone);
     };
@@ -172,7 +220,7 @@ export function IntroLoader({ replayKey }: { replayKey?: number } = {}) {
     "intro-loader",
     replayKey !== undefined && "is-replay",
     live && "is-live",
-    tiles && "has-tiles",
+    painted && "has-tiles",
     phase === "dissolve" && "is-dissolving",
   ]
     .filter(Boolean)
@@ -185,25 +233,11 @@ export function IntroLoader({ replayKey }: { replayKey?: number } = {}) {
       style={{ ["--text-out" as string]: `${TEXT_OUT}ms` }}
       aria-hidden="true"
     >
-      {/* The background, as squares. Before these exist (server render, first frame) the layer
-          paints its own solid background, so nothing changes visually when they arrive. */}
-      {tiles && (
-        <div
-          className="intro-tiles"
-          style={{
-            gridTemplateColumns: `repeat(${tiles.cols}, ${tiles.size}px)`,
-            gridAutoRows: `${tiles.size}px`,
-          }}
-        >
-          {tiles.delays.map((d, i) => (
-            <span
-              key={i}
-              className={`intro-tile intro-tile-${tiles.looks[i]}`}
-              style={{ animationDelay: `${d}ms` }}
-            />
-          ))}
-        </div>
-      )}
+      {/* The background, as a canvas the break-up punches holes in. Before it has painted
+          (server render, first frame) the layer paints its own solid background, so nothing
+          changes visually when it takes over. One canvas rather than hundreds of elements keeps
+          it smooth on phones and the square edges crisp. */}
+      <canvas ref={canvas} className="intro-canvas" aria-hidden="true" />
       <div className="intro-inner">
         <p className="brand-wordmark intro-mark">
           <span ref={kwic} className="text-[var(--color-white)]">Kwic </span>

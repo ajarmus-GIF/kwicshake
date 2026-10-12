@@ -846,59 +846,24 @@ body {
 .intro-js .intro-loader {
   animation: intro-safety 0s linear 5s forwards;
 }
-/* The dissolve. Once the squares exist they carry the background, so the layer itself goes
-   clear; each square glitches out in hard steps after its own delay, as holes open at random
-   spots and widen; the text glitches out in the last rounds; and the layer stops taking
+/* The dissolve. Once the canvas has painted it carries the background, so the layer itself goes
+   clear; the component punches square holes in the canvas round by round, opening at random
+   spots and widening; the text glitches out in the last rounds; and the layer stops taking
    clicks the moment it starts breaking up, so the page underneath is usable straight away. */
 .intro-loader.has-tiles {
   background: transparent;
 }
-.intro-tiles {
+.intro-canvas {
   position: absolute;
   inset: 0;
-  display: grid;
-  overflow: hidden;
-}
-.intro-tile {
-  background: var(--color-paper);
+  width: 100%;
+  height: 100%;
 }
 .intro-loader.is-dissolving {
   pointer-events: none;
 }
-.intro-loader.is-dissolving .intro-tile {
-  animation: intro-tile-out-0 0.16s steps(4, end) forwards;
-}
-.intro-loader.is-dissolving .intro-tile-1 {
-  animation-name: intro-tile-out-1;
-}
-.intro-loader.is-dissolving .intro-tile-2 {
-  animation-name: intro-tile-out-2;
-}
 .intro-loader.is-dissolving .intro-inner {
-  animation: intro-text-out 0.18s steps(4, end) var(--text-out, 340ms) forwards;
-}
-/* Three glitch-outs, picked at random per square: each jumps sideways a few pixels and flashes a
-   brand colour (purple, chartreuse, or a dim scanline) in hard steps before it's gone, so the
-   break-up reads as a signal dropping out rather than a fade. */
-@keyframes intro-tile-out-0 {
-  0% { opacity: 1; }
-  25% { opacity: 1; transform: translateX(4px); background: color-mix(in srgb, var(--color-paper) 55%, var(--color-cherry) 45%); }
-  50% { opacity: 0.7; transform: translateX(-3px); }
-  75% { opacity: 0.35; transform: translateX(2px); }
-  100% { opacity: 0; }
-}
-@keyframes intro-tile-out-1 {
-  0% { opacity: 1; }
-  25% { opacity: 0.9; transform: translate(-3px, 2px); background: color-mix(in srgb, var(--color-paper) 70%, var(--color-action) 30%); }
-  50% { opacity: 0.25; transform: translate(2px, -1px); }
-  75% { opacity: 0.6; transform: none; background: var(--color-paper); }
-  100% { opacity: 0; }
-}
-@keyframes intro-tile-out-2 {
-  0% { opacity: 1; }
-  25% { opacity: 1; transform: scaleY(0.4); background: color-mix(in srgb, var(--color-paper) 75%, var(--color-cherry) 25%); }
-  50% { opacity: 0.5; transform: scaleY(0.15) translateX(5px); }
-  100% { opacity: 0; }
+  animation: intro-text-out 0.18s steps(4, end) var(--text-out, 525ms) forwards;
 }
 @keyframes intro-text-out {
   0% { opacity: 1; }
