@@ -284,7 +284,7 @@ export function EditorialMedia({
 }
 
 /** The <picture> for a pre-sized set: AVIF, then WebP, then JPEG as the fallback <img>. */
-function PresizedPicture({
+export function PresizedPicture({
   src,
   widths,
   alt,
