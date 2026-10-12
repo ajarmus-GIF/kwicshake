@@ -1,0 +1,161 @@
+/* Five loading-screen candidates for /loaders. Each one is a layer over a mock page and ends by
+   getting out of the way (`.done` hides it), so what's being judged is the full hand-off: the
+   loader, then the site arriving underneath. Transform, opacity and clip-path only, so every
+   frame composites without layout. */
+
+.layer {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: var(--color-paper);
+  pointer-events: none;
+}
+
+.done {
+  visibility: hidden;
+}
+
+/* ── 1. The Shake: wordmark in, "Shake" shakes, panel lifts away ─────────────────────────── */
+.shakeLayer {
+  animation: lift 0.7s cubic-bezier(0.76, 0, 0.24, 1) 1.45s forwards;
+}
+.shakeMark {
+  opacity: 0;
+  animation: rise 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.1s forwards;
+}
+.shakeWord {
+  display: inline-block;
+  animation: shake 0.5s ease-in-out 0.7s;
+}
+@keyframes rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes shake {
+  0%, 100% { transform: none; }
+  20% { transform: translateX(-5px) rotate(-3deg); }
+  40% { transform: translateX(5px) rotate(3deg); }
+  60% { transform: translateX(-3px) rotate(-2deg); }
+  80% { transform: translateX(2px) rotate(1deg); }
+}
+@keyframes lift {
+  to { transform: translateY(-100%); }
+}
+
+/* ── 2. Pixel Bloom: the photography's glowing squares pop in, then the field dissolves ────── */
+.pixelLayer {
+  animation: fadeOut 0.5s ease 1.6s forwards;
+}
+.pixel {
+  position: absolute;
+  border-radius: 3px;
+  background: var(--color-cherry);
+  box-shadow: 0 0 18px var(--color-cherry), 0 0 42px var(--color-glow);
+  opacity: 0;
+  transform: scale(0.2);
+  animation: pop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) forwards, drift 1.6s ease-in 0.5s forwards;
+}
+.pixelMark {
+  opacity: 0;
+  animation: rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.55s forwards;
+}
+@keyframes pop {
+  to { opacity: 0.9; transform: scale(1); }
+}
+@keyframes drift {
+  to { opacity: 0; transform: translateY(-40px) scale(0.6); }
+}
+@keyframes fadeOut {
+  to { opacity: 0; }
+}
+
+/* ── 3. Counter: 000 → 100 with a hairline filling under it, then the panel lifts ───────── */
+.counterLayer {
+  place-items: end start;
+  padding: 7%;
+  animation: lift 0.7s cubic-bezier(0.76, 0, 0.24, 1) 1.55s forwards;
+}
+.counterBar {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 2px;
+  background: var(--color-cherry);
+  transform-origin: left;
+  transform: scaleX(0);
+  animation: fill 1.4s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+}
+@keyframes fill {
+  to { transform: scaleX(1); }
+}
+
+/* ── 4. Split: the headline, then the screen parts down the middle ───────────────────────── */
+.splitLayer {
+  background: transparent;
+}
+.splitHalf {
+  position: absolute;
+  inset-inline: 0;
+  height: 50.5%;
+  background: var(--color-paper);
+}
+.splitTop {
+  top: 0;
+  animation: partUp 0.8s cubic-bezier(0.76, 0, 0.24, 1) 1.5s forwards;
+}
+.splitBottom {
+  bottom: 0;
+  animation: partDown 0.8s cubic-bezier(0.76, 0, 0.24, 1) 1.5s forwards;
+}
+.splitLine {
+  position: relative;
+  opacity: 0;
+  animation: rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) var(--delay) forwards, fadeOut 0.25s ease 1.35s forwards;
+}
+@keyframes partUp {
+  to { transform: translateY(-100%); }
+}
+@keyframes partDown {
+  to { transform: translateY(100%); }
+}
+
+/* ── 5. Scan: a chartreuse line sweeps down, drawing the wordmark, then wipes the loader away ── */
+.scanLayer {
+  animation: wipeDown 0.6s cubic-bezier(0.76, 0, 0.24, 1) 1.5s forwards;
+}
+.scanMark {
+  clip-path: inset(0 0 100% 0);
+  animation: draw 0.9s cubic-bezier(0.65, 0, 0.35, 1) 0.15s forwards;
+}
+/* A full-height track that slides down by its own height, carrying the line on its top edge,
+   so the sweep covers the stage at any size without measuring it. */
+.scanTrack {
+  position: absolute;
+  inset: 0;
+  animation: sweep 1.05s cubic-bezier(0.65, 0, 0.35, 1) forwards, fadeOut 0.2s ease 1.05s forwards;
+}
+.scanLine {
+  height: 2px;
+  background: var(--color-action);
+  box-shadow: 0 0 16px var(--color-action);
+}
+@keyframes draw {
+  to { clip-path: inset(0 0 0 0); }
+}
+@keyframes sweep {
+  from { transform: translateY(0); }
+  to { transform: translateY(100%); }
+}
+@keyframes wipeDown {
+  to { clip-path: inset(100% 0 0 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .layer,
+  .layer * {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0.6s !important;
+  }
+}
