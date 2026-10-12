@@ -20,7 +20,7 @@ type Option = {
 const options: Option[] = [
   {
     name: "6 · The Shake, decoded (live on the site)",
-    note: "The pick: “Kwic Shake” and “Make them remember you.” decode out of scrambled glyphs together, then “Shake” shakes, slowing as it settles, and the panel lifts. About 2s, once per visit.",
+    note: "The pick: “Kwic Shake” and “Make them remember you.” decode out of scrambled glyphs together, “Shake” shakes and slows to rest, and as it settles the background breaks into squares that blink out from the edges in, dissolving into the page. About 1.8s, once per visit.",
     Loader: LiveIntro,
   },
   {

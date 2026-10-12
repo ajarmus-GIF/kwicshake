@@ -828,8 +828,9 @@ body {
 }
 
 /* ── First-visit intro (components/intro/IntroLoader.tsx) ──────────────────────────────────────
-   Three ways out, so it can never trap anyone: with JS, the component adds .is-leaving on its
-   own timeline; without JS (no .intro-js on <html>), the layer lifts by CSS alone after 0.9s;
+   Three ways out, so it can never trap anyone: with JS, the component dissolves the background
+   into the page square by square (.is-dissolving) and then unmounts; without JS (no .intro-js
+   on <html>), the layer lifts by CSS alone after 0.9s;
    and .intro-safety hides it at 5s whatever happened. `intro-seen` (set before paint by the
    layout's boot script) means it never paints at all. */
 .intro-loader {
@@ -845,8 +846,42 @@ body {
 .intro-js .intro-loader {
   animation: intro-safety 0s linear 5s forwards;
 }
-.intro-js .intro-loader.is-leaving {
-  animation: intro-lift 0.55s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+/* The dissolve. Once the squares exist they carry the background, so the layer itself goes
+   clear; each square flickers (a purple flash, half, gone, in hard steps) after its own delay,
+   edges first; the text flickers out as the centre squares go; and the layer stops taking
+   clicks the moment it starts breaking up, so the page underneath is usable straight away. */
+.intro-loader.has-tiles {
+  background: transparent;
+}
+.intro-tiles {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  overflow: hidden;
+}
+.intro-tile {
+  background: var(--color-paper);
+}
+.intro-loader.is-dissolving {
+  pointer-events: none;
+}
+.intro-loader.is-dissolving .intro-tile {
+  animation: intro-tile-out 0.22s steps(3, end) forwards;
+}
+.intro-loader.is-dissolving .intro-inner {
+  animation: intro-text-out 0.2s steps(3, end) var(--text-out, 420ms) forwards;
+}
+@keyframes intro-tile-out {
+  0% { opacity: 1; }
+  34% { opacity: 1; background: color-mix(in srgb, var(--color-paper) 62%, var(--color-cherry) 38%); }
+  67% { opacity: 0.45; }
+  100% { opacity: 0; }
+}
+@keyframes intro-text-out {
+  0% { opacity: 1; }
+  34% { opacity: 0.25; }
+  67% { opacity: 0.85; }
+  100% { opacity: 0; }
 }
 .intro-seen .intro-loader:not(.is-replay) {
   display: none;
@@ -857,6 +892,7 @@ body {
   z-index: 2;
 }
 .intro-inner {
+  position: relative;
   text-align: center;
   padding-inline: 1.5rem;
 }

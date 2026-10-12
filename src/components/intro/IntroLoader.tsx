@@ -37,16 +37,53 @@ const GLYPHS = "01<>/\\[]{}=+*#%&$@!?_-";
 
 // Timeline, in ms from when this component starts. The wordmark and the tagline decode together,
 // both resolving by ~520ms; then "Shake" shakes (0.52s in, for 0.8s, set in globals.css), its
-// swings shrinking and slowing as it settles; then the panel lifts. Gone in about 2s.
+// swings shrinking and slowing as it settles. Partway through that settle the background
+// dissolves into the page square by square, from the edges in, and the text flickers out with
+// the last squares around it. Gone in about 1.8s.
 const MARK_START = 40;
 const MARK_DECODE = 460;
 const TAG_START = 40; // with the wordmark, not after it
 const TAG_DECODE = 480;
-const LEAVE_AT = 1450; // just after the shake settles
-const GONE_AT = 2000;
+const DISSOLVE_AT = 900; // while the shake is in its slow tail
+/** Edge squares go first, the centre ones last, spread over this long… */
+const DISSOLVE_SPREAD = 460;
+/** …plus up to this much random scatter, so it breaks up rather than wiping. */
+const DISSOLVE_JITTER = 140;
+/** Each square's own flicker-out, matching `intro-tile-out` in globals.css. */
+const TILE_OUT = 220;
+/** When the text flickers out, relative to DISSOLVE_AT: as the centre squares go. */
+const TEXT_OUT = 420;
+const GONE_AT = DISSOLVE_AT + DISSOLVE_SPREAD + DISSOLVE_JITTER + TILE_OUT + 40;
+
+type Tiles = { size: number; cols: number; rows: number; delays: number[] };
+
+/**
+ * The squares the background breaks into, sized to the layer: about a twelfth of its short
+ * side (40–90px), each with a delay that grows toward the centre so the page appears around the
+ * edges first and the wordmark is the last thing standing.
+ */
+function makeTiles(width: number, height: number): Tiles {
+  const size = Math.max(40, Math.min(90, Math.round(Math.min(width, height) / 12)));
+  const cols = Math.ceil(width / size);
+  const rows = Math.ceil(height / size);
+  const cx = (cols - 1) / 2;
+  const cy = (rows - 1) / 2;
+  const far = Math.hypot(cx, cy) || 1;
+  const delays: number[] = [];
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const fromCentre = Math.hypot(c - cx, r - cy) / far; // 0 at the centre, 1 at a corner
+      delays.push(Math.round((1 - fromCentre) * DISSOLVE_SPREAD + Math.random() * DISSOLVE_JITTER));
+    }
+  }
+  return { size, cols, rows, delays };
+}
 
 export function IntroLoader({ replayKey }: { replayKey?: number } = {}) {
-  const [phase, setPhase] = useState<"play" | "leave" | "gone">("play");
+  const [phase, setPhase] = useState<"play" | "dissolve" | "gone">("play");
+  // Held in state (not added to the element by hand) so a re-render can never strip it.
+  const [live, setLive] = useState(false);
+  const [tiles, setTiles] = useState<Tiles | null>(null);
   const layer = useRef<HTMLDivElement>(null);
   const kwic = useRef<HTMLSpanElement>(null);
   const shake = useRef<HTMLSpanElement>(null);
@@ -69,7 +106,9 @@ export function IntroLoader({ replayKey }: { replayKey?: number } = {}) {
     decode(kwic.current, "Kwic ", -1);
     decode(shake.current, "Shake", -1);
     decode(tag.current, TAGLINE, -1);
-    layer.current?.classList.add("is-live");
+    const box = layer.current?.getBoundingClientRect();
+    if (box) setTiles(makeTiles(box.width, box.height));
+    setLive(true);
 
     const start = performance.now();
     let raf = 0;
@@ -86,23 +125,49 @@ export function IntroLoader({ replayKey }: { replayKey?: number } = {}) {
       if (t < TAG_START + TAG_DECODE + 80) raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
-    const leave = window.setTimeout(() => setPhase("leave"), LEAVE_AT);
+    const dissolve = window.setTimeout(() => setPhase("dissolve"), DISSOLVE_AT);
     const gone = window.setTimeout(() => setPhase("gone"), GONE_AT);
     return () => {
       cancelAnimationFrame(raf);
-      window.clearTimeout(leave);
+      window.clearTimeout(dissolve);
       window.clearTimeout(gone);
     };
   }, [replayKey]);
 
   if (phase === "gone") return null;
 
+  const classes = [
+    "intro-loader",
+    replayKey !== undefined && "is-replay",
+    live && "is-live",
+    tiles && "has-tiles",
+    phase === "dissolve" && "is-dissolving",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   return (
     <div
       ref={layer}
-      className={`intro-loader ${replayKey !== undefined ? "is-replay" : ""} ${phase === "leave" ? "is-leaving" : ""}`}
+      className={classes}
+      style={{ ["--text-out" as string]: `${TEXT_OUT}ms` }}
       aria-hidden="true"
     >
+      {/* The background, as squares. Before these exist (server render, first frame) the layer
+          paints its own solid background, so nothing changes visually when they arrive. */}
+      {tiles && (
+        <div
+          className="intro-tiles"
+          style={{
+            gridTemplateColumns: `repeat(${tiles.cols}, ${tiles.size}px)`,
+            gridAutoRows: `${tiles.size}px`,
+          }}
+        >
+          {tiles.delays.map((d, i) => (
+            <span key={i} className="intro-tile" style={{ animationDelay: `${d}ms` }} />
+          ))}
+        </div>
+      )}
       <div className="intro-inner">
         <p className="brand-wordmark intro-mark">
           <span ref={kwic} className="text-[var(--color-white)]">Kwic </span>
