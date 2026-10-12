@@ -36,12 +36,14 @@ export const INTRO_BOOT_SCRIPT = `(function(){var d=document.documentElement;d.c
 const GLYPHS = "01<>/\\[]{}=+*#%&$@!?_-";
 
 // Timeline, in ms from when this component starts.
-const MARK_START = 80;
-const MARK_DECODE = 650;
-const TAG_START = 1050;
-const TAG_DECODE = 850;
-const LEAVE_AT = 2500;
-const GONE_AT = 3250;
+// The tagline decodes during the shake (SHAKE_AT, set in globals.css as the shake's delay), so
+// the two beats land together and the whole thing is over in about 1.8s.
+const MARK_START = 40;
+const MARK_DECODE = 420;
+const TAG_START = 460; // = SHAKE_AT
+const TAG_DECODE = 500; // = the shake's length
+const LEAVE_AT = 1250; // a beat to read the finished line
+const GONE_AT = 1800;
 
 export function IntroLoader({ replayKey }: { replayKey?: number } = {}) {
   const [phase, setPhase] = useState<"play" | "leave" | "gone">("play");

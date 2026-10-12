@@ -829,7 +829,7 @@ body {
 
 /* ── First-visit intro (components/intro/IntroLoader.tsx) ──────────────────────────────────────
    Three ways out, so it can never trap anyone: with JS, the component adds .is-leaving on its
-   own timeline; without JS (no .intro-js on <html>), the layer lifts by CSS alone after 1.2s;
+   own timeline; without JS (no .intro-js on <html>), the layer lifts by CSS alone after 0.9s;
    and .intro-safety hides it at 5s whatever happened. `intro-seen` (set before paint by the
    layout's boot script) means it never paints at all. */
 .intro-loader {
@@ -839,14 +839,14 @@ body {
   display: grid;
   place-items: center;
   background: var(--color-paper);
-  animation: intro-lift 0.75s cubic-bezier(0.76, 0, 0.24, 1) 1.2s forwards,
+  animation: intro-lift 0.55s cubic-bezier(0.76, 0, 0.24, 1) 0.9s forwards,
     intro-safety 0s linear 5s forwards;
 }
 .intro-js .intro-loader {
   animation: intro-safety 0s linear 5s forwards;
 }
 .intro-js .intro-loader.is-leaving {
-  animation: intro-lift 0.75s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+  animation: intro-lift 0.55s cubic-bezier(0.76, 0, 0.24, 1) forwards;
 }
 .intro-seen .intro-loader:not(.is-replay) {
   display: none;
@@ -874,8 +874,9 @@ body {
 .intro-shake {
   display: inline-block;
 }
+/* Starts at 0.46s (SHAKE_AT in IntroLoader.tsx), the moment the tagline starts decoding. */
 .intro-loader.is-live .intro-shake {
-  animation: intro-shake 0.5s ease-in-out 0.78s;
+  animation: intro-shake 0.5s ease-in-out 0.46s;
 }
 .intro-tag {
   margin-top: 1.1rem;
