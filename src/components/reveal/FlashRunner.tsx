@@ -6,8 +6,8 @@ import { useLenis } from "@/components/scroll/SmoothScroll";
 import { BrowserFrame, MiniSite, PhoneFrame } from "./MiniSite";
 
 /**
- * The 50ms flash, shared by the homepage run (moment 02) and the /traditional PerceptionTest:
- * a 3-2-1 countdown, then one site on screen for 50 milliseconds, then `onDone`.
+ * The 200ms flash, shared by the homepage run (moment 02) and the /traditional PerceptionTest:
+ * a 3-2-1 countdown, then one site on screen for 200 milliseconds, then `onDone`.
  *
  * Why it's built this way, since "it didn't work on my phone" is the failure it exists to fix:
  *
@@ -21,15 +21,17 @@ import { BrowserFrame, MiniSite, PhoneFrame } from "./MiniSite";
  *   land below the fold.
  * · Phones see the phone version of the site in a phone frame, which is what a customer on a
  *   phone actually sees; a desktop page shrunk to 340px is too small to register at all.
- * · The 50ms is timed from the first frame the site is actually on screen (the second
- *   animation frame after it's shown) and ends on the first frame boundary at or past 50ms.
- *   That holds on 60Hz screens (3 frames), 120Hz phones (6 frames) and iPhones in Low Power
- *   Mode, which drop to 30Hz (2 frames, the closest a 30Hz screen can get).
+ * · The 200ms is timed from the first frame the site is actually on screen (the second
+ *   animation frame after it's shown) and ends on the first frame boundary at or past 200ms.
+ *   That holds on 60Hz screens (12 frames), 120Hz phones (24 frames) and iPhones in Low Power
+ *   Mode, which drop to 30Hz (6 frames).
  */
-export const FLASH_MS = 50;
+// Under 0.2s is how long a first impression of a website takes (Missouri S&T eye-tracking
+// study, 2012; sources.firstImpression). It was 50ms (Lindgaard 2006), too quick to see.
+export const FLASH_MS = 200;
 const COUNT_STEP_MS = 700;
 /** Frame timestamps jitter by a millisecond or two; without slack a 60Hz screen would round a
- *  49.9ms third frame up to a fourth (67ms). */
+ *  199.9ms twelfth frame up to a thirteenth (217ms). */
 const FRAME_SLACK_MS = 4;
 
 export function FlashRunner({
@@ -84,7 +86,7 @@ export function FlashRunner({
   // The flash itself, timed in frames rather than with a bare setTimeout. A layout effect, not a
   // passive one: it runs before the browser paints the now-visible site, so the first frame
   // callback below lands on the very frame that shows it. A passive effect usually runs after
-  // that paint and would start the clock a frame late (~67ms on screen instead of 50).
+  // that paint and would start the clock a frame late (~217ms on screen instead of 200).
   useLayoutEffect(() => {
     if (step !== "flash") return;
     let raf = 0;
@@ -97,7 +99,7 @@ export function FlashRunner({
         // Hide it here, in this frame's callback, before this frame paints. Leaving it to React
         // isn't enough: a state update made outside an event handler is committed in a later
         // task, after this frame has painted, which keeps the site up one frame too long
-        // (measured: 67ms instead of 50 at 60Hz). React never writes this style back, since
+        // (measured at 50ms: 67ms on screen at 60Hz). React never writes this style back, since
         // the prop it renders stays "visible" until the component unmounts.
         if (site.current) site.current.style.visibility = "hidden";
         done.current();

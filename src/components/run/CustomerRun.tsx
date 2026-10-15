@@ -19,7 +19,7 @@ import { GlanceMoment, HuntMoment, MemoryMoment, SearchMoment, WaitMoment, picka
  *
  * Not a page you read — a minute you live through. The visitor plays a customer looking for a
  * business, and every moment only unlocks once they've DONE the previous one: search, judge a
- * site in 50ms, guess how much design matters, wait on a slow page until they give up, hunt for a
+ * site in 200ms, guess how much design matters, wait on a slow page until they give up, hunt for a
  * buried "book" link against a clock, then try to remember who they picked. Each moment pays out
  * a real, cited fact. Then it turns around: "now it's your business they're doing this to."
  *
@@ -297,7 +297,7 @@ export function CustomerRun({ switchToTraditional = false }: { switchToTradition
             </label>
 
             <p className="display-face mx-auto mt-14 max-w-3xl text-balance text-[clamp(1.5rem,3.8vw,2.6rem)] leading-tight">
-              Right now, someone is giving <span className="text-[var(--color-cherry)]">{business}</span> 50
+              Right now, someone is giving <span className="text-[var(--color-cherry)]">{business}</span> 200
               milliseconds.
             </p>
             <p className="mx-auto mt-6 max-w-xl text-lg leading-snug text-[var(--color-ink)]/75">
@@ -318,7 +318,7 @@ export function CustomerRun({ switchToTraditional = false }: { switchToTradition
 
             {(waited !== null || hunt) && (
               <dl className="mx-auto mt-12 grid max-w-2xl gap-px overflow-hidden rounded-2xl border border-[var(--color-ash-22)] bg-[var(--color-ash-22)] sm:grid-cols-3">
-                <RunStat label="Time to judge a site" value="50ms" />
+                <RunStat label="Time to judge a site" value="0.2s" />
                 <RunStat label="You waited" value={waited !== null ? `${waited.toFixed(1)}s` : "—"} />
                 <RunStat label="Finding “book”" value={hunt ? `${hunt[0].toFixed(1)}s → ${hunt[1].toFixed(1)}s` : "—"} />
               </dl>

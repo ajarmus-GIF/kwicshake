@@ -10,9 +10,9 @@ export const sources = {
     label: "Think with Google, local search conversion statistics",
     href: "https://www.thinkwithgoogle.com/data/local-search-conversion-statistics/",
   },
-  fiftyMs: {
-    label: "Lindgaard et al., Behaviour & Information Technology (2006)",
-    href: "https://doi.org/10.1080/01449290500330448",
+  firstImpression: {
+    label: "Missouri University of Science and Technology, eye-tracking study (2012)",
+    href: "https://news.mst.edu/?p=4057",
   },
   credibility: {
     label: "Stanford Web Credibility Research",
