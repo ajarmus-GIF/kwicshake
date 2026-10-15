@@ -13,14 +13,5 @@
   },
   // Lets `npx wrangler preview` (the Workers Builds preview command) make a preview URL for
   // each non-production branch. Empty on purpose: assets and settings above apply to previews too.
-  "previews": {},
-  // The live addresses. Both are Custom Domains on this Worker: each deploy keeps exactly these
-  // two attached, and Cloudflare creates (or takes over) their DNS records and certificates.
-  "routes": [
-    { "pattern": "kwicshake.com", "custom_domain": true },
-    { "pattern": "www.kwicshake.com", "custom_domain": true }
-  ],
-  // Keep the *.workers.dev address and branch preview URLs on. Wrangler turns workers.dev off
-  // by default as soon as any routes are listed.
-  "workers_dev": true
+  "previews": {}
 }
