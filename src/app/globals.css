@@ -944,7 +944,7 @@ body {
   to { visibility: hidden; }
 }
 
-/* The 3-2-1 before a 50ms flash (reveal/FlashRunner.tsx): each digit pops in. */
+/* The 3-2-1 before a 200ms flash (reveal/FlashRunner.tsx): each digit pops in. */
 .countdown-pop {
   animation: countdown-pop 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
 }

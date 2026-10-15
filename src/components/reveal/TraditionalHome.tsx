@@ -23,7 +23,7 @@ import { processSteps } from "@/lib/process";
  *
  * Visual concept: real business → Kwic Shake lens → transformed perception. Purple is the frame
  * (the room, the light, the pixels); every business shown inside it keeps its own colours. The
- * page demonstrates instead of describing — the 50ms claim is a test the visitor takes, the
+ * page demonstrates instead of describing — the 200ms first-impression claim is a test the visitor takes, the
  * "your own look" claim is a phone they restyle themselves, the services are a loop they watch run.
  *
  * Order is the same argument as before — problem, psychology, recognition, possibility, relief,
@@ -54,7 +54,7 @@ export function TraditionalHome({ switchToInteractive = false }: { switchToInter
       {/* ── HOOK: one device, many worlds ─────────────────────────────────────────────── */}
       <RevealHero switchToInteractive={switchToInteractive} />
 
-      {/* ── PROOF ON THEIR OWN BRAIN: the 50ms test ───────────────────────────────────── */}
+      {/* ── PROOF ON THEIR OWN BRAIN: the 200ms test ──────────────────────────────────── */}
       <PerceptionTest />
 
       {/* ── PROBLEM: their words, staged as businesses ────────────────────────────────── */}

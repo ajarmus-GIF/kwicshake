@@ -121,7 +121,7 @@ export function SearchMoment({ onDone, done }: { onDone: (w: World) => void; don
   );
 }
 
-/* ── 02 · The glance (the 50ms flash) ─────────────────────────────────────────────────── */
+/* ── 02 · The glance (the 200ms flash) ────────────────────────────────────────────────── */
 type Verdict = "stay" | "leave";
 export function GlanceMoment({
   world,
@@ -169,7 +169,7 @@ export function GlanceMoment({
               </>
             )}
           </h2>
-          <p className="section-lede mx-auto">It&apos;ll be on screen for 50 milliseconds. Don&apos;t blink.</p>
+          <p className="section-lede mx-auto">It&apos;ll be on screen for 200 milliseconds. Don&apos;t blink.</p>
           <div className="mt-12">
             <RunCta onClick={flash}>
               {round === 0 ? "Load it" : "Load it again"}
@@ -178,7 +178,7 @@ export function GlanceMoment({
         </div>
       )}
 
-      {/* Countdown, then the 50ms flash, in one fixed box (see FlashRunner). */}
+      {/* Countdown, then the 200ms flash, in one fixed box (see FlashRunner). */}
       {phase === "flash" && (
         <FlashRunner
           key={round}
@@ -232,8 +232,8 @@ export function GlanceMoment({
               </figure>
             ))}
           </div>
-          <FactCard stat="50ms" source={sources.fiftyMs}>
-            is how long it takes people to form a first impression of a website.
+          <FactCard stat="0.2s" source={sources.firstImpression}>
+            or less is how long it takes people to form a first impression of a website.
           </FactCard>
           {done && <Onward onClick={onNext} />}
         </div>

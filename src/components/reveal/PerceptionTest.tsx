@@ -6,14 +6,14 @@ import { BrowserFrame, MiniSite } from "./MiniSite";
 import { FlashRunner } from "./FlashRunner";
 
 /**
- * The 50ms claim, run on the visitor instead of explained to them.
+ * The 200ms first-impression claim, run on the visitor instead of explained to them.
  *
  * Two flashes of the SAME business — first the template version, then the designed one — each on
- * screen for 50 milliseconds, each followed by "Would you trust this business?". The reveal shows
+ * screen for 200 milliseconds, each followed by "Would you trust this business?". The reveal shows
  * both side by side with their own answers under them. They didn't read anything either time;
  * they decided anyway. That's the point, proven on their own brain.
  *
- * The countdown and the 50ms flash itself live in FlashRunner, shared with the homepage run.
+ * The countdown and the 200ms flash itself live in FlashRunner, shared with the homepage run.
  */
 const business = worlds.find((w) => w.id === "carpentry")!;
 
@@ -49,10 +49,10 @@ export function PerceptionTest() {
           <div>
             <p className="eyebrow mb-6">+ First Impressions</p>
             <h2 className="section-title mx-auto max-w-4xl uppercase">
-              You have <span className="text-[var(--color-cherry)]">50 milliseconds.</span>
+              You have <span className="text-[var(--color-cherry)]">200 milliseconds.</span>
             </h2>
             <p className="section-lede mx-auto">
-              We&apos;ll flash two websites, each for 50ms. Don&apos;t read. Just tell us if
+              We&apos;ll flash two websites, each for 200ms. Don&apos;t read. Just tell us if
               you&apos;d trust the business.
             </p>
             <button
@@ -102,7 +102,7 @@ export function PerceptionTest() {
               You already <span className="text-[var(--color-cherry)]">decided.</span>
             </h2>
             <p className="section-lede mx-auto">
-              Same business. Same 50 milliseconds. You didn&apos;t read a word either time.
+              Same business. Same 200 milliseconds. You didn&apos;t read a word either time.
             </p>
             <div className="mt-12 grid gap-6 text-left sm:grid-cols-2">
               {[0, 1].map((r) => (
